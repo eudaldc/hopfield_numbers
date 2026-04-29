@@ -10,11 +10,7 @@ The codebase fits use `scipy` global optimization on empirical summary statistic
 y₀  →  cleanup (gradient descent on E(x | y₀))  →  x*  →  posterior p(n | x*)  →  loss vs data
 ```
 
-Energy (Gaussian or Poisson wells; see `fit_helpers` and `docs/`):
-
-$$E(x \mid y_0) = \frac{(x - y_0)^2}{2\tau_{\mathrm{in}}^2} - \kappa \cdot \mathrm{logsumexp}_n\!\left(-\frac{(x - \mu_n)^2}{2\sigma_n^2}\right)$$
-
-Encoding noise and RT linkage are controlled via YAML and the fit scripts.
+Energy (Poisson or Gaussian wells; see `fit_helpers` and `docs/`, and the manuscript). Encoding noise and RT linkage are controlled via YAML and the fit scripts.
 
 <p align="center">
   <img src="figures/conceptual_attractor_wells_poisson.png" alt="Conceptual attractor wells illustration" width="600"/><br>
