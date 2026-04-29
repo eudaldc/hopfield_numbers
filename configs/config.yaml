@@ -1,0 +1,24 @@
+# ── Piantadosi fit ────────────────────────────────────────────────────
+well_type: poisson        # "gaussian" or "poisson"
+rt_mode: entropy           # "steps" or "entropy" or "both"
+duration_ms: 160          # one of 40, 80, 160, 320, 640
+fixed_t0: 1.3             # decarli: 0.36; piantadosi: 1.3
+s_0: null                # null → s0 is fitted; float → fixed at this value
+lambda_0: null           # null → lambda0 is fitted; float → fixed at this value
+constant_noise: false       # true → evidence std = s00 only (s0 fixed at 0; lambda0 not fitted)
+no_anchor: true            # true → disable input anchoring (equivalent to tau_in → ∞; tau_in not fitted)
+
+# Gaussian params
+fixed_beta: 0.5           # null → beta is fitted; float → fixed at this value
+fixed_kappa: 1.0           # null → kappa_lse (LSE coupling) is fitted; float → fixed
+fixed_eta: 1.0             # null → eta is fitted; float → fixed at this value
+
+# Others
+benford_prior: false        # true → add Benford log-freq prior to posterior readout; false → flat prior
+compress_numberline: false # true → fit rho (mu_n = n^rho); false → rho = 1 (linear)
+variance_floor: false       # true → sigma^2 = v_min + c*n (adds v_min param); false → sigma^2 = c*n
+
+# Minor
+n_true_min: 1
+n_true_max: 15
+support_padding: 4

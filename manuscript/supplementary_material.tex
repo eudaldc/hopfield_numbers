@@ -1,0 +1,194 @@
+% Supplementary Information (standalone), aligned with main.tex (sagej).
+\documentclass[Afour,sageh,times]{sagej}
+
+\usepackage{moreverb,url}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage{xr-hyper}
+\usepackage[colorlinks,bookmarksopen,bookmarksnumbered,citecolor=red,urlcolor=red]{hyperref}
+% Prefix avoids clashing with sagej's FirstPage/LastPage labels in this document's own .aux.
+\externaldocument[main-]{main}
+
+\def\volumeyear{2026}
+
+% Prefix labels with S to distinguish from the main text.
+\renewcommand{\thesection}{S\arabic{section}}
+\renewcommand{\theequation}{S\arabic{equation}}
+\renewcommand{\thefigure}{S\arabic{figure}}
+\renewcommand{\thetable}{S\arabic{table}}
+
+\begin{document}
+
+\runninghead{Correig-Fraga (Supplementary Information)}
+
+\title{Supplementary Information for\\[0.5ex]
+\itshape A Hopfield attractor account of numerosity perception}
+
+\author{Eudald Correig-Fraga\affilnum{1}}
+
+\affiliation{%
+\affilnum{1}Innovamat Education, Avinguda de la Generalitat, 217, Catalonia (Spain)}
+
+\corrauth{Eudald Correig-Fraga, Innovamat Education, Avinguda de la Generalitat, 217, Catalonia (Spain).}
+
+\email{eudald.correig@innovamat.com}
+
+\maketitle
+
+\noindent This document accompanies the article \emph{A Hopfield attractor account of numerosity perception}. 
+
+\section{Supplementary Material 1: Gaussian wells with Benford-weighted depth}
+
+The Poisson parameterization presented in the main text is motivated by the accumulator statistics of numerosity perception. A natural alternative starts from a different premise: that integers are stored memories whose strength reflects environmental exposure. The frequency with which number words appear in natural language follows a distribution closely approximating Benford's law across typologically diverse languages~\citep{dehaene_cross-linguistic_1992}, with small numbers occurring far more frequently than large ones. If the attractor wells are Gaussian and their width is shaped by this frequency, then small, frequent numbers occupy narrower and more stable basins, while larger, rarer numbers occupy broader and more overlapping basins (Fig.~\ref{fig:gaussian}).
+
+This framing connects the attractor model to the broader view of numbers as memory traces whose strength can be shaped by experience~\citep{anderson_reflections_1991, verguts_representation_2004}. It is not the model used for the main analyses, but it is useful as a conceptual comparison. In the Poisson model, the broadening of wells follows directly from accumulation statistics: $\mathrm{Var}(x \mid n) = c n$. In the Gaussian--Benford variant, the broadening is driven instead by the environmental frequency of each integer.
+
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\columnwidth]{../figures/conceptual_attractor_wells.pdf}
+    \caption{\textbf{Energy landscape of the Gaussian--Benford attractor wells for $n = 1 \ldots 15$.} In~\textbf{a}, the energy landscape $E(x)$ is shaped by Gaussian wells whose width is modulated by Benford's law frequency (pink curve, right axis): $n = 1$, the most frequent number, occupies the narrowest basin, while larger, rarer numbers produce progressively wider and more overlapping basins. This contrasts with the Poisson parameterization (main text, Fig.~\ref{main-fig:conceptual}), where the same qualitative asymmetry arises from accumulator statistics rather than environmental exposure. In~\textbf{b}, the posterior entropy landscape $H(n)$ illustrates the consequences for pattern completion: small numerosities yield sharply peaked posteriors, whereas larger numerosities spread probability over several neighbouring wells.}
+    \label{fig:gaussian}
+  \end{figure}
+
+\subsection*{Model specification}
+
+Each integer $n$ is represented by a Gaussian attractor well centred at $\mu_n = n$, with width determined by the Benford frequency $f_n = \log_{10}(1 + 1/n)$:
+%
+\begin{equation}\label{eq:benford_sigma}
+\sigma_n = \left(\frac{c_G}{f_n}\right)^{\!\beta},
+\end{equation}
+%
+where $c_G$ is a base width scale and $\beta$ controls how strongly
+frequency modulates well width ($\beta = 1$: linear; $\beta < 1$:
+attenuated). The well potential for each integer is:
+%
+\begin{equation}\label{eq:gaussian_well}
+g_n(x) = -\log\sigma_n - \frac{(x - n)^2}{2\,\sigma_n^2}.
+\end{equation}
+%
+The full attraction potential retains the same Hopfield structure as in the main text (Eq.~\ref{main-eq:attraction}), with the Gaussian $g_n$ replacing the Poisson form. The posterior readout is also analogous to the main model, except that the Benford frequency can enter as a prior:
+%
+\begin{equation}\label{eq:gaussian_posterior}
+p(n \mid x^*) \propto f_n \cdot \exp(g_n(x^*)).
+\end{equation}
+%
+The sensory evidence channel and response-time model are otherwise the same as in the main text. Under the final parameterization used in the article, the comparable free parameters would be $c_G$ (Gaussian well scale), $s_0$ and $\lambda_0$ (evidence noise), and $\kappa$ (entropy-to-RT scaling), with the basal response time $t_0$ fixed by task.
+
+\subsection*{Comparison and interpretation}
+
+The Gaussian--Benford construction produces the same qualitative geometry that motivates the main model: narrow, well-separated basins for small numerosities and broader, overlapping basins for larger ones. It therefore provides an alternative route to functional compression of the number line. The interpretation is different, however. In the Poisson model, compression follows from the statistics of accumulating $n$ pieces of evidence. In the Gaussian--Benford variant, compression follows from an assumed frequency-dependent memory strength.
+
+For the present article we focus on the Poisson parameterization because it is the more direct expression of the accumulator hypothesis and because it requires only one well-scale parameter, $c$, to determine the full family of attractor widths. The Gaussian--Benford variant remains useful as a conceptual comparison and suggests a possible extension: exposure frequency could modulate the depth or precision of wells on top of the accumulator-derived Poisson geometry. This hybrid possibility may be especially relevant for developmental data, where exposure history changes systematically with age, but testing it would require additional data and is outside the scope of the present first evaluation.
+
+\section{Supplementary Material 2: Model comparison and functional compression}
+
+The main text reports the AIC comparison across exposure durations. Table~\ref{tab:supp_modelcomparison} gives the corresponding summary-level information criteria and predictive losses. The C\&P row is a conservative log-prior proxy fitted to the same summary curves, not a full reproduction of the original trial-level Bayesian observer.
+
+\begin{table}[t]
+  \centering
+  \caption{\textbf{Summary-level model comparison on the~\citet{cheyette_unified_2020} duration data.} AIC/BIC are profile-Gaussian values averaged across the five exposure durations, computed on mean estimate, exact accuracy, and median RT. LONO is leave-one-numerosity-out normalized predictive loss; LODO is leave-one-duration-out loss. Lower values are better.}
+  \label{tab:supp_modelcomparison}
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabular}{lccccc}
+  \hline
+  Model & $k$ & AIC & BIC & LONO & LODO \\
+  \hline
+  \textbf{Hopfield--Poisson} & \textbf{4} & \textbf{106.9} & \textbf{114.2} & \textbf{0.007} & \textbf{0.010} \\
+  No-cleanup Poisson & 4 & 108.5 & 115.7 & 0.007 & 0.013 \\
+  Gaussian/Benford readout & 4 & 109.4 & 116.6 & 0.007 & 0.010 \\
+  Weber/ANS baseline & 4 & 110.7 & 118.0 & 0.008 & 0.015 \\
+  C\&P log-prior proxy & 4 & 121.9 & 129.1 & 0.011 & 0.013 \\
+  \hline
+  \end{tabular}
+\end{table}
+
+Table~\ref{tab:supp_params} gives the fitted parameters for the Hopfield--Poisson model across exposure durations. Point estimates minimize the three-channel goodness-of-fit loss used in the main text; bracketed ranges are 95\% log-scale Wald confidence intervals from the profile-Gaussian Hessian. The task-specific basal response time is fixed at $t_0 = 1.30$\,s.
+
+\begin{table}[t]
+  \centering
+  \caption{\textbf{Fitted parameters across exposure durations.}}
+  \label{tab:supp_params}
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabular}{lcccc}
+  \hline
+  Duration & $c$ & $s_0$ & $\lambda_0$ & $\kappa$ \\
+  \hline
+  40\,ms  & 0.079 & 0.085 & 1.98 & 0.72 \\[-3pt]
+          & {\scriptsize [0.069,0.090]} & {\scriptsize [0.053,0.100]} & {\scriptsize [1.67,2.35]} & {\scriptsize [0.66,0.77]} \\[3pt]
+  80\,ms  & 0.049 & 0.0069 & 2.99 & 0.88 \\[-3pt]
+          & {\scriptsize [0.045,0.053]} & {\scriptsize [0.0048,0.0098]} & {\scriptsize [2.80,3.19]} & {\scriptsize [0.83,0.93]} \\[3pt]
+  160\,ms & 0.043 & 0.0018 & 3.40 & 0.97 \\[-3pt]
+          & {\scriptsize [0.040,0.047]} & {\scriptsize [0.0014,0.0022]} & {\scriptsize [3.28,3.52]} & {\scriptsize [0.91,1.03]} \\[3pt]
+  320\,ms & 0.039 & 0.00068 & 3.69 & 1.01 \\[-3pt]
+          & {\scriptsize [0.035,0.045]} & {\scriptsize [0.00053,0.00088]} & {\scriptsize [3.59,3.80]} & {\scriptsize [0.92,1.12]} \\[3pt]
+  640\,ms & 0.035 & 0.00030 & 3.86 & 1.06 \\[-3pt]
+          & {\scriptsize [0.029,0.041]} & {\scriptsize [0.00024,0.00038]} & {\scriptsize [3.78,3.95]} & {\scriptsize [0.93,1.22]} \\
+  \hline
+  \end{tabular}
+\end{table}
+
+\section{Supplementary Material 3: Parameter Recovery}
+
+To assess whether the fitted parameters were identifiable from the summary-level data used in the main analyses, we ran a parametric parameter-recovery analysis across all five exposure durations from~\citet{cheyette_unified_2020}. For each duration, synthetic datasets were generated from jittered parameter values around the fitted solution and refitted using the same optimization pipeline as in the main text. The recovery sweep used 50 synthetic datasets per duration, yielding 250 refits in total. Each synthetic dataset contained the same numerosity range as the empirical analysis, and the recovered parameters were compared with the generating values on the original parameter scales.
+
+Figure~\ref{fig:parameter-recovery} shows the recovered parameters against the true generating values. The attractor well-scale parameter $c$, which controls the effective width of the Poisson wells and therefore adjacent-integer separability, was recovered accurately across durations ($R^2 = .95$, Spearman $\rho = .96$). The entropy-to-response-time scaling parameter $\kappa$ was also recovered accurately ($R^2 = .87$, $\rho = .96$). The sensory-noise parameters were less cleanly separable. The noise scale $s_0$ showed high rank-order recovery but some systematic bias ($R^2 = .92$, $\rho = .82$), while the exponent $\lambda_0$ showed weaker linear recovery despite good rank-order recovery ($R^2 = .49$, $\rho = .83$). This pattern indicates that $s_0$ and $\lambda_0$ should not be interpreted as independent psychological quantities. Instead, they should be interpreted jointly as defining the sensory-noise profile $ \sigma(n) = \sqrt{s_0 n^{\lambda_0}} $.
+
+The error-correlation matrix in Figure~\ref{fig:parameter-recovery} confirms this interpretation. Recovery errors for $s_0$ and $\lambda_0$ were negatively correlated ($\rho = -.68$), indicating a trade-off between the two parameters: increases in the fitted noise scale can be partly compensated by decreases in the fitted exponent, and vice versa. A second trade-off appeared between $c$ and $\kappa$ ($\rho = -.87$), consistent with the fact that broader attractor wells increase posterior entropy, which can be partially compensated by a smaller entropy-to-RT scaling coefficient. Importantly, this trade-off did not prevent accurate recovery of either parameter individually. Thus, the recovery analysis supports the main interpretation of $c$ as a recoverable landscape-level parameter, while motivating a more cautious joint interpretation of the two sensory-noise parameters.
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\linewidth]{../output/parameter_recovery/si_parameter_recovery.pdf}
+\caption{Parameter-recovery analysis across the five exposure durations. Each point corresponds to one synthetic dataset generated from jittered fitted parameters and then refitted with the same optimization procedure used in the main analyses. Colours indicate exposure duration. The dashed grey lines show identity. The attractor well-scale parameter $c$ and the entropy-to-response-time scaling parameter $\kappa$ are recovered accurately. The sensory-noise parameters $s_0$ and $\lambda_0$ show partial trade-off, indicating that they should be interpreted jointly as defining the sensory-noise profile rather than as separately identifiable psychological quantities. The bottom panel shows the Spearman correlation matrix of recovery errors, highlighting the main trade-offs between $s_0$ and $\lambda_0$, and between $c$ and $\kappa$.}
+\label{fig:parameter-recovery}
+\end{figure}
+
+\section{Supplementary Material 4: Compression of the number line and transition to density regime}
+
+The Poisson attractor landscape also produces functional compression of the number line (Fig.~\ref{fig:supp_compression}). Although well centres are equispaced, the posterior distributions broaden with numerosity, reducing discriminability between adjacent integers.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{../figures/fig3_compression.pdf}
+  \caption{\textbf{Functional compression from Poisson attractor wells.} Posterior distributions at well centres: for small $n$ the posteriors are sharply peaked and non-overlapping, supporting exact identification; as $n$ grows the distributions broaden and merge, producing the functional compression of the number line characteristic of approximate numerosity.}
+  \label{fig:supp_compression}
+\end{figure}
+
+This compression carries on until an analytic transition point $n_{\mathrm{crit}} = 1/c$ at which adjacent attractor wells stop being reliably distinguishable. With the fitted values of $c$, this gives $n_{\mathrm{crit}} \approx 13$ in the 40\,ms condition and $n_{\mathrm{crit}} \approx 29$ in the 640\,ms condition. This section asks how these values compare to empirical estimates of where individual-number perception gives way to texture- or density-based perception in the psychophysics literature. The comparison is necessarily indirect, for reasons discussed below; we therefore report it as a qualitative consistency check rather than a quantitative test of the model.
+
+\paragraph{Computing density from the Cheyette and Piantadosi (2020) display.}
+Stimuli were presented within a circular region of radius 200 pixels, giving a display area of approximately $1.26 \times 10^{5}$ pixels$^2$. At $n_{\mathrm{crit}} = 29$, this corresponds to a numerical density of $2.3 \times 10^{-4}$ dots/pixel$^2$, or about $4\,300$ pixels per dot. Translating this into degrees of visual angle requires the pixels-per-degree of the participants' displays, which were not controlled: the experiment was conducted online with browser windows ranging from $820 \times 524$ to $2560 \times 1349$ pixels, and viewing distance was unknown. Plausible web-viewing setups (laptop or desktop displays at typical reading distances) produce roughly 30--50~pixels per degree of visual angle, which would place the 200-pixel-radius display in the range of approximately 50--140~deg$^2$ and the $n = 29$ threshold at approximately 0.2--0.6~dots/deg$^2$. The corresponding range for $n = 13$ (40\,ms condition) is approximately 0.1--0.3~dots/deg$^2$.
+
+\paragraph{Comparison with Anobile et al.\ (2014).}
+~\citet{anobile_separate_2014} reported a slope change in numerosity discrimination at 29~dots (0.2~dots/deg$^2$) for a large reference patch and 14~dots (0.3~dots/deg$^2$) for a small reference patch. The numerical thresholds (29 and 14 dots) coincide closely with the model's two extreme predictions (13 and 29 dots), and the reported densities lie within the range estimated above for the C\&P display under typical web-viewing assumptions.
+
+\paragraph{Comparison with Anobile et al.\ (2015).}
+~\citet{anobile_mechanisms_2015} reported substantially higher density thresholds: the regime change occurred at 2.3~dots/deg$^2$ in central vision and 0.5~dots/deg$^2$ at $15^{\circ}$ eccentricity. These values are an order of magnitude above the 2014 estimates and above the range derived above for the C\&P display. The 2015 paper also documented strong dependence on stimulus eccentricity, patch size, and crowding-like factors, and the authors themselves frame the boundary as governed by spatial-window properties of the visual system rather than as a single fixed numerosity. In the present model, $c$ is fitted from behavioural data and incorporates whatever upstream encoding the participants used; it is therefore not surprising that $c$ varies with display conditions and that a single $n_{\mathrm{crit}}$ cannot match all empirical estimates simultaneously.
+
+\paragraph{Interpretation.}
+The agreement with~\citet{anobile_separate_2014} is closer than the agreement with~\citet{anobile_mechanisms_2015}, and the differences between the two empirical estimates are themselves comparable to the differences between either estimate and the model. Because the C\&P display geometry is not fully recoverable, none of these comparisons constitutes a quantitative test of the model's prediction. What the comparison does establish is that $n_{\mathrm{crit}} = 1/c$, derived analytically from the fitted attractor scale and not from any density data, falls within the order-of-magnitude range of independently published density-regime thresholds. A direct test would require an experiment in which the same participants provide both a numerosity-estimation dataset (for fitting $c$) and a density-discrimination dataset (for measuring the empirical regime boundary) in a single controlled visual environment.
+
+\section{Supplementary Material 5: Exploratory reanalysis of developmental dyscalculia data}
+
+As an exploratory extension, we applied the same Hopfield--Poisson fitting framework to the exact enumeration data from~\citet{decarli_impaired_2020}. This analysis should be read as hypothesis-generating rather than confirmatory. The dataset contains one sample of children with developmental dyscalculia (DD, $n = 32$) and age-matched controls ($n = 32$), measured on a single exact-enumeration task with unlimited viewing time. Because the displays were not brief, children could have counted or used other task-specific strategies, so the fitted parameters cannot by themselves identify a purely perceptual or representational locus.
+
+We fitted the free parameters separately for DD and control groups using exact accuracy and response-time curves. The task-specific basal response time was fixed to $t_0 = 0.36$\,s. The fit used numerosities $n=1$--7, excluding $n=8$ because the empirical response pattern at that numerosity was anomalous. This exclusion follows the current fitting criterion, but it should not be treated as analytically innocuous: because it affects a small dataset, it remains a researcher degree of freedom and contributes to the exploratory status of the analysis.
+
+The model captures the broad group pattern but not all details of the accuracy curves (Fig.~\ref{fig:decarli_supp}a--b). Exact accuracy is fitted moderately well ($R^2 = 0.85$ for DD and $0.82$ for controls; RMSE $\approx 10$ percentage points), whereas the response-time profiles are captured more closely ($R^2 = 0.96$ and $0.98$, respectively). Panel c reports the fitted parameter summaries separately for each group, using them only as descriptive model quantities.
+
+Within the model, the fitted parameters describe the precision of the attractor landscape, the sensory evidence channel, and the entropy-to-response-time mapping. In this dataset, however, these quantities should be interpreted only as one possible model-based description of the observed response pattern. The task does not distinguish reduced representational separability from counting strategies, visual encoding differences, executive-control demands, decision processes, or other task-level contributions.
+
+This exploratory reanalysis may still be useful for future work because it suggests measurable model quantities that could be tested in larger, task-diverse samples. Any implications for intervention remain speculative: the present dataset does not evaluate training, causal mechanisms, or whether an intervention would change attractor-well precision rather than upstream encoding or response strategies.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{../figures/fig4_decarli.pdf}
+  \caption{\textbf{Exploratory dyscalculia reanalysis.} (a--b)~Exact enumeration accuracy~(a) and reaction time~(b) from~\citet{decarli_impaired_2020} for children with developmental dyscalculia (DD) and age-matched controls, with model fits overlaid. The analysis uses numerosities $n=1$--7; $n=8$ was excluded because of an anomalous empirical response pattern. (c)~Fitted model-parameter summaries shown separately for each group; box plots summarize bootstrap or profile-likelihood draws. The panel is descriptive.}
+  \label{fig:decarli_supp}
+\end{figure}
+
+
+% Uncomment when you need citations from the shared bibliography:
+\bibliographystyle{SageH}
+\bibliography{references}
+
+\end{document}

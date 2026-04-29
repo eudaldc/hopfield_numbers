@@ -1,0 +1,6 @@
+*.parquet filter=lfs diff=lfs merge=lfs -text
+data/cleaned_scores.csv filter=lfs diff=lfs merge=lfs -text
+data/cleaned_statements.csv filter=lfs diff=lfs merge=lfs -text
+data/dot_enumeration.csv filter=lfs diff=lfs merge=lfs -text
+data/number_knowledge.csv filter=lfs diff=lfs merge=lfs -text
+data/math_to_sample.csv filter=lfs diff=lfs merge=lfs -text

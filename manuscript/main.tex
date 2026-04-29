@@ -1,0 +1,201 @@
+% SAGE Publications / sagej.cls
+% Short Report: 4000 words, 2-3 figures, 150-word abstract
+\documentclass[Afour,sageh,times]{sagej}
+
+\usepackage{moreverb,url}
+\usepackage{amsmath,amssymb}
+\usepackage{graphicx}
+\usepackage[colorlinks,bookmarksopen,bookmarksnumbered,citecolor=red,urlcolor=red]{hyperref}
+
+\def\volumeyear{2026}
+
+\begin{document}
+
+\runninghead{Correig-Fraga}
+
+\title{A Hopfield attractor account of numerosity perception}
+
+\author{Eudald Correig-Fraga\affilnum{1}}
+
+\affiliation{%
+\affilnum{1}Innovamat Education, Avinguda de la Generalitat, 217, Catalonia (Spain)}
+
+\corrauth{Eudald Correig-Fraga, Innovamat Education, Avinguda de la Generalitat, 217, Catalonia (Spain).}
+
+\email{eudald.correig@innovamat.com}
+
+\begin{abstract}
+Numerical cognition operates in three traditionally distinct regimes: numerosity extraction is exact and rapid for small sets, approximate and ratio-dependent for intermediate ones, and density-based for large ones. We model the first two within a single mechanism: a one-dimensional Hopfield attractor network with stable states at the integers. The attractor wells follow a Poisson form, reflecting an accumulator-based account of numerosity perception, so that small numbers occupy deep, narrow wells and large numbers occupy broad, overlapping ones. Accuracy is read from the cleaned-up posterior distribution, and response time from its entropy. With four free parameters and a task-specific fixed basal response time, the model outperforms matched non-attractor models and classical ANS-style variants while capturing mean estimation, exact accuracy, and response time across brief-exposure numerosity data. The same framework yields a testable estimate of where individual-number discrimination should give way to density-based perception.
+
+\end{abstract}
+
+\keywords{numerical cognition, accumulator model, subitizing, approximate number system, Hopfield network}
+
+\maketitle
+
+%% ====================================================================
+\section{Introduction}
+%% ====================================================================
+
+Humans perceive small numerosities (1--3) quickly and accurately, a phenomenon known as subitizing~\citep{kaufman_discrimination_1949}. Beyond this range, response time increases and accuracy deteriorates, with variability scaling with set size consistent with Weber's law~\citep{mandler_subitizing_1982, dehaene_number_2011}. For still larger sets, numerical discrimination breaks down further and perception shifts toward density-based estimation~\citep{anobile_separate_2014, anobile_mechanisms_2015}. These three regimes (subitizing, estimation, and density) have been documented across ages, cultures, and species~\citep{burr_visual_2008, feigenson_core_2004, nieder_neuronal_2016, gelman_number_2005, pica_exact_2004}, yet the mechanisms underlying each regime, and the transitions between them, remain debated.
+
+Different theoretical frameworks address different parts of this range. Accumulator models~\citep{gallistel_preverbal_1992, whalen_nonverbal_1999} describe numerosity perception through a serial or parallel counting process that accounts well for the small-number range, including subitizing, but does not naturally extend beyond ${\sim}$10.  The Approximate Number System (ANS) framework~\citep{dehaene_number_2011, dehaene_neural_2003, halberda_individual_2008} explains estimation in the ${\sim}$5--20 range through noisy magnitude representations with scalar variability, but requires an additional mechanism for subitizing, typically an Object Tracking System~\citep{piazza_subitizing_2011, feigenson_representations_2002}. For larger sets, density-based models propose yet another mechanism~\citep{dakin_common_2011, anobile_separate_2014, morgan_texture-processing_2014}.  The result is a patchwork of theories, each capturing one regime but none spanning the full range.
+
+Computational models have captured important aspects of this processing.~\citet{dehaene_development_1993} proposed a neural network in which numerosity-selective neurons emerge through learning, with tuning curves that broaden for larger numbers, reproducing Weber-like scaling.~\citet{verguts_representation_2004} showed that place-coded representations learned from experience account for distance and size effects in number comparison.  Connectionist approaches have modelled the mental number line and its characteristic compression~\citep{zorzi_computational_2005}, and deep unsupervised networks develop number-selective units from raw visual input~\citep{stoianov_emergence_2012}. These models illuminate specific aspects of numerical cognition, but each addresses a particular range or task, and none provides a unified mechanistic account of the three regimes.
+
+A complementary line of work has sought to explain the apparent discontinuity between subitizing and estimation within a single computational framework.~\citet{cheyette_unified_2020} offer perhaps the clearest recent normative formulation of this idea: under a power-law prior and a finite information-processing constraint, near-exact performance for small numerosities and Weber-like variability for larger ones emerge from the same optimization, and the model captures systematic changes in acuity with presentation time.~\citet{cheyette_limited_2024} later pushed the same argument upstream, suggesting that core features of number psychophysics may arise from efficient encoding of object locations rather than from number-specific representations. Taken together, these accounts show that unification is possible at the computational level; but, to date, there are no mechanistic, unified accounts of numerical perception. 
+
+We therefore explore a model of the mental number line as a Hopfield-style attractor landscape with stable states anchored at the integers~\citep{hopfield_neural_1982, ramsauer_hopfield_2021}. Numerosity judgement is thus cast as a pattern-completion process: a noisy sensory estimate is placed on this line and allowed to relax toward an attractor well. To model numerosity coding as an accumulator-like mechanism, we give these attractor wells a Poisson form, so that perceiving $n$ objects corresponds to accumulating $n$ noisy pieces of evidence, producing a representation whose variance grows linearly with $n$. We also explore Gaussian-based alternatives that can reflect a more parallel account of numerical perception. In both cases, small numerosities are represented by narrow, well-separated wells that support rapid and exact responses, whereas larger ones occupy broader, overlapping basins that yield approximate estimates; when overlap becomes extreme, individual numbers are no longer cleanly discriminable and responding needs to be supported by another mechanism. On this view, the transition between regimes is not imposed by thresholds or separate systems, but emerges from the geometry and dynamics of a single representational mechanism.
+
+We put the model to the test on a brief-exposure numerosity dataset from~\citet{cheyette_unified_2020}. With four free parameters plus a task-specific fixed basal RT, the model simultaneously fits mean estimation, exact accuracy, and response time, and it predicts where individual-number discrimination should give way to density-based perception. As an exploratory extension, we apply the same fitting framework to developmental dyscalculia data from~\citet{decarli_impaired_2020}.
+
+
+%% ====================================================================
+\section{Methods}
+%% ====================================================================
+
+We consider the problem of how the cognitive system maps a noisy perceptual input onto a discrete numerical response. The model posits an energy landscape defined over a continuous axis $x$, with stable minima (attractor wells) located at integer positions. A sensory estimate $y_0$ of the numerosity, produced by visual, auditory, or tactile processing of a set of objects, provides the initial state; we model it as $y_0 \sim \mathcal{N}(n,\; s_{0} \cdot n^{\lambda_0})$, a simple noise model whose parameters are fitted to data. Starting from $x = y_0$, the system evolves by gradient descent on the energy landscape until $x$ settles into a stable well, implementing Hopfield-style pattern completion~\citep{hopfield_neural_1982}. A probability distribution over integers is then read out from the final resting state $x^*$. 
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{../figures/conceptual_attractor_wells_poisson.pdf}
+  \caption{\textbf{Energy landscape of the Poisson attractor wells for $n = 1 \ldots 15$.} In \textbf{a}, we show how the evenly shaped attractor wells following a Poisson distribution shape the energy landscape. In \textbf{b} we show the posterior distribution and a representation of the clean-up procedure that stabilizes noisy input into one of the attractor wells. The histograms show the probabilities of settling in each of the real or adjacent wells. We can see how wells in the subitizing range have much less entropy and thus the input information is easier to clean, leading to a faster and more accurate response.}
+  \label{fig:conceptual}
+\end{figure}
+
+Each integer $n$ is a stored pattern, represented as an attractor well whose shape is given by the continuous extension of the Poisson log-likelihood, scaled by a parameter $c$:
+%
+\begin{equation}\label{eq:well}
+g_n(x) = \frac{x}{c}\,\log\frac{n}{c} - \frac{n}{c} - \log\Gamma\!\left(\frac{x}{c} + 1\right).
+\end{equation}
+%
+
+The Poisson form is motivated by an accumulator account of numerosity perception: accumulating $n$ noisy pieces of evidence produces a representation whose variance grows linearly with $n$. The single scale parameter $c$ controls the effective width of every well: the variance in $x$-space is $c \cdot n$, giving $\sigma_{\mathrm{eff}} = \sqrt{c \cdot n}$. Because this width grows with numerosity, neighbouring wells are well-separated for small $n$ but increasingly overlap for large $n$. An alternative parameterization using Gaussian wells with widths modulated by environmental frequency (Benford's law) is also viable; we present this model in Supplementary Material 1 and focus here on the Poisson model, which achieves a slightly better fit and more stable parameters across exposure conditions.
+
+Following modern Hopfield networks~\citep{ramsauer_hopfield_2021}, the full attraction potential is the log-sum-exp over all wells:
+%
+\begin{equation}\label{eq:attraction}
+V(x) = -\log \sum_n \exp\!\big(\,g_n(x)\,\big),
+\end{equation}
+%
+
+Starting from $x = y_0$, the model performs gradient descent on the attraction potential:
+%
+\begin{equation}\label{eq:update}
+x_{t+1} = x_t - \eta\,\frac{\partial V}{\partial x},
+\end{equation}
+%
+where $\eta$ is a step-size parameter. The dynamics stop when the step size falls below a tolerance or the trajectory begins to oscillate, yielding a stable resting state $x^*$ (Fig.~\ref{fig:conceptual}B).
+
+After clean-up, the model reads out a probability distribution over integers from the resting state:
+%
+\begin{equation}\label{eq:posterior}
+p(n \mid x^*) = \mathrm{softmax}\!\left(\,g_n(x^*)\,\right).
+\end{equation}
+%
+The predicted numerosity is the expected value $\hat{n} = \sum_n n \cdot p(n \mid x^*)$, and exact accuracy is measured as the proportion of trials where the most probable integer matches the true numerosity. Response time is modelled as the posterior entropy scaled by a parameter $\kappa$ plus a basal latency:
+%
+\begin{equation}\label{eq:rt}
+\mathrm{RT} = t_{0} + \kappa \cdot H\!\left[p(n \mid x^*)\right],
+\end{equation}
+%
+where $H = -\sum_n p \log p$ quantifies the uncertainty of the posterior. The basal parameter $t_0$ reflects an average time-to-response of participants in a study, which depends on the study setup. Therefore, we fix it for each dataset we analyse in this work. When the attractor landscape produces a peaked posterior (small $n$, deep wells), entropy is low and responses are fast; when the posterior is diffuse (large $n$, overlapping wells), entropy is high and responses are slow. 
+
+The sensory input $y_0$ is drawn from a neutral evidence channel: $y_0 \sim \mathcal{N}(n,\; s_{0} \cdot n^{\lambda_0})$, where $n$ is the true numerosity and the second argument denotes variance. The noise grows with $n$, reflecting the increasing difficulty of individuating items in larger sets. The two sensory parameters, $s_0$ and $\lambda_0$, are fitted from the data.
+
+We fit the model to data from~\citet{cheyette_unified_2020}. In their experiment, adult participants ($N = 100$ per condition) briefly viewed dot arrays containing 1--15 items and typed their numerosity estimate. Exposure duration was varied across five conditions (40, 80, 160, 320, and 640~ms), with visual controls for dot size and density. We extract three summary curves as a function of the presented numerosity for each duration: mean guess, percent exact correct, and median response time. The model has four free parameters: $c$ (Poisson well scale), $s_0$ and $\lambda_0$ (evidence noise), and $\kappa$ (entropy-to-RT scaling). They are optimized independently for each duration by minimizing the sum of normalized mean squared errors across the three curves, using differential evolution~\citep{storn_differential_1997} followed by L-BFGS-B polishing~\citep{liu_limited_1989}, with 5000 Monte Carlo samples per numerosity for the final evaluation.
+
+To check whether the fit reflects the attractor mechanism rather than generic curve flexibility, we compare the Hopfield--Poisson model with four summary-level baselines fitted to the same three curves: a Poisson readout without clean-up dynamics, a Gaussian--Benford readout, a Weber/ANS-style Gaussian code, and a log-prior Bayesian proxy in the spirit of~\citet{cheyette_unified_2020} (which differs from their model because they don't offer an RT estimation). All comparison models have four fitted parameters per duration and fixed $t_0$. 
+
+We report profile-Gaussian AIC/BIC on the summary curves, leave-one-numerosity-out (LONO) predictive loss within duration, and leave-one-duration-out (LODO) loss using smooth exposure trends. For leave-one-numerosity-out validation, the baseline models are refit to the remaining numerosities within the same exposure duration and evaluated on the held-out numerosity. For leave-one-duration-out validation, the Hopfield--Poisson model shares $c$ and $\kappa$ across the training durations and predicts the held-out sensory parameters from smooth exposure trends; the baselines use analogous log-duration extrapolation of their fitted parameters. 
+
+Finally, several model predictions are explored: the compression of the number line, the breakdown of the numerosity perception regime (i.e., when discrete number perception is no longer feasible and behaviour becomes density-driven), or how the model relates to the numerical perception of children with developmental dyscalculia.
+
+%% ====================================================================
+\section{Results}
+%% ====================================================================
+
+Figure~\ref{fig:fit} shows the model fit across all five exposure durations. The fit quality is comparable across 80-640~ms durations, with the poorest performance at 40~ms, where the empirical data are noisiest. Except for the 40~ms condition, the model reproduces the key qualitative pattern: near-perfect accuracy and fast responses for $n = 1$--2/3, a progressive decline in accuracy and rise in response time for $n = 3/4$--10, and a plateau in both measures for $n \gtrsim 10$ where the wells overlap too extensively for individual integers to be discriminated. 
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{../figures/fig2_piantadosi_fit.pdf}
+  \caption{\textbf{Fit to estimation, accuracy, and response time across five exposure durations on the~\citet{cheyette_unified_2020} dataset.} Rows show presentation times from 40 to 640~ms; columns show mean estimate, exact accuracy, and median response time. Boxplots and blue dots show empirical data, and red lines show model predictions (± SEM). The model captures fast, near-exact responses for $n = 1$--3, progressive degradation for $n = 4$--8, and a plateau for larger numerosities where attractor wells overlap. $R^2$ values are shown in each panel.}
+  \label{fig:fit}
+\end{figure}
+
+The good in-sample fit is not by itself sufficient evidence for the attractor mechanism, because several simpler or more normative models can also express magnitude-dependent uncertainty. Figure~\ref{fig:aic_comparison} shows the comparison with the other four models, where we report the AIC values separately for each exposure duration and for the across-duration mean; full numerical summaries are in Supplementary Material 2. The Hopfield--Poisson model has the lowest mean AIC/BIC and among the lowest LONO and LODO losses among the tested models. The no-clean-up Poisson baseline is the most direct control: it uses the same Poisson family and sensory noise but removes the gradient-descent attractor step. Its weaker accuracy and predictive losses indicate that the clean-up dynamics contribute beyond the static Poisson readout.
+
+\begin{figure}[t]
+  \centering
+  \includegraphics[width=\columnwidth]{../output/model_comparison/aic_by_duration.pdf}
+  \caption{\textbf{AIC comparison across exposure durations.} Bars show profile-Gaussian AIC values for each exposure duration, fitted to the same three summary curves used in the main analysis. The final group shows the across-duration mean for each model. Lower values indicate better fit after penalizing the four fitted parameters per duration.}
+  \label{fig:aic_comparison}
+\end{figure}
+
+Fitting each duration independently allows us to examine which parameters are driven by the stimulus and which reflect stable properties of the representational system (we show the goodness of fit metrics and fitted parameters in Supplementary Material 2). The well scale $c$, which determines the precision of the attractor landscape, is largest at the shortest exposure and then settles into a narrower range from 160 to 640\,ms (0.035--0.043), consistent with a well structure that is largely stable once the sensory input is informative enough to guide clean-up. In contrast, the sensory channel varies substantially: the scale $s_0$ decreases by almost three orders of magnitude (from 0.085 at 40\,ms to 0.00030 at 640\,ms), while the exponent $\lambda_0$ increases from 1.98 to 3.86.
+
+The coefficient $\kappa$ (entropy-to-RT scaling) also slightly increases with viewing time (from 0.72 to 1.06), meaning that at long exposures RT is more strongly modulated by the residual uncertainty of the posterior: when clean-up leaves appreciable probability mass on several neighbouring integers, the subject takes proportionally longer to commit. At brief exposures, sensory uncertainty is high enough to weaken the link between the true numerosity and the posterior reached after clean-up. This reduces both exact accuracy and the extent to which trial-by-trial posterior entropy can explain response-time differences. Parameter-recovery analyses reported in Supplementary Material 3 showed that the attractor well-scale parameter $c$ and the entropy-to-RT scaling parameter $\kappa$ were robustly recoverable, whereas $s_0$ and $\lambda_0$ traded off and should be interpreted jointly as defining the sensory-noise profile.
+
+Although the wells are equispaced ($\mu_n = n$), their width grows as $\sigma_{\mathrm{eff}} = \sqrt{c \cdot n}$, so adjacent-number discriminability decreases with numerosity as $1/\sqrt{n}$. This produces a Weber-like degradation over the tested range, but not strict scalar variability: the effective relative noise decreases with numerosity, yielding a mild sub-Weber prediction. A logarithmically compressed number line~\citep{dehaene_neural_2003, nieder_coding_2013}, in which $\mu_n = \log n$, would produce a similar behavioural pattern through a different mechanism (decreasing physical separation with constant width). The Poisson parameterization achieves the same functional result with equispaced wells and increasing width, making the compression a consequence of the accumulator statistics rather than a property of the representational geometry.
+
+If we increase numerosity further, we can predict when the discrete numerical code will break down. A heuristic transition point at which adjacent attractor wells stop being reliably distinguishable can be obtained by setting adjacent-well discriminability to $d' = 1$~\citep{macmillan_detection_2004}, giving $n_{\mathrm{crit}} = 1/c$. With the fitted values of $c$, this corresponds to approximately $n = 13$ at 40\,ms and $n = 29$ at 640\,ms. A detailed treatment of the compression of the number line, together with a qualitative comparison of these predicted thresholds with published empirical estimates, is reported in Supplementary Material 4.
+
+A brief exploratory application to developmental dyscalculia is reported in Supplementary Material 5.
+
+%% ====================================================================
+\section{Discussion}
+%% ====================================================================
+
+Taken together, our analyses show that a Hopfield attractor model with Poisson-shaped wells, which reflect the accumulator nature of numerosity perception, can jointly reproduce three signatures of numerical cognition: mean estimation, exact enumeration accuracy, and response time. With four free parameters and a task-specific fixed basal response time, the model provides a compact fit to all three empirical curves across five exposure durations~\citep{cheyette_unified_2020} and compares favourably with matched summary-level baselines.
+
+The model can be understood as an extension of classical accumulator models~\citep{gallistel_preverbal_1992, whalen_nonverbal_1999} into a Hopfield energy landscape~\citep{hopfield_neural_1982, ramsauer_hopfield_2021}. Both frameworks share the same core assumption: numerosity perception involves accumulation of noisy evidence with variance proportional to $n$, which corresponds to the statistics encoded by the Poisson well shape. The difference is that our model embeds the accumulator within an attractor network, so that the same mechanism that accumulates also resolves ambiguity and produces discrete outputs. Within this framework, the model treats integers as a special case of stored patterns in a Hopfield network where the patterns are not arbitrary but lie on a functionally one-dimensional manifold with constant spacing and meaningful order. This metric structure constrains the energy landscape in a way that does not occur with generic associative memories: neighbouring wells interact systematically, and the regularities of numerical cognition follow from this geometry rather than from additional assumptions, including the compression of the number line, which arises here from the statistics of accumulation rather than from a logarithmically compressed representation~\citep{dehaene_neural_2003}.
+
+For small numerosities, the wells are narrow and well-separated, and attractor clean-up converges reliably to the correct integer. This regime corresponds to the subitizing range traditionally attributed to an Object Tracking System~\citep{piazza_subitizing_2011, feigenson_representations_2002}; here, rapid exact performance arises not from a separate object-individuation mechanism but from the depth and isolation of the wells themselves. As numerosity increases, the wells broaden and begin to overlap, the posterior spreads over multiple integers, and discriminability between neighbours declines. In this regime the model produces ratio-dependent performance similar to the Weber-like scaling characteristic of the Approximate Number System~\citep{dehaene_number_2011, halberda_individual_2008}. 
+
+However, the scaling is not identical to Weber's law: because well width grows as $\sqrt{c \cdot n}$, the effective Weber fraction $w_{\mathrm{eff}} \propto 1/\sqrt{n}$ decreases with magnitude rather than remaining constant. Over the range tested in the estimation data, this decrease is modest, and may already have been observed in reanalyses of classical numerosity estimation data~\citep{testolin_estimates_2021}. Observing it more clearly would require experimental designs sensitive to small changes in $w_{\mathrm{eff}}$, since beyond $n \approx 25$ the model itself predicts that the estimation regime gives way to density-based perception (see below). The prediction is nonetheless falsifiable, and a constant-$w$ account cannot straightforwardly accommodate it.
+
+The model thus offers a candidate single-mechanism account of the subitizing and estimation regimes, and predicts a boundary at which individual-number discrimination should become unreliable and density-based strategies may dominate~\citep{anobile_separate_2014, dakin_common_2011}. Beyond the transition point $n_{\mathrm{crit}}$, adjacent wells are no longer reliably distinguishable and the same $1/\sqrt{n}$ scaling that produces a mild sub-Weber deviation in the estimation range continues smoothly, approaching the square-root law empirically documented in the density regime~\citep{anobile_separate_2014, anobile_mechanisms_2015}. The fitted values fall within the order-of-magnitude range of the density-regime boundaries reported by~\citet{anobile_separate_2014}, though the comparison is necessarily indirect because the original display geometry is not fully recoverable; a direct test would require collecting numerosity-estimation and density-discrimination data from the same participants under controlled viewing conditions.
+
+Several limitations should be noted. First, the model does not fully capture the sharpness of the subitizing--estimation transition observed empirically at $n \approx 3$--$4$~\citep{mandler_subitizing_1982}. In the model this transition is gradual; the empirical abruptness may reflect an additional parallel mechanism, suggesting that an Object Tracking System may still be needed~\citep{piazza_subitizing_2011, feigenson_representations_2002} operating for very small sets. Second, the model has only been fitted to two open datasets, which, albeit informative, represent a very limited subset of possible numerosity perception data. In future work, this model should be put to the test on other datasets. In this sense, the developmental dyscalculia extension in Supplementary Material 5 is also exploratory: it is based on a single sample, a single task, $N=32$ per group, and unlimited viewing time, so it cannot identify a representational locus or rule out counting and other task-specific strategies.
+
+Third, the evidence channel is deliberately neutral: it models sensory noise as a function of numerosity alone and does not capture visual confounds such as total area, item density, or spatial arrangement, which are known to modulate performance~\citep{dakin_common_2011}. Incorporating these dimensions would require a richer encoding model upstream of the attractor dynamics. The two sensory-noise parameters should also be interpreted jointly rather than as separable psychological quantities: in the fitted range, different combinations of $s_0$ and $\lambda_0$ can produce similar noise profiles. For this reason, the present analysis uses them mainly to control the precision of the input state, leaving the detailed structure of visual encoding for future work. Fourth, the model is specified at a computational and algorithmic level and remains agnostic about its neural implementation. The brain represents numerosity in topographically organized maps of the parietal cortex, with tuning curves whose width grows with preferred numerosity~\citep{piazza_tuning_2004, harvey_topographic_2013}; relating the attractor wells to these neural populations --- and testing whether the predicted entropy and clean-up dynamics correspond to measurable neurophysiological signatures --- is a natural direction for future work.
+
+Numerical cognition may be understood, in this framework, as pattern completion in a Hopfield attractor network shaped by the statistics of accumulation. A single energy landscape with Poisson-shaped wells can describe subitizing and estimation as continuous phases: one in which the wells are deep enough to isolate individual integers, another in which they overlap, and only approximate discrimination is possible, and a predicted boundary at which both may give way to density-based perception. More broadly, the model offers a compact way to generate mechanistic, testable hypotheses about numerosity perception rather than a definitive account of its underlying causes.
+
+\begin{acks}
+I am grateful to Brian Butterworth, Diana Laurillard and Marc Colomer for their insightful discussions and thoughtful feedback, which substantially improved this work.
+\end{acks}
+
+\section*{Author Contributions}
+Eudald Correig-Fraga: Conceptualization, methodology, software, formal analysis, investigation, data curation, visualization, writing - original draft, and writing - review and editing.
+
+\section*{Ethical Considerations}
+This article reports computational modelling and secondary analysis of previously published, publicly available datasets. No new human participants were recruited, and no new human data were collected for this study. Ethical approval for the original data collections was reported in the source publications.
+
+\section*{Consent to Participate}
+Not applicable. This study did not recruit participants or collect new participant data.
+
+\section*{Consent for Publication}
+Not applicable. This study does not contain identifiable individual participant information.
+
+\begin{funding}
+This work was funded by Innovamat Education SL.
+\end{funding}
+
+\begin{dci}
+The author declared no potential conflicts of interest.
+\end{dci}
+
+\section*{Data Availability}
+Code is available at \url{https://github.com/eudaldc/hopfield_numbers}. The source datasets are available at \url{https://osf.io/svcy5/} and \url{https://osf.io/gjpb3/}.
+
+\begin{sm}
+Supplementary material is available with this article.
+\end{sm}
+
+% Harvard (author--year):
+\bibliographystyle{SageH}
+\bibliography{references}
+
+\end{document}

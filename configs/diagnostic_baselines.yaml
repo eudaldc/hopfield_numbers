@@ -1,0 +1,15 @@
+# Diagnostic baseline configurations (ANS and accumulator model presets).
+# These are NOT part of the main attractor-first pipeline.
+# Use only with legacy diagnostic scripts.
+
+ans:
+  rho_init: 0.5
+  nu_init: 1.0
+  sigma0_init: 1.0
+  lam_init: 0.5
+
+accumulator:
+  alpha_init: 0.3
+  beta_init: 0.5
+  scale_init: 1.0
+  offset_init: 0.0
