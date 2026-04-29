@@ -17,7 +17,7 @@ $$E(x \mid y_0) = \frac{(x - y_0)^2}{2\tau_{\mathrm{in}}^2} - \kappa \cdot \math
 Encoding noise and RT linkage are controlled via YAML and the fit scripts.
 
 <p align="center">
-  <img src="figures/conceptual_attractor_wells.png" alt="Conceptual attractor wells illustration" width="600"/><br>
+  <img src="figures/conceptual_attractor_wells_poisson.png" alt="Conceptual attractor wells illustration" width="600"/><br>
   <em>Illustration of integer attractor wells along the evidence axis.</em>
 </p>
 
@@ -28,8 +28,6 @@ python -m venv .venv
 source .venv/bin/activate
 pip install -r requirements.txt
 ```
-
-(`wandb` is optional but used by some sweeps; log in if you run those.)
 
 ## Data
 
@@ -43,7 +41,7 @@ configs/       YAML defaults for fits (durations, well type, RT mode, priors, �
 data/          Raw / cleaned CSVs and derived tables
 output/        Fit summaries, plots, CSVs from analyses
 figures/       Publication figures and generators (e.g. `make_fig*.py`)
-manuscript/    LaTeX sources
+manuscript/    LaTeX for the paper and supplementary material
 docs/          Model notes and session logs
 tests/         pytest suite
 ```
@@ -54,14 +52,11 @@ tests/         pytest suite
 |--------|---------|
 | `scripts/fit_piantadosi.py` | Single-condition fit to Piantadosi estimation data (wandb run) |
 | `scripts/fit_piantadosi_durations.py` | Sweep all exposure durations (40–640 ms); optional bootstrap CIs |
-| `scripts/fit_piantadosi_contrasts.py` | Sweep opacity contrast conditions |
 | `scripts/fit_decarli.py` | Separate fits for DD vs controls (accuracy + RT, no trial-level guesses) |
 | `scripts/density_transition.py` | Post-fit metrics and “transition to density” figure from duration fits |
-| `scripts/eval_reynvoet.py` | Zero-parameter check of comparison behaviour vs Reynvoet et al. |
 | `scripts/run_parameter_recovery.py` | Orchestrates recovery / profile / bootstrap identifiability analyses |
 | `scripts/plot_parameter_recovery.py` | Plots from recovery outputs |
 | `scripts/plot_decarli_param_boxfacets.py` | De Carli parameter panel figure |
-| `scripts/regenerate_cis.py` | Recompute Hessian + profile CIs from an existing duration summary CSV |
 | `scripts/plots.py` | Shared plotting utilities where used by other entry points |
 
 Run from the repository root (e.g. `python scripts/fit_piantadosi.py …` or `python -m scripts.density_transition` as documented in each file).
