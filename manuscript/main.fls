@@ -282,13 +282,16 @@ INPUT ../output/model_comparison/aic_by_duration.pdf
 INPUT ../output/model_comparison/aic_by_duration.pdf
 INPUT ../output/model_comparison/aic_by_duration.pdf
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/helvetic/phvr8c.vf
+INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/times/ptmb7t.tfm
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/helvetic/phvro7t.tfm
+INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/times/ptmb7t.vf
+INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/times/ptmb8r.tfm
+INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/times/ptmr7t.vf
+INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/times/ptmr8r.tfm
 INPUT /home/eudald/.TinyTeX/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 INPUT /home/eudald/.TinyTeX/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 INPUT /home/eudald/.TinyTeX/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/courier/pcrr7t.tfm
-INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/times/ptmr7t.vf
-INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/times/ptmr8r.tfm
 INPUT ./main.bbl
 INPUT ./main.bbl
 INPUT main.bbl
@@ -316,5 +319,6 @@ INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/type1/urw/helvetic/uhvro8a.pfb
+INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/type1/urw/times/utmb8a.pfb
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/type1/urw/times/utmr8a.pfb
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/type1/urw/times/utmri8a.pfb

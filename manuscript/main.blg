@@ -3,46 +3,47 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: main.aux
 The style file: SageH.bst
 Database file #1: references.bib
+Warning--I didn't find a database entry for "testolin_estimates_2021"
 Warning--empty pages in ramsauer_hopfield_2021
 You've used 34 entries,
             2905 wiz_defined-function locations,
-            865 strings with 12596 characters,
-and the built_in function-call counts, 36534 in all, are:
-= -- 3858
-> -- 924
-< -- 18
-+ -- 373
-- -- 322
-* -- 2767
-:= -- 4595
-add.period$ -- 103
+            866 strings with 12597 characters,
+and the built_in function-call counts, 36889 in all, are:
+= -- 3894
+> -- 940
+< -- 17
++ -- 379
+- -- 328
+* -- 2795
+:= -- 4633
+add.period$ -- 104
 call.type$ -- 34
-change.case$ -- 281
+change.case$ -- 284
 chr.to.int$ -- 35
 cite$ -- 35
-duplicate$ -- 3536
-empty$ -- 2744
-format.name$ -- 437
-if$ -- 7421
+duplicate$ -- 3575
+empty$ -- 2766
+format.name$ -- 441
+if$ -- 7493
 int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 347
-newline$ -- 178
+missing$ -- 350
+newline$ -- 179
 num.names$ -- 136
-pop$ -- 1609
+pop$ -- 1629
 preamble$ -- 1
-purify$ -- 243
+purify$ -- 245
 quote$ -- 0
-skip$ -- 532
+skip$ -- 534
 stack$ -- 0
-substring$ -- 4042
-swap$ -- 909
+substring$ -- 4091
+swap$ -- 914
 text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
 type$ -- 300
 warning$ -- 1
-while$ -- 269
+while$ -- 270
 width$ -- 0
-write$ -- 481
-(There was 1 warning)
+write$ -- 483
+(There were 2 warnings)

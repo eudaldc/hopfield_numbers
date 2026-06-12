@@ -107,6 +107,12 @@ Macmillan NA and Creelman CD (2004) \emph{Detection {Theory}: {A} {User}'s {Guid
 \newblock ISBN 978-1-4106-1114-7.
 \newblock \doi{10.4324/9781410611147}.
 
+\bibitem[{Malo et~al.(2023)Malo, Cicchini, Morrone and Chiofalo}]{malo_quantum_2023}
+Malo JY, Cicchini GM, Morrone MC and Chiofalo ML (2023) Quantum spin models for numerosity perception.
+\newblock \emph{PLOS ONE} 18(4): e0284610.
+\newblock \doi{10.1371/journal.pone.0284610}.
+\newblock ArXiv:2212.03344 [q-bio.NC].
+
 \bibitem[{Mandler and Shebo(1982)}]{mandler_subitizing_1982}
 Mandler G and Shebo BJ (1982) Subitizing: {An} analysis of its component processes.
 \newblock \emph{Journal of Experimental Psychology: General} 111(1): 1--22.
@@ -154,11 +160,6 @@ Stoianov I and Zorzi M (2012) Emergence of a 'visual number sense' in hierarchic
 Storn R and Price K (1997) Differential {Evolution} - {A} {Simple} and {Efficient} {Heuristic} for {Global} {Optimization} over {Continuous} {Spaces}.
 \newblock \emph{Journal of Global Optimization} 11: 341--359.
 \newblock \doi{10.1023/A:1008202821328}.
-
-\bibitem[{Testolin and McClelland(2021)}]{testolin_estimates_2021}
-Testolin A and McClelland JL (2021) Do estimates of numerosity really adhere to {Weber}’s law? {A} reexamination of two case studies.
-\newblock \emph{Psychonomic Bulletin \& Review} 28(1): 158--168.
-\newblock \doi{10.3758/s13423-020-01801-z}.
 
 \bibitem[{Verguts and Fias(2004)}]{verguts_representation_2004}
 Verguts T and Fias W (2004) Representation of {Number} in {Animals} and {Humans}: {A} {Neural} {Model}.

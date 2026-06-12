@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex main"] 1777458459.81394 "main.aux" "main.bbl" "main" 1777458460.06373 0
+["bibtex main"] 1781277248.451 "main.aux" "main.bbl" "main" 1781277249.09651 0
   "./SageH.bst" 1775669046.47233 30763 e9cf3bda853a6eedae2781a529a11a19 ""
-  "./references.bib" 1777458386.01952 87610 630beb04cc804e4b5d628b291dce7c9c ""
-  "main.aux" 1777458460.01843 9344 8f251d717abcac7e68f541d86171f42f "pdflatex"
+  "./references.bib" 1781277148.20482 93894 c5f472140d38052d93fa8b24b4dc98f0 ""
+  "main.aux" 1781277249.00578 9399 c99b3a698f98944628cf3582724cbb61 "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1777458459.82362 "main.tex" "main.pdf" "main" 1777458460.06387 0
+["pdflatex"] 1781277248.48197 "main.tex" "main.pdf" "main" 1781277249.0968 0
   "../figures/conceptual_attractor_wells_poisson.pdf" 1777448446.43012 1286501 13b8fb3f6525699f2b677466595a0edc ""
   "../figures/fig2_piantadosi_fit.pdf" 1777449091.72057 46760 a8ff4962da8af8e3cef0176919a2cab0 ""
   "../output/model_comparison/aic_by_duration.pdf" 1777358687.1286 24819 0a6bb5d47ebc39f74c2c83eecaa3f87b ""
@@ -21,6 +21,8 @@
   "/home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/helvetic/phvr8r.tfm" 1136768653 4712 9ef4d7d106579d4b136e1529e1a4533c ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/helvetic/phvro7t.tfm" 1136768653 2772 ab6561c8ff5ee69ff6d5961b9356db5a ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/helvetic/phvro8r.tfm" 1136768653 4964 f223217e5e1f85fa3742fb0480aba9e8 ""
+  "/home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/times/ptmb7t.tfm" 1136768653 2172 fd0c924230362ff848a33632ed45dc23 ""
+  "/home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/times/ptmb8r.tfm" 1136768653 4524 6bce29db5bc272ba5f332261583fee9c ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/times/ptmr7t.tfm" 1136768653 2124 2601a75482e9426d33db523edf23570a ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/times/ptmr8r.tfm" 1136768653 4408 25b74d011a4c66b7f212c0cc3c90061b ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/times/ptmri7t.tfm" 1136768653 2288 f478fc8fed18759effb59f3dad7f3084 ""
@@ -69,6 +71,7 @@
   "/home/eudald/.TinyTeX/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb" 1136849748 35941 f27169cc74234d5bd5e4cca5abafaabb ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/type1/urw/helvetic/uhvr8a.pfb" 1136849748 44648 23115b2a545ebfe2c526c3ca99db8b95 ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/type1/urw/helvetic/uhvro8a.pfb" 1136849748 48169 b4fd9d908b9ee8c65d4305ad39071c5e ""
+  "/home/eudald/.TinyTeX/texmf-dist/fonts/type1/urw/times/utmb8a.pfb" 1136849748 44729 811d6c62865936705a31c797a1d5dada ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/type1/urw/times/utmr8a.pfb" 1136849748 46026 6dab18b61c907687b520c72847215a68 ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/type1/urw/times/utmri8a.pfb" 1136849748 45458 a3faba884469519614ca56ba5f6b1de1 ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/courier/pcrr7t.vf" 1136768653 1344 6ff472164bf9de0fb2e864b28ac156d9 ""
@@ -76,6 +79,7 @@
   "/home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/helvetic/phvr7t.vf" 1136768653 1372 dc841a9f00a1a11b1443367ae6c5588e ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/helvetic/phvr8c.vf" 1136768653 3556 570286160ebfdd10d887aaa718e2e64d ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/helvetic/phvro7t.vf" 1136768653 1372 9948cedecdb0445a3b5cf1b8a8082ab8 ""
+  "/home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/times/ptmb7t.vf" 1136768653 1372 788387fea833ef5963f4c5bffe33eb89 ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/times/ptmr7t.vf" 1136768653 1380 0ea3a3370054be6da6acd929ec569f06 ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/times/ptmri7t.vf" 1136768653 1384 a9d8adaf491ce34e5fba99dc7bbe5f39 ""
   "/home/eudald/.TinyTeX/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty" 1576625341 40635 c40361e206be584d448876bba8a64a3b ""
@@ -153,10 +157,10 @@
   "/home/eudald/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1775661121 350349 1b8175931eaf295295318c82f7243e5b ""
   "/home/eudald/.TinyTeX/texmf-var/web2c/pdftex/pdflatex.fmt" 1772476413 2236303 a7fa4cb5575421afd2092e830a3e5572 ""
   "/home/eudald/.TinyTeX/texmf.cnf" 1764231884.31392 673 00b2d43d146d9f37d3c51b45f06b782c ""
-  "main.aux" 1777458460.01843 9344 8f251d717abcac7e68f541d86171f42f "pdflatex"
-  "main.bbl" 1777458459.82043 10254 8251f64f874456ceedb207bd65d3c8c0 "bibtex main"
-  "main.out" 1777458460.01943 352 8a4e6fa695fbf34b1ba4058ae1f64d4a "pdflatex"
-  "main.tex" 1777458311.79939 30328 3b18424c4ff34c15a40e39e31510823d ""
+  "main.aux" 1781277249.00578 9399 c99b3a698f98944628cf3582724cbb61 "pdflatex"
+  "main.bbl" 1781277248.47455 10258 df54582887ea43217a245f627d883df2 "bibtex main"
+  "main.out" 1781277249.00678 352 8a4e6fa695fbf34b1ba4058ae1f64d4a "pdflatex"
+  "main.tex" 1781277234.59278 30670 d67c026059264531d7bbe7b6e5e28b79 ""
   "sagej.cls" 1775628020.28977 15958 5fa98adc3dbacfa813e0251e7c0042fe ""
   (generated)
   "main.aux"

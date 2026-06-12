@@ -1,4 +1,4 @@
-\begin{thebibliography}{7}
+\begin{thebibliography}{9}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \providecommand{\urlprefix}{URL }
@@ -21,6 +21,10 @@ Anobile G, Turi M, Cicchini GM and Burr DC (2015) Mechanisms for perception of n
 \newblock \emph{Journal of vision} 15(5): 4.
 \newblock \doi{10.1167/15.5.4}.
 
+\bibitem[{Burnham and Anderson(2002)}]{burnham_model_2002}
+Burnham KP and Anderson DR (2002) \emph{Model {Selection} and {Multimodel} {Inference}: {A} {Practical} {Information}-{Theoretic} {Approach}}.
+\newblock 2nd edition. New York: Springer.
+
 \bibitem[{Cheyette and Piantadosi(2020)}]{cheyette_unified_2020}
 Cheyette SJ and Piantadosi ST (2020) A unified account of numerosity perception.
 \newblock \emph{Nature Human Behaviour} 4(12): 1265--1272.
@@ -35,6 +39,11 @@ Decarli G, Paris E, Tencati C, Nardelli C, Vescovi M, Surian L and Piazza M (202
 Dehaene S and Mehler J (1992) Cross-linguistic regularities in the frequency of number words.
 \newblock \emph{Cognition} 43(1): 1--29.
 \newblock \doi{10.1016/0010-0277(92)90030-L}.
+
+\bibitem[{Dolfi et~al.(2024)Dolfi, Decarli, Lunardon, De~Filippo De~Grazia, Gerola, Lanfranchi, Cossu, Sella, Testolin and Zorzi}]{dolfi_weaker_2024}
+Dolfi S, Decarli G, Lunardon M, De~Filippo De~Grazia M, Gerola S, Lanfranchi S, Cossu G, Sella F, Testolin A and Zorzi M (2024) Weaker number sense accounts for impaired numerosity perception in dyscalculia: {Behavioral} and computational evidence.
+\newblock \emph{Developmental Science} 27(6): e13538.
+\newblock \doi{10.1111/desc.13538}.
 
 \bibitem[{Verguts and Fias(2004)}]{verguts_representation_2004}
 Verguts T and Fias W (2004) Representation of {Number} in {Animals} and {Humans}: {A} {Neural} {Model}.
