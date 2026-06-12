@@ -1,4 +1,4 @@
-\begin{thebibliography}{34}
+\begin{thebibliography}{35}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \providecommand{\urlprefix}{URL }
@@ -160,6 +160,11 @@ Stoianov I and Zorzi M (2012) Emergence of a 'visual number sense' in hierarchic
 Storn R and Price K (1997) Differential {Evolution} - {A} {Simple} and {Efficient} {Heuristic} for {Global} {Optimization} over {Continuous} {Spaces}.
 \newblock \emph{Journal of Global Optimization} 11: 341--359.
 \newblock \doi{10.1023/A:1008202821328}.
+
+\bibitem[{Testolin and McClelland(2021)}]{testolin_estimates_2021}
+Testolin A and McClelland JL (2021) Do estimates of numerosity really adhere to {Weber}’s law? {A} reexamination of two case studies.
+\newblock \emph{Psychonomic Bulletin \& Review} 28(1): 158--168.
+\newblock \doi{10.3758/s13423-020-01801-z}.
 
 \bibitem[{Verguts and Fias(2004)}]{verguts_representation_2004}
 Verguts T and Fias W (2004) Representation of {Number} in {Animals} and {Humans}: {A} {Neural} {Model}.

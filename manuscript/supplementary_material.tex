@@ -82,11 +82,11 @@ For the present article we focus on the Poisson parameterization because it is t
 
 \section{Supplementary Material 2: Model comparison and functional compression}
 
-The main text reports the AIC comparison across exposure durations. Table~\ref{tab:supp_modelcomparison} gives the corresponding summary-level information criteria and predictive losses. The C\&P row is a conservative log-prior proxy fitted to the same summary curves, not a full reproduction of the original trial-level Bayesian observer.
+Table~\ref{tab:supp_modelcomparison} gives the summary-level information criteria and predictive losses for the model comparison reported in the main text. The set contains two parameterizations of the attractor account --- the Hopfield--Poisson model of the main text and its Gaussian--Benford variant (Supplementary Material 1) --- together with four controls: the same two families with the gradient-descent clean-up removed (the static ``no clean-up'' readouts), a Weber/ANS-style Gaussian code, and a conservative log-prior proxy in the spirit of~\citet{cheyette_unified_2020} (fitted to the same summary curves, not a full reproduction of the original trial-level Bayesian observer). The two attractor parameterizations give the best and nearly identical fits, indicating that the account does not depend on the specific Poisson well shape; the differences across the accumulator-style models are otherwise small, and only the log-prior proxy is clearly separated.
 
 \begin{table}[t]
   \centering
-  \caption{\textbf{Summary-level model comparison on the~\citet{cheyette_unified_2020} duration data.} AIC/BIC are profile-Gaussian values averaged across the five exposure durations, computed on mean estimate, exact accuracy, and median RT. LONO is leave-one-numerosity-out normalized predictive loss; LODO is leave-one-duration-out loss. Lower values are better.}
+  \caption{\textbf{Summary-level model comparison on the~\citet{cheyette_unified_2020} duration data.} AIC/BIC are profile-Gaussian values averaged across the five exposure durations, computed on mean estimate, exact accuracy, and median RT. LONO is leave-one-numerosity-out normalized predictive loss; LODO is leave-one-duration-out loss. The two attractor parameterizations (Hopfield--Poisson and its Gaussian--Benford variant) are listed above their respective no-clean-up controls. Lower values are better.}
   \label{tab:supp_modelcomparison}
   \setlength{\tabcolsep}{3pt}
   \begin{tabular}{lccccc}
@@ -94,9 +94,10 @@ The main text reports the AIC comparison across exposure durations. Table~\ref{t
   Model & $k$ & AIC & BIC & LONO & LODO \\
   \hline
   \textbf{Hopfield--Poisson} & \textbf{4} & \textbf{106.9} & \textbf{114.2} & \textbf{0.007} & \textbf{0.010} \\
-  No-cleanup Poisson & 4 & 108.5 & 115.7 & 0.007 & 0.013 \\
-  Gaussian/Benford readout & 4 & 109.4 & 116.6 & 0.007 & 0.010 \\
-  Weber/ANS baseline & 4 & 110.7 & 118.0 & 0.008 & 0.015 \\
+  Poisson, no clean-up & 4 & 108.5 & 115.7 & 0.007 & 0.013 \\
+  Gaussian--Benford attractor & 4 & 108.8 & 116.0 & 0.007 & 0.011 \\
+  Gaussian--Benford, no clean-up & 4 & 109.4 & 116.6 & 0.007 & 0.010 \\
+  Weber/ANS & 4 & 110.7 & 118.0 & 0.008 & 0.015 \\
   C\&P log-prior proxy & 4 & 121.9 & 129.1 & 0.011 & 0.013 \\
   \hline
   \end{tabular}
