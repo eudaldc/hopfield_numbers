@@ -176,14 +176,39 @@ We fitted the free parameters separately for DD and control groups using exact a
 
 The model captures the broad group pattern but not all details of the accuracy curves (Fig.~\ref{fig:decarli_supp}a--b). Exact accuracy is fitted moderately well ($R^2 = 0.85$ for DD and $0.83$ for controls; RMSE $\approx 10$ percentage points), whereas the response-time profiles are captured more closely ($R^2 = 0.96$ and $0.98$, respectively). Panel c reports the fitted parameter summaries separately for each group, using them only as descriptive model quantities.
 
-Within the model, the fitted parameters describe the precision of the attractor landscape, the sensory evidence channel, and the entropy-to-response-time mapping (Fig.~\ref{fig:decarli_supp}c). Albeit the quantities should be interpreted only as one possible model-based description of the observed response pattern, they describe a picture where children with DD show a less defined attractor landscape, which is less able to resolve noisy input. This is accompanied by noisier input as a result of the combination of a much larger $s_0$ and only a slightly smaller $\lambda_0$, which, in combination, result in an overall larger noise across the measured range.
+Within the model, the fitted parameters describe the precision of the attractor landscape ($c$), the sensory evidence channel ($s_0$, $\lambda_0$), and the entropy-to-response-time mapping ($\kappa$) (Fig.~\ref{fig:decarli_supp}c). However, the parameter-recovery analysis of Supplementary Material 3 showed that recovery errors are correlated within pairs ($c$--$\kappa$: $\rho = -.87$; $s_0$--$\lambda_0$: $\rho = -.68$), so a group difference in any individual fitted parameter could partly reflect a compensating shift in its partner rather than a genuine representational difference. For this reason, we compare derived quantities that are identifiable from the data: the breakdown point $n_{\mathrm{crit}} = 1/c$, which summarizes the attractor landscape on a behavioural scale, and the sensory-noise profile $\sigma(n) = \sqrt{s_0 n^{\lambda_0}}$, which is well constrained even where $s_0$ and $\lambda_0$ are not separately identifiable. Both quantities were evaluated on the bootstrap draws, so that the joint uncertainty of the parameters, including their correlations, propagates into the group comparison.
+
+Table~\ref{tab:dd_derived} summarizes the comparison. The attractor-landscape quantity does not separate the groups: the bootstrap distributions of $n_{\mathrm{crit}}$ overlap heavily (median 25.2 for DD vs.\ 28.2 for controls; difference $-3.0$, 95\% interval $[-14.3, 10.4]$; $P(\mathrm{DD} > \mathrm{control}) = 0.33$). The sensory-noise profile, in contrast, is higher in the DD group at every numerosity, with $P(\mathrm{DD} > \mathrm{control})$ between 0.69 and 0.85 (0.83 for the average over $n = 1$--7), although the 95\% intervals of the group difference also include zero. To the extent that the model localizes the group difference at all, it therefore points to a noisier sensory channel rather than to a degraded attractor landscape; given the sample size and the single task, this should be read as a directional tendency rather than as conclusive evidence. We note, however, that this localization converges with recent behavioural and computational evidence that impaired numerosity perception in developmental dyscalculia is best explained by a weaker, noisier number sense~\citep{dolfi_weaker_2024}, obtained within a generative deep-network framework that, unlike ours, includes a perceptual front end operating directly on images~\citep{testolin_visual_2020}.
+
+\begin{table}[t]
+  \centering
+  \caption{\textbf{Derived model quantities for the dyscalculia reanalysis.} Medians and 95\% intervals are computed over bootstrap draws, which propagate the joint parameter uncertainty; the last column gives the proportion of draws in which the DD value exceeds the control value.}
+  \label{tab:dd_derived}
+  \setlength{\tabcolsep}{3pt}
+  \begin{tabular}{lcccc}
+  \hline
+  Quantity & DD & Control & DD $-$ Control & $P(\mathrm{DD} > \mathrm{C})$ \\
+  \hline
+  $n_{\mathrm{crit}} = 1/c$ & 25.2 & 28.2 & $-3.0$ & 0.33 \\[-3pt]
+   & {\scriptsize [18.5, 31.1]} & {\scriptsize [15.6, 36.8]} & {\scriptsize [$-14.3$, 10.4]} & \\[3pt]
+  $\sigma(n=1)$ & 0.17 & 0.14 & $+0.04$ & 0.69 \\[-3pt]
+   & {\scriptsize [0.11, 0.32]} & {\scriptsize [0.09, 0.33]} & {\scriptsize [$-0.18$, 0.22]} & \\[3pt]
+  $\sigma(n=4)$ & 0.59 & 0.54 & $+0.06$ & 0.85 \\[-3pt]
+   & {\scriptsize [0.53, 0.68]} & {\scriptsize [0.47, 0.66]} & {\scriptsize [$-0.06$, 0.19]} & \\[3pt]
+  $\sigma(n=7)$ & 0.96 & 0.92 & $+0.06$ & 0.76 \\[-3pt]
+   & {\scriptsize [0.86, 1.12]} & {\scriptsize [0.77, 1.05]} & {\scriptsize [$-0.10$, 0.28]} & \\[3pt]
+  $\bar{\sigma}$ ($n=1$--7) & 0.59 & 0.54 & $+0.06$ & 0.83 \\[-3pt]
+   & {\scriptsize [0.53, 0.66]} & {\scriptsize [0.48, 0.64]} & {\scriptsize [$-0.07$, 0.14]} & \\
+  \hline
+  \end{tabular}
+\end{table}
 
 This exploratory reanalysis may still be useful for future work because it suggests measurable model quantities that could be tested in larger, task-diverse samples. Any implications for intervention remain speculative: the present dataset does not evaluate training, causal mechanisms, or whether an intervention would change attractor-well precision rather than upstream encoding or response strategies.
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=\columnwidth]{../figures/fig4_decarli.pdf}
-  \caption{\textbf{Exploratory dyscalculia reanalysis.} (a--b)~Exact enumeration accuracy~(a) and reaction time~(b) from~\citet{decarli_impaired_2020} for children with developmental dyscalculia (DD) and age-matched controls, with model fits overlaid. The analysis uses numerosities $n=1$--7; $n=8$ was excluded because of an anomalous empirical response pattern. (c)~Fitted model-parameter summaries shown separately for each group; box plots summarize bootstrap or profile-likelihood draws. The panel is descriptive.}
+  \caption{\textbf{Exploratory dyscalculia reanalysis.} (a--b)~Exact enumeration accuracy~(a) and reaction time~(b) from~\citet{decarli_impaired_2020} for children with developmental dyscalculia (DD) and age-matched controls, with model fits overlaid. The analysis uses numerosities $n=1$--7; $n=8$ was excluded because of an anomalous empirical response pattern. (c)~Fitted model-parameter summaries shown separately for each group; box plots summarize bootstrap or profile-likelihood draws. The panel is descriptive; group comparisons are based on the identifiable derived quantities reported in Table~\ref{tab:dd_derived}.}
   \label{fig:decarli_supp}
 \end{figure}
 

@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex supplementary_material"] 1781281582.47757 "supplementary_material.aux" "supplementary_material.bbl" "supplementary_material" 1781281582.77144 0
+["bibtex supplementary_material"] 1781285599.48226 "supplementary_material.aux" "supplementary_material.bbl" "supplementary_material" 1781285599.74464 0
   "./SageH.bst" 1775669046.47233 30763 e9cf3bda853a6eedae2781a529a11a19 ""
   "./references.bib" 1781278322.30536 96198 5850bafe3b65a4a8f97a885b315f2a35 ""
-  "supplementary_material.aux" 1781281582.7194 10230 c0eb719ad914528a5035334da8abf9f8 "pdflatex"
+  "supplementary_material.aux" 1781285599.69742 11484 db7968944eee0292ebe0b01932b83ae4 "pdflatex"
   (generated)
   "supplementary_material.bbl"
   "supplementary_material.blg"
   (rewritten before read)
-["pdflatex"] 1781281582.48834 "supplementary_material.tex" "supplementary_material.pdf" "supplementary_material" 1781281582.77159 0
+["pdflatex"] 1781285599.49224 "supplementary_material.tex" "supplementary_material.pdf" "supplementary_material" 1781285599.74477 0
   "../figures/conceptual_attractor_wells.pdf" 1777448447.63295 1301519 036c6749d7cc0829aebc83726addd5d3 ""
   "../figures/fig3_compression.pdf" 1777279793.16663 21416 6512e429aa5c1b44f0a5c1e48fcd65ce ""
   "../figures/fig4_decarli.pdf" 1777359041.86588 30315 fcf26351131c7863ea8c5fa99f72066b ""
@@ -157,13 +157,13 @@
   "/home/eudald/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1775661121 350349 1b8175931eaf295295318c82f7243e5b ""
   "/home/eudald/.TinyTeX/texmf-var/web2c/pdftex/pdflatex.fmt" 1772476413 2236303 a7fa4cb5575421afd2092e830a3e5572 ""
   "/home/eudald/.TinyTeX/texmf.cnf" 1764231884.31392 673 00b2d43d146d9f37d3c51b45f06b782c ""
-  "main.aux" 1781278988.42512 9509 30b2725ab9fa8d897b8f857dcde070e0 ""
-  "main.tex" 1781278980.68312 31028 b8d9b30c540dce7a054bcfd6c1cbf3ab ""
+  "main.aux" 1781284161.89294 10019 6c3f5271f585c8301910c64484c59d33 ""
+  "main.tex" 1781285584.91242 32787 d32d8c666ca7d963b8b3b2b2a0770202 ""
   "sagej.cls" 1775628020.28977 15958 5fa98adc3dbacfa813e0251e7c0042fe ""
-  "supplementary_material.aux" 1781281582.7194 10230 c0eb719ad914528a5035334da8abf9f8 "pdflatex"
-  "supplementary_material.bbl" 1781281582.4854 2331 34519d020bbfecf49bb9ca59dcd29491 "bibtex supplementary_material"
-  "supplementary_material.out" 1781281582.7204 2091 3ee8fe52d8a7656234aa0c563a1a898a "pdflatex"
-  "supplementary_material.tex" 1781281567.29839 22361 6ecedd7f61c7cea799c5dcb395f11625 ""
+  "supplementary_material.aux" 1781285599.69742 11484 db7968944eee0292ebe0b01932b83ae4 "pdflatex"
+  "supplementary_material.bbl" 1781285599.48942 3204 0fb0f8c6205f244309d9fbaf47fb3c03 "bibtex supplementary_material"
+  "supplementary_material.out" 1781285599.69742 2091 3ee8fe52d8a7656234aa0c563a1a898a "pdflatex"
+  "supplementary_material.tex" 1781285571.31115 25609 ecb8688a77bde0f8991cf937677889db ""
   (generated)
   "supplementary_material.aux"
   "supplementary_material.log"
