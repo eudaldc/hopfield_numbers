@@ -1,4 +1,4 @@
-\begin{thebibliography}{35}
+\begin{thebibliography}{37}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \providecommand{\urlprefix}{URL }
@@ -56,6 +56,12 @@ Dehaene S (2011) \emph{The number sense: {How} the mind creates mathematics, {Re
 Dehaene S and Changeux JP (1993) Development of elementary numerical abilities: {A} neuronal model.
 \newblock \emph{Journal of Cognitive Neuroscience} 5(4): 390--407.
 \newblock \doi{10.1162/jocn.1993.5.4.390}.
+
+\bibitem[{Dolfi et~al.(2024)Dolfi, Decarli, Lunardon, De~Filippo De~Grazia, Gerola, Lanfranchi, Cossu, Sella, Testolin and Zorzi}]{dolfi_weaker_2024}
+Dolfi S, Decarli G, Lunardon M, De~Filippo De~Grazia M, Gerola S, Lanfranchi S, Cossu G, Sella F, Testolin A and Zorzi M (2024) Weaker number sense accounts for impaired numerosity perception in dyscalculia: {Behavioral} and computational evidence.
+\newblock \emph{Developmental Science} 27(6): e13538.
+\newblock \doi{10.1111/desc.13538}.
+\newblock \_eprint: https://onlinelibrary.wiley.com/doi/pdf/10.1111/desc.13538.
 
 \bibitem[{Feigenson et~al.(2002)Feigenson, Carey and Hauser}]{feigenson_representations_2002}
 Feigenson L, Carey S and Hauser M (2002) The representations underlying infants' choice of more: object files versus analog magnitudes.
@@ -160,6 +166,11 @@ Stoianov I and Zorzi M (2012) Emergence of a 'visual number sense' in hierarchic
 Storn R and Price K (1997) Differential {Evolution} - {A} {Simple} and {Efficient} {Heuristic} for {Global} {Optimization} over {Continuous} {Spaces}.
 \newblock \emph{Journal of Global Optimization} 11: 341--359.
 \newblock \doi{10.1023/A:1008202821328}.
+
+\bibitem[{Testolin et~al.(2020)Testolin, Dolfi, Rochus and Zorzi}]{testolin_visual_2020}
+Testolin A, Dolfi S, Rochus M and Zorzi M (2020) Visual sense of number vs. sense of magnitude in humans and machines.
+\newblock \emph{Scientific Reports} 10(1): 10045.
+\newblock \doi{10.1038/s41598-020-66838-5}.
 
 \bibitem[{Testolin and McClelland(2021)}]{testolin_estimates_2021}
 Testolin A and McClelland JL (2021) Do estimates of numerosity really adhere to {Weber}’s law? {A} reexamination of two case studies.

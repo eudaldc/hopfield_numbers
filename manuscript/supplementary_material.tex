@@ -84,6 +84,8 @@ For the present article we focus on the Poisson parameterization because it is t
 
 Table~\ref{tab:supp_modelcomparison} gives the summary-level information criteria and predictive losses for the model comparison reported in the main text. The set contains two parameterizations of the attractor account --- the Hopfield--Poisson model of the main text and its Gaussian--Benford variant (Supplementary Material 1) --- together with four controls: the same two families with the gradient-descent clean-up removed (the static ``no clean-up'' readouts), a Weber/ANS-style Gaussian code, and a conservative log-prior proxy in the spirit of~\citet{cheyette_unified_2020} (fitted to the same summary curves, not a full reproduction of the original trial-level Bayesian observer). The two attractor parameterizations give the best and nearly identical fits, indicating that the account does not depend on the specific Poisson well shape; the differences across the accumulator-style models are otherwise small, and only the log-prior proxy is clearly separated.
 
+All six models were fitted under the identical convention: four free parameters per exposure duration, optimized on the same three summary curves; the reported AIC/BIC are per-duration values averaged across the five durations. The comparison therefore places every model on equal footing, and a pooled criterion over all durations (with $5 \times 4$ independent parameters per model) preserves the same ranking.
+
 \begin{table}[t]
   \centering
   \caption{\textbf{Summary-level model comparison on the~\citet{cheyette_unified_2020} duration data.} AIC/BIC are profile-Gaussian values averaged across the five exposure durations, computed on mean estimate, exact accuracy, and median RT. LONO is leave-one-numerosity-out normalized predictive loss; LODO is leave-one-duration-out loss. The two attractor parameterizations (Hopfield--Poisson and its Gaussian--Benford variant) are listed above their respective no-clean-up controls. Lower values are better.}
@@ -127,6 +129,8 @@ Table~\ref{tab:supp_params} gives the fitted parameters for the Hopfield--Poisso
   \hline
   \end{tabular}
 \end{table}
+
+Furthermore, we examined whether the attractor mechanism could model the five duration curves simultaneously. To this end, we refitted the model with $c$ and $\kappa$ shared across durations and only the sensory parameters left free per duration, and compared it with the per-duration fit using pooled profile-Gaussian AIC/BIC. Sharing $c$ and $\kappa$ fits substantially worse across all five durations: $\Delta\mathrm{AIC} = +49.2$ and $\Delta\mathrm{BIC} = +21.8$ (12 vs.\ 20 parameters); restricted to the 80--640\,ms subset, $\Delta\mathrm{AIC} = +78.7$ and $\Delta\mathrm{BIC} = +59.6$ (10 vs.\ 16 parameters). We did not extend this constrained comparison to the alternative models (Weber/ANS and the C\&P proxy), since for those it is unclear which parameters should be held fixed across durations and which should be left free.
 
 \section{Supplementary Material 3: Parameter Recovery}
 

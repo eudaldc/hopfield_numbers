@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex main"] 1781285600.04382 "main.aux" "main.bbl" "main" 1781285600.35184 0
+["bibtex main"] 1781341898.19037 "main.aux" "main.bbl" "main" 1781341898.60715 0
   "./SageH.bst" 1775669046.47233 30763 e9cf3bda853a6eedae2781a529a11a19 ""
   "./references.bib" 1781278322.30536 96198 5850bafe3b65a4a8f97a885b315f2a35 ""
-  "main.aux" 1781285600.29542 10019 32dfb435bd14930bea0f6ec896aad7a5 "pdflatex"
+  "main.aux" 1781341898.54928 10410 dc33560293638345374cea65ea365b5e "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1781285600.05545 "main.tex" "main.pdf" "main" 1781285600.352 0
+["pdflatex"] 1781341898.20703 "main.tex" "main.pdf" "main" 1781341898.60733 0
   "../figures/conceptual_attractor_wells_poisson.pdf" 1777448446.43012 1286501 13b8fb3f6525699f2b677466595a0edc ""
   "../figures/fig2_piantadosi_fit.pdf" 1777449091.72057 46760 a8ff4962da8af8e3cef0176919a2cab0 ""
   "../output/model_comparison/aic_by_duration.pdf" 1781283024.65199 25234 dbd321116a4dadda8e408a6e775ca298 ""
@@ -154,10 +154,10 @@
   "/home/eudald/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1775661121 350349 1b8175931eaf295295318c82f7243e5b ""
   "/home/eudald/.TinyTeX/texmf-var/web2c/pdftex/pdflatex.fmt" 1772476413 2236303 a7fa4cb5575421afd2092e830a3e5572 ""
   "/home/eudald/.TinyTeX/texmf.cnf" 1764231884.31392 673 00b2d43d146d9f37d3c51b45f06b782c ""
-  "main.aux" 1781285600.29542 10019 32dfb435bd14930bea0f6ec896aad7a5 "pdflatex"
-  "main.bbl" 1781285600.05308 10571 b1cd08c99c36eae6b96f42798849e991 "bibtex main"
-  "main.out" 1781285600.29642 352 8a4e6fa695fbf34b1ba4058ae1f64d4a "pdflatex"
-  "main.tex" 1781285584.91242 32787 d32d8c666ca7d963b8b3b2b2a0770202 ""
+  "main.aux" 1781341898.54928 10410 dc33560293638345374cea65ea365b5e "pdflatex"
+  "main.bbl" 1781341898.20437 11444 a3c6433a9581db5dc83182c1806af967 "bibtex main"
+  "main.out" 1781341898.55028 352 8a4e6fa695fbf34b1ba4058ae1f64d4a "pdflatex"
+  "main.tex" 1781341415.54011 33029 1b27e0e55c5a21c2460e8ed3c8602332 ""
   "sagej.cls" 1775628020.28977 15958 5fa98adc3dbacfa813e0251e7c0042fe ""
   (generated)
   "main.aux"
