@@ -1,0 +1,13 @@
+model_key,resp_AIC,label,resp_dAIC
+gaussian_freebeta_attractor,226186.42698606933,Super-linear Gaussian attractor (free β) ★,0.0
+gaussian_pow_attractor,226351.2373774506,Power-law attractor (n^p),164.81039138126653
+gaussian_benford_free_beta,227441.94659711685,"Super-linear Gaussian readout (free β, static)",1255.5196110475226
+gaussian_pow_readout,227677.91644640142,Power-law readout (static),1491.4894603320863
+poisson_pow_attractor,230492.70524595986,Poisson free-variance + clean-up,4306.278259890532
+poisson_pow_readout,230577.8265688478,Poisson free-variance (static),4391.399582778482
+weber_ans,230621.06593115206,Weber/ANS,4434.638945082726
+hopfield_poisson,230988.00319108876,"Hopfield-Poisson (√n, published)",4801.576205019432
+gaussian_benford_attractor,231163.38391671175,Gaussian-Benford √n (attractor),4976.956930642424
+gaussian_benford_no_cleanup,231666.05303448127,Gaussian-Benford √n (no clean-up),5479.626048411941
+no_cleanup_poisson,231836.23165690398,Poisson √n (no clean-up),5649.804670834652
+cp_log_prior_proxy,233852.0216949582,C&P log-prior proxy,7665.594708888879

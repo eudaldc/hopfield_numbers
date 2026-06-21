@@ -49,6 +49,15 @@ tests/         pytest suite
 | `scripts/fit_piantadosi.py` | Single-condition fit to Piantadosi estimation data (wandb run) |
 | `scripts/fit_piantadosi_durations.py` | Sweep all exposure durations (40–640 ms); optional bootstrap CIs |
 | `scripts/fit_decarli.py` | Separate fits for DD vs controls (accuracy + RT, no trial-level guesses) |
+| `scripts/model_comparison.py` | Summary-curve model comparison across durations (profile-Gaussian AIC/BIC) |
+| `scripts/trial_level_model_comparison.py` | Trial-level model comparison: deterministic multinomial response likelihood (grid quadrature) + RT and joint channels; registers the winning super-linear-width Gaussian attractor; `--smoke` / `--replot` |
+| `scripts/trial_level_well_width_followup.py` | Frees the Gaussian well-width exponent (β / p): shows the data want super-linear (∼n^1.5–2) widths, not √n |
+| `scripts/trial_level_freewidth_attractor.py` | Free-width wells + clean-up (the winning combination) |
+| `scripts/trial_level_poisson_freevar.py` | Equal-footing control: Poisson wells with a free variance exponent |
+| `scripts/trial_level_rt_exploration.py` | RT channel: convergence-time (steps/flow-time) vs entropy across landscapes |
+| `scripts/trial_level_winner_joint.py` | Coupled joint (response + dynamics RT) for the winning model |
+| `scripts/trial_level_subitizing_diagnostic.py` | Head-to-head of well forms on the subitizing band (n≤4) |
+| `scripts/trial_level_consolidate.py` | Master ladder + headline figures consolidated around the winner |
 | `scripts/density_transition.py` | Post-fit metrics and “transition to density” figure from duration fits |
 | `scripts/run_parameter_recovery.py` | Orchestrates recovery / profile / bootstrap identifiability analyses |
 | `scripts/plot_parameter_recovery.py` | Plots from recovery outputs |

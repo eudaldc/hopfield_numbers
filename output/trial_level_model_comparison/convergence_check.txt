@@ -1,0 +1,8 @@
+Convergence robustness (grid-201 fit, maxiter 50, popsize 10, different seed; eval grid-1601):
+
+hopfield_poisson @ 160ms: saved logL=-21595.4  high-budget logL=-21596.3  improvement=-1.0
+hopfield_poisson @ 640ms: saved logL=-19238.2  high-budget logL=-19246.4  improvement=-8.3
+no_cleanup_poisson @ 160ms: saved logL=-21682.1  high-budget logL=-21682.1  improvement=+0.0
+no_cleanup_poisson @ 640ms: saved logL=-19311.3  high-budget logL=-19311.3  improvement=-0.0
+weber_ans @ 160ms: saved logL=-21570.9  high-budget logL=-21570.9  improvement=-0.0
+weber_ans @ 640ms: saved logL=-19319.2  high-budget logL=-19319.2  improvement=+0.0

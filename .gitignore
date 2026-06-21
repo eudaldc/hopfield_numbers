@@ -441,3 +441,5 @@ wandb/
 # Checkpoints
 checkpoints/
 .Rproj.user
+
+i_perc_RS_review.pdf
