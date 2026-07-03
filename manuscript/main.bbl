@@ -1,4 +1,4 @@
-\begin{thebibliography}{37}
+\begin{thebibliography}{28}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \providecommand{\urlprefix}{URL }
@@ -6,20 +6,15 @@
   \providecommand{\doi}[1]{DOI:\discretionary{}{}{}#1}\else
   \providecommand{\doi}{DOI:\discretionary{}{}{}\begingroup \urlstyle{rm}\Url}\fi
 
-\bibitem[{Anobile et~al.(2014)Anobile, Cicchini and Burr}]{anobile_separate_2014}
-Anobile G, Cicchini GM and Burr DC (2014) Separate {Mechanisms} for {Perception} of {Numerosity} and {Density}.
-\newblock \emph{Psychological Science} 25(1): 265--270.
-\newblock \doi{10.1177/0956797613501520}.
+\bibitem[{Anderson and Schooler(1991)}]{anderson_reflections_1991}
+Anderson JR and Schooler LJ (1991) Reflections of the {Environment} in {Memory}.
+\newblock \emph{Psychological Science} 2(6): 396--408.
+\newblock \doi{10.1111/j.1467-9280.1991.tb00174.x}.
 
-\bibitem[{Anobile et~al.(2015)Anobile, Turi, Cicchini and Burr}]{anobile_mechanisms_2015}
-Anobile G, Turi M, Cicchini GM and Burr DC (2015) Mechanisms for perception of numerosity or texture-density are governed by crowding-like effects.
-\newblock \emph{Journal of vision} 15(5): 4.
-\newblock \doi{10.1167/15.5.4}.
-
-\bibitem[{Burr and Ross(2008)}]{burr_visual_2008}
-Burr D and Ross J (2008) A visual sense of number.
-\newblock \emph{Current biology: CB} 18(6): 425--428.
-\newblock \doi{10.1016/j.cub.2008.02.052}.
+\bibitem[{Butterworth and Laurillard(2017)}]{butterworth_investigating_2017}
+Butterworth B and Laurillard D (2017) Investigating dyscalculia: {A} science of learning perspective.
+\newblock In: \emph{From the laboratory to the classroom: {Translating} science of learning for teachers}. New York, NY, US: Routledge/Taylor \& Francis Group.
+\newblock ISBN 978-1-138-64964-4 978-1-138-64963-7 978-1-315-62573-7, pp. 172--190.
 
 \bibitem[{Cheyette and Piantadosi(2020)}]{cheyette_unified_2020}
 Cheyette SJ and Piantadosi ST (2020) A unified account of numerosity perception.
@@ -31,20 +26,10 @@ Cheyette SJ, Wu S and Piantadosi ST (2024) Limited information-processing capaci
 \newblock \emph{Psychological Review} 131(4): 891--904.
 \newblock \doi{10.1037/rev0000478}.
 
-\bibitem[{Dakin et~al.(2011)Dakin, Tibber, Greenwood, Kingdom and Morgan}]{dakin_common_2011}
-Dakin SC, Tibber MS, Greenwood JA, Kingdom FAA and Morgan MJ (2011) A common visual metric for approximate number and density.
-\newblock \emph{Proceedings of the National Academy of Sciences of the United States of America} 108(49): 19552--19557.
-\newblock \doi{10.1073/pnas.1113195108}.
-
 \bibitem[{Decarli et~al.(2020)Decarli, Paris, Tencati, Nardelli, Vescovi, Surian and Piazza}]{decarli_impaired_2020}
 Decarli G, Paris E, Tencati C, Nardelli C, Vescovi M, Surian L and Piazza M (2020) Impaired large numerosity estimation and intact subitizing in developmental dyscalculia.
 \newblock \emph{PLOS ONE} 15(12): e0244578.
 \newblock \doi{10.1371/journal.pone.0244578}.
-
-\bibitem[{Dehaene(2003)}]{dehaene_neural_2003}
-Dehaene S (2003) The neural basis of the {Weber}-{Fechner} law: {A} logarithmic mental number line.
-\newblock \emph{Trends in Cognitive Sciences} 7(4): 145--147.
-\newblock \doi{10.1016/S1364-6613(03)00055-X}.
 
 \bibitem[{Dehaene(2011)}]{dehaene_number_2011}
 Dehaene S (2011) \emph{The number sense: {How} the mind creates mathematics, {Rev}. and updated ed}.
@@ -52,10 +37,10 @@ Dehaene S (2011) \emph{The number sense: {How} the mind creates mathematics, {Re
 \newblock ISBN 978-0-19-975387-1.
 \newblock Pages: xxii, 316.
 
-\bibitem[{Dehaene and Changeux(1993)}]{dehaene_development_1993}
-Dehaene S and Changeux JP (1993) Development of elementary numerical abilities: {A} neuronal model.
-\newblock \emph{Journal of Cognitive Neuroscience} 5(4): 390--407.
-\newblock \doi{10.1162/jocn.1993.5.4.390}.
+\bibitem[{Dehaene and Mehler(1992)}]{dehaene_cross-linguistic_1992}
+Dehaene S and Mehler J (1992) Cross-linguistic regularities in the frequency of number words.
+\newblock \emph{Cognition} 43(1): 1--29.
+\newblock \doi{10.1016/0010-0277(92)90030-L}.
 
 \bibitem[{Dolfi et~al.(2024)Dolfi, Decarli, Lunardon, De~Filippo De~Grazia, Gerola, Lanfranchi, Cossu, Sella, Testolin and Zorzi}]{dolfi_weaker_2024}
 Dolfi S, Decarli G, Lunardon M, De~Filippo De~Grazia M, Gerola S, Lanfranchi S, Cossu G, Sella F, Testolin A and Zorzi M (2024) Weaker number sense accounts for impaired numerosity perception in dyscalculia: {Behavioral} and computational evidence.
@@ -72,15 +57,6 @@ Feigenson L, Carey S and Hauser M (2002) The representations underlying infants'
 Feigenson L, Dehaene S and Spelke E (2004) Core systems of number.
 \newblock \emph{Trends in Cognitive Sciences} 8(7): 307--314.
 \newblock \doi{10.1016/j.tics.2004.05.002}.
-
-\bibitem[{Gallistel and Gelman(1992)}]{gallistel_preverbal_1992}
-Gallistel C and Gelman R (1992) Preverbal and verbal counting and computation.
-\newblock \emph{Cognition} 44: 43--74.
-
-\bibitem[{Gelman and Butterworth(2005)}]{gelman_number_2005}
-Gelman R and Butterworth B (2005) Number and language: how are they related?
-\newblock \emph{Trends in Cognitive Sciences} 9(1): 6--10.
-\newblock \doi{10.1016/j.tics.2004.11.004}.
 
 \bibitem[{Halberda et~al.(2008)Halberda, Mazzocco and Feigenson}]{halberda_individual_2008}
 Halberda J, Mazzocco MM and Feigenson L (2008) Individual differences in non-verbal number acuity correlate with maths achievement.
@@ -102,11 +78,6 @@ Kaufman EL, Lord MW, Reese TW and Volkmann J (1949) The {Discrimination} of {Vis
 \newblock \emph{The American Journal of Psychology} 62(4): 498--525.
 \newblock \doi{10.2307/1418556}.
 
-\bibitem[{Liu and Nocedal(1989)}]{liu_limited_1989}
-Liu DC and Nocedal J (1989) On the limited memory {BFGS} method for large scale optimization.
-\newblock \emph{Mathematical Programming} 45(1): 503--528.
-\newblock \doi{10.1007/BF01589116}.
-
 \bibitem[{Macmillan and Creelman(2004)}]{macmillan_detection_2004}
 Macmillan NA and Creelman CD (2004) \emph{Detection {Theory}: {A} {User}'s {Guide}}.
 \newblock 2 edition. New York: Psychology Press.
@@ -123,16 +94,6 @@ Malo JY, Cicchini GM, Morrone MC and Chiofalo ML (2023) Quantum spin models for 
 Mandler G and Shebo BJ (1982) Subitizing: {An} analysis of its component processes.
 \newblock \emph{Journal of Experimental Psychology: General} 111(1): 1--22.
 \newblock \doi{10.1037/0096-3445.111.1.1}.
-
-\bibitem[{Morgan et~al.(2014)Morgan, Raphael, Tibber and Dakin}]{morgan_texture-processing_2014}
-Morgan MJ, Raphael S, Tibber MS and Dakin SC (2014) A texture-processing model of the ‘visual sense of number’.
-\newblock \emph{Proceedings of the Royal Society B: Biological Sciences} 281(1790): 20141137.
-\newblock \doi{10.1098/rspb.2014.1137}.
-
-\bibitem[{Nieder(2013)}]{nieder_coding_2013}
-Nieder A (2013) Coding of abstract quantity by 'number neurons' of the primate brain.
-\newblock \emph{Journal of Comparative Physiology. A, Neuroethology, Sensory, Neural, and Behavioral Physiology} 199(1): 1--16.
-\newblock \doi{10.1007/s00359-012-0763-9}.
 
 \bibitem[{Nieder(2016)}]{nieder_neuronal_2016}
 Nieder A (2016) The neuronal code for number.
@@ -157,6 +118,10 @@ Pica P, Lemer C, Izard V and Dehaene S (2004) Exact and approximate arithmetic i
 Ramsauer H, Schäfl B, Lehner J, Seidl P, Widrich M, Adler T, Gruber L, Holzleitner M, Pavlović M, Sandve GK, Greiff V, Kreil D, Kopp M, Klambauer G, Brandstetter J and Hochreiter S (2021) Hopfield {Networks} is {All} {You} {Need}.
 \newblock In: \emph{International Conference on Learning Representations}.
 
+\bibitem[{Sengupta et~al.(2014)Sengupta, Surampudi and Melcher}]{sengupta_visual_2014}
+Sengupta R, Surampudi BR and Melcher D (2014) A visual sense of number emerges from the dynamics of a recurrent on-center off-surround neural network.
+\newblock \emph{Brain Research} 1582: 114--124.
+
 \bibitem[{Stoianov and Zorzi(2012)}]{stoianov_emergence_2012}
 Stoianov I and Zorzi M (2012) Emergence of a 'visual number sense' in hierarchical generative models.
 \newblock \emph{Nature Neuroscience} 15(2): 194--196.
@@ -180,16 +145,5 @@ Testolin A and McClelland JL (2021) Do estimates of numerosity really adhere to 
 \bibitem[{Verguts and Fias(2004)}]{verguts_representation_2004}
 Verguts T and Fias W (2004) Representation of {Number} in {Animals} and {Humans}: {A} {Neural} {Model}.
 \newblock \emph{Journal of Cognitive Neuroscience} 16(9): 1493--1504.
-
-\bibitem[{Whalen et~al.(1999)Whalen, Gallistel and Gelman}]{whalen_nonverbal_1999}
-Whalen J, Gallistel C and Gelman R (1999) Nonverbal {Counting} in {Humans}: {The} {Psychophysics} of {Number} {Representation}.
-\newblock \emph{Psychological Science} 10(2): 130--137.
-\newblock \doi{10.1111/1467-9280.00120}.
-
-\bibitem[{Zorzi et~al.(2005)Zorzi, Stoianov and Umiltà}]{zorzi_computational_2005}
-Zorzi M, Stoianov I and Umiltà C (2005) Computational modeling of numerical cognition.
-\newblock In: \emph{Handbook of mathematical cognition}. New York, NY, US: Psychology Press.
-\newblock ISBN 978-1-84169-411-5, pp. 67--83.
-\newblock \doi{10.4324/9780203998045}.
 
 \end{thebibliography}

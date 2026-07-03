@@ -4,45 +4,45 @@ The top-level auxiliary file: main.aux
 The style file: SageH.bst
 Database file #1: references.bib
 Warning--empty pages in ramsauer_hopfield_2021
-You've used 37 entries,
+You've used 28 entries,
             2905 wiz_defined-function locations,
-            889 strings with 13635 characters,
-and the built_in function-call counts, 41452 in all, are:
-= -- 4384
-> -- 1074
-< -- 18
-+ -- 430
-- -- 376
-* -- 3150
-:= -- 5172
-add.period$ -- 114
-call.type$ -- 37
-change.case$ -- 316
-chr.to.int$ -- 38
-cite$ -- 38
-duplicate$ -- 4041
-empty$ -- 3088
-format.name$ -- 500
-if$ -- 8419
+            825 strings with 11865 characters,
+and the built_in function-call counts, 32743 in all, are:
+= -- 3476
+> -- 856
+< -- 14
++ -- 340
+- -- 301
+* -- 2490
+:= -- 4040
+add.period$ -- 86
+call.type$ -- 28
+change.case$ -- 246
+chr.to.int$ -- 29
+cite$ -- 29
+duplicate$ -- 3216
+empty$ -- 2427
+format.name$ -- 398
+if$ -- 6658
 int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 388
-newline$ -- 195
-num.names$ -- 148
-pop$ -- 1851
+missing$ -- 300
+newline$ -- 149
+num.names$ -- 112
+pop$ -- 1492
 preamble$ -- 1
-purify$ -- 273
+purify$ -- 212
 quote$ -- 0
-skip$ -- 586
+skip$ -- 454
 stack$ -- 0
-substring$ -- 4646
-swap$ -- 1012
+substring$ -- 3732
+swap$ -- 777
 text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 327
+type$ -- 246
 warning$ -- 1
-while$ -- 299
+while$ -- 231
 width$ -- 0
-write$ -- 527
+write$ -- 399
 (There was 1 warning)

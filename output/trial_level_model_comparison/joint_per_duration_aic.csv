@@ -1,0 +1,41 @@
+bar_id,label,model_key,metric,duration_ms,joint_AIC,k_params,delta_AIC
+gauss_attr_hybrid,Gaussian attractor + dynamics RT ★,gaussian_freebeta_attractor,hybrid,40,87538.24398154418,8,0.0
+gauss_attr_hybrid,Gaussian attractor + dynamics RT ★,gaussian_freebeta_attractor,hybrid,80,77047.52764290218,8,232.91116221276752
+gauss_attr_hybrid,Gaussian attractor + dynamics RT ★,gaussian_freebeta_attractor,hybrid,160,73027.46129155294,8,89.78740713959269
+gauss_attr_hybrid,Gaussian attractor + dynamics RT ★,gaussian_freebeta_attractor,hybrid,320,72084.9897937726,8,196.90184087635134
+gauss_attr_hybrid,Gaussian attractor + dynamics RT ★,gaussian_freebeta_attractor,hybrid,640,68451.10925587906,8,261.0292730273941
+gauss_attr_entropy,Gaussian attractor + entropy RT,gaussian_freebeta_attractor,entropy,40,87640.53080723036,7,102.28682568618387
+gauss_attr_entropy,Gaussian attractor + entropy RT,gaussian_freebeta_attractor,entropy,80,77062.13245893546,7,247.51597824605415
+gauss_attr_entropy,Gaussian attractor + entropy RT,gaussian_freebeta_attractor,entropy,160,73223.82209905575,7,286.14821464239503
+gauss_attr_entropy,Gaussian attractor + entropy RT,gaussian_freebeta_attractor,entropy,320,72384.75364117457,7,496.6656882783136
+gauss_attr_entropy,Gaussian attractor + entropy RT,gaussian_freebeta_attractor,entropy,640,68621.59138965012,7,431.5114067984541
+pow_attr_hybrid,Power-law attractor + dynamics RT,gaussian_pow_attractor,hybrid,40,87912.09490546591,8,373.8509239217383
+pow_attr_hybrid,Power-law attractor + dynamics RT,gaussian_pow_attractor,hybrid,80,76814.61648068941,8,0.0
+pow_attr_hybrid,Power-law attractor + dynamics RT,gaussian_pow_attractor,hybrid,160,72937.67388441335,8,0.0
+pow_attr_hybrid,Power-law attractor + dynamics RT,gaussian_pow_attractor,hybrid,320,72004.89706823995,8,116.80911534369807
+pow_attr_hybrid,Power-law attractor + dynamics RT,gaussian_pow_attractor,hybrid,640,68423.99967377874,8,233.91969092708314
+pow_attr_entropy,Power-law attractor + entropy RT,gaussian_pow_attractor,entropy,40,87911.17498474583,7,372.93100320165104
+pow_attr_entropy,Power-law attractor + entropy RT,gaussian_pow_attractor,entropy,80,76821.66617329684,7,7.04969260742655
+pow_attr_entropy,Power-law attractor + entropy RT,gaussian_pow_attractor,entropy,160,73098.87374562284,7,161.19986120949034
+pow_attr_entropy,Power-law attractor + entropy RT,gaussian_pow_attractor,entropy,320,72308.80762177668,7,420.71966888042516
+pow_attr_entropy,Power-law attractor + entropy RT,gaussian_pow_attractor,entropy,640,68506.53556582393,7,316.4555829722667
+gauss_static,Gaussian readout (no clean-up) + entropy RT,gaussian_benford_free_beta,entropy,40,88041.56482552999,7,503.32084398581355
+gauss_static,Gaussian readout (no clean-up) + entropy RT,gaussian_benford_free_beta,entropy,80,77802.20351916677,7,987.5870384773589
+gauss_static,Gaussian readout (no clean-up) + entropy RT,gaussian_benford_free_beta,entropy,160,73030.21197523846,7,92.53809082510998
+gauss_static,Gaussian readout (no clean-up) + entropy RT,gaussian_benford_free_beta,entropy,320,71900.70633696698,7,12.61838407072355
+gauss_static,Gaussian readout (no clean-up) + entropy RT,gaussian_benford_free_beta,entropy,640,68190.07998285166,7,0.0
+pow_static,Power-law readout (no clean-up) + entropy RT,gaussian_pow_readout,entropy,40,88175.77900109792,7,637.5350195537467
+pow_static,Power-law readout (no clean-up) + entropy RT,gaussian_pow_readout,entropy,80,77828.74113432289,7,1014.1246536334802
+pow_static,Power-law readout (no clean-up) + entropy RT,gaussian_pow_readout,entropy,160,73100.36804933533,7,162.6941649219807
+pow_static,Power-law readout (no clean-up) + entropy RT,gaussian_pow_readout,entropy,320,71888.08795289625,7,0.0
+pow_static,Power-law readout (no clean-up) + entropy RT,gaussian_pow_readout,entropy,640,68267.82465593737,7,77.74467308570456
+weber,Weber/ANS + entropy RT,weber_ans,entropy,40,89261.27547570737,6,1723.031494163195
+weber,Weber/ANS + entropy RT,weber_ans,entropy,80,77898.63923071523,6,1084.0227500258188
+weber,Weber/ANS + entropy RT,weber_ans,entropy,160,73176.6452482742,6,238.97136386085185
+weber,Weber/ANS + entropy RT,weber_ans,entropy,320,72577.74592812764,6,689.6579752313846
+weber,Weber/ANS + entropy RT,weber_ans,entropy,640,69147.97304554723,6,957.8930626955698
+cp,C&P log-prior proxy + entropy RT,cp_log_prior_proxy,entropy,40,89382.98171041123,6,1844.737728867054
+cp,C&P log-prior proxy + entropy RT,cp_log_prior_proxy,entropy,80,78199.30908954632,6,1384.6926088569162
+cp,C&P log-prior proxy + entropy RT,cp_log_prior_proxy,entropy,160,74163.6757099747,6,1226.001825561354
+cp,C&P log-prior proxy + entropy RT,cp_log_prior_proxy,entropy,320,73649.49313957695,6,1761.4051866806985
+cp,C&P log-prior proxy + entropy RT,cp_log_prior_proxy,entropy,640,70324.2151888643,6,2134.1352060126374

@@ -1,0 +1,31 @@
+bar_id,label,model_key,duration_ms,resp_AIC,delta_AIC
+gauss_attr,Gaussian attractor ★,gaussian_freebeta_attractor,40,57132.529692070704,0.0
+gauss_attr,Gaussian attractor ★,gaussian_freebeta_attractor,80,46929.3933847668,66.86800113804202
+gauss_attr,Gaussian attractor ★,gaussian_freebeta_attractor,160,42715.38288533016,0.0
+gauss_attr,Gaussian attractor ★,gaussian_freebeta_attractor,320,41570.94858249419,85.49551236199477
+gauss_attr,Gaussian attractor ★,gaussian_freebeta_attractor,640,37838.17244140747,161.33584424268338
+pow_attr,Power-law attractor,gaussian_pow_attractor,40,57265.43358907464,132.9038970039328
+pow_attr,Power-law attractor,gaussian_pow_attractor,80,46862.52538362876,0.0
+pow_attr,Power-law attractor,gaussian_pow_attractor,160,42747.17272041975,31.78983508959209
+pow_attr,Power-law attractor,gaussian_pow_attractor,320,41612.689846152505,127.23677602031239
+pow_attr,Power-law attractor,gaussian_pow_attractor,640,37863.41583817494,186.57924101014942
+gauss_static,Gaussian readout (no clean-up),gaussian_benford_free_beta,40,57412.56068586657,280.0309937958664
+gauss_static,Gaussian readout (no clean-up),gaussian_benford_free_beta,80,47894.08566104103,1031.5602774122672
+gauss_static,Gaussian readout (no clean-up),gaussian_benford_free_beta,160,42973.01058291227,257.62769758210925
+gauss_static,Gaussian readout (no clean-up),gaussian_benford_free_beta,320,41485.45307013219,0.0
+gauss_static,Gaussian readout (no clean-up),gaussian_benford_free_beta,640,37676.83659716479,0.0
+pow_static,Power-law readout (no clean-up),gaussian_pow_readout,40,57545.95732100449,413.42762893378676
+pow_static,Power-law readout (no clean-up),gaussian_pow_readout,80,47905.96047521976,1043.4350915910036
+pow_static,Power-law readout (no clean-up),gaussian_pow_readout,160,42973.69609616284,258.31321083268267
+pow_static,Power-law readout (no clean-up),gaussian_pow_readout,320,41485.479867122056,0.02679698986321455
+pow_static,Power-law readout (no clean-up),gaussian_pow_readout,640,37766.82268689227,89.9860897274848
+weber,Weber/ANS,weber_ans,40,58551.68602898,1419.1563369092983
+weber,Weber/ANS,weber_ans,80,48071.952822747495,1209.4274391187355
+weber,Weber/ANS,weber_ans,160,43149.77874729369,434.3958619635305
+weber,Weber/ANS,weber_ans,320,42201.15809805159,715.7050279193936
+weber,Weber/ANS,weber_ans,640,38646.49023407928,969.653636914496
+cp,C&P log-prior proxy,cp_log_prior_proxy,40,58815.86646874635,1683.3367766756492
+cp,C&P log-prior proxy,cp_log_prior_proxy,80,48367.35017297438,1504.824789345621
+cp,C&P log-prior proxy,cp_log_prior_proxy,160,44011.17168288512,1295.7887975549602
+cp,C&P log-prior proxy,cp_log_prior_proxy,320,43086.52783356091,1601.0747634287181
+cp,C&P log-prior proxy,cp_log_prior_proxy,640,39571.10553679146,1894.2689396266724

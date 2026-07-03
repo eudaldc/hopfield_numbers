@@ -1,3 +1,4 @@
 {
-    "ltex.language": "en-GB"
+    "ltex.language": "en-GB",
+    "r.lsp.promptToInstall": false
 }

@@ -1,0 +1,5 @@
+model_key,model,cleanup,AIC_total,logL_total,k_total,dAIC,akaike_weight
+gaussian_freebeta_attractor,Super-linear Gaussian attractor (free beta),True,115017.17472688809,-57483.58736344404,25,0.0,1.0
+gaussian_freebeta_no_cleanup,"Super-linear Gaussian readout (free beta, no clean-up)",False,115189.07464970138,-57569.53732485069,25,171.89992281328887,4.703336390184408e-38
+weber_ans,Weber/ANS baseline,False,117059.818357076,-58509.909178538,20,2042.6436301879148,0.0
+hopfield_poisson,Hopfield-Poisson (attractor),True,118771.89344950259,-59365.946724751295,20,3754.7187226145033,0.0

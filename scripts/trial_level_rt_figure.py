@@ -61,15 +61,22 @@ def main() -> None:
         pred_ent = T.T0 + float(ent["rt_scale"]) * eh
         pred_hyb = T.T0 + float(hyb["alpha"]) * et + float(hyb["beta"]) * eh
         data = data_by_dur[d]
-        obs_med = np.array([np.median(np.exp(data.logrt_trial[data.n_trial == n]))
+        # The log-normal RT MLE fits the mean of log RT per n, i.e. the geometric
+        # mean of RT (= exp(mu)). Compare against that, not the median: log RT is
+        # right-skewed, so the median sits ~0.1-0.2 s *below* the fitted quantity
+        # and would make the line look spuriously high (see docs / rt_domain).
+        obs_geo = np.array([np.exp(np.mean(data.logrt_trial[data.n_trial == n]))
                             for n in T.N_SHOWN])
-        r2_ent, r2_hyb = r2(obs_med, pred_ent), r2(obs_med, pred_hyb)
+        obs_med = np.array([np.median(np.exp(data.logrt_trial[data.n_trial == n]))
+                            for n in T.N_SHOWN])   # shown faint for reference
+        r2_ent, r2_hyb = r2(obs_geo, pred_ent), r2(obs_geo, pred_hyb)
         for i, n in enumerate(T.N_SHOWN):
             rows.append({"duration_ms": d, "n_shown": int(n),
-                         "obs_median_rt": obs_med[i],
+                         "obs_geomean_rt": obs_geo[i], "obs_median_rt": obs_med[i],
                          "pred_entropy": pred_ent[i], "pred_hybrid": pred_hyb[i]})
         ax = axes[0][ci]
-        ax.plot(T.N_SHOWN, obs_med, "k.", ms=8, label="data")
+        ax.plot(T.N_SHOWN, obs_med, ".", color="0.72", ms=5, label="data (median)")
+        ax.plot(T.N_SHOWN, obs_geo, "k.", ms=8, label="data (geom. mean)")
         ax.plot(T.N_SHOWN, pred_ent, color="#2c7fb8", lw=1.6,
                 label=f"entropy (R²={r2_ent:.2f})")
         ax.plot(T.N_SHOWN, pred_hyb, color="#c0392b", lw=1.6,
@@ -77,23 +84,23 @@ def main() -> None:
         ax.set_title(f"{d} ms   [Fig2 R²={FIG2_RT_R2[d]:.2f}]", fontsize=9)
         ax.set_xlabel("n shown")
         if ci == 0:
-            ax.set_ylabel("median RT (s)")
+            ax.set_ylabel("geometric-mean RT (s)")
         ax.legend(fontsize=6.5, frameon=False)
         ax.spines["top"].set_visible(False)
         ax.spines["right"].set_visible(False)
         print(f"{d}ms: R2 entropy={r2_ent:.3f}  dynamics={r2_hyb:.3f}  "
               f"(Fig2 published RT R2={FIG2_RT_R2[d]:.2f})", flush=True)
-    fig.suptitle("Winner predicted median RT: entropy vs dynamics (steps+entropy) "
-                 "vs data", y=1.03)
+    fig.suptitle("Winner predicted RT (geometric mean): entropy vs dynamics "
+                 "(steps+entropy) vs data — median shown faint for reference", y=1.03)
     fig.tight_layout()
     fig.savefig(OUT_FIG, dpi=190)
     plt.close(fig)
     pd.DataFrame(rows).to_csv(OUT_CSV, index=False)
 
     df = pd.DataFrame(rows)
-    # pooled R^2 across all (duration, n)
-    print(f"\nPooled R2: entropy={r2(df.obs_median_rt.values, df.pred_entropy.values):.3f}"
-          f"  dynamics={r2(df.obs_median_rt.values, df.pred_hybrid.values):.3f}")
+    # pooled R^2 across all (duration, n), against the geometric mean
+    print(f"\nPooled R2: entropy={r2(df.obs_geomean_rt.values, df.pred_entropy.values):.3f}"
+          f"  dynamics={r2(df.obs_geomean_rt.values, df.pred_hybrid.values):.3f}")
     print(f"Saved {OUT_FIG} and {OUT_CSV}")
 
 

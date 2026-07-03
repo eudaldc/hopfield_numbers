@@ -5,8 +5,10 @@ ladder (response + joint) and the headline figures featuring the winner
 (super-linear-width Gaussian attractor, free beta, + dynamics RT):
 
   outputs/trial_level_model_comparison/
-    consolidated_summary.csv        -- response & joint AIC ladder, all models
+    consolidated_summary.csv        -- response AIC ladder, all models
+    consolidated_joint_summary.csv  -- joint (response + RT) AIC ladder
     consolidated_response_aic.png   -- response ΔAIC bar chart
+    consolidated_joint_aic.png      -- joint (response + RT) ΔAIC bar chart
     consolidated_heatmaps.png       -- data vs winner vs Hopfield-Poisson
     consolidated_rt_metrics.png     -- winner RT AIC by metric (steps vs entropy)
 
@@ -47,6 +49,31 @@ LABELS = {
     "cp_log_prior_proxy": "C&P log-prior proxy",
 }
 
+# Joint (response + RT) ladder: the two winner variants (dynamics vs entropy RT)
+# plus the entropy joints of the six originals. Labels name the RT channel because
+# every entry here shares the response channel of its landscape.
+JOINT_LABELS = {
+    "winner_hybrid": "Super-linear Gaussian attractor + dynamics RT ★",
+    "winner_entropy": "Super-linear Gaussian attractor + entropy RT",
+    "weber_ans": "Weber/ANS + entropy RT",
+    "hopfield_poisson": "Hopfield-Poisson (√n, published) + entropy RT",
+    "gaussian_benford_attractor": "Gaussian-Benford √n (attractor) + entropy RT",
+    "gaussian_benford_no_cleanup": "Gaussian-Benford √n (no clean-up) + entropy RT",
+    "no_cleanup_poisson": "Poisson √n (no clean-up) + entropy RT",
+    "cp_log_prior_proxy": "C&P log-prior proxy + entropy RT",
+}
+
+
+def _ladder_color(label: str) -> str:
+    """Winner (dynamics RT) red; winner+entropy RT salmon; √n / Weber blue; else green."""
+    if "★" in label:
+        return "#c0392b"
+    if "entropy RT" in label and "Gaussian attractor" in label:
+        return "#e07b54"
+    if "√n" in label or "Weber" in label:
+        return "#2c7fb8"
+    return "#7fbf7b"
+
 
 def _sum_aic(path: Path, col="AIC") -> pd.Series:
     df = pd.read_csv(path)
@@ -77,16 +104,34 @@ def build_master() -> pd.DataFrame:
 def plot_response_ladder(master: pd.DataFrame) -> None:
     plt.rcParams.update({"axes.spines.top": False, "axes.spines.right": False})
     m = master.sort_values("resp_dAIC", ascending=False)
-    colors = ["#c0392b" if "★" in lab else ("#2c7fb8" if "√n" in lab or "Weber" in lab
-              else "#7fbf7b") for lab in m["label"]]
+    colors = [_ladder_color(lab) for lab in m["label"]]
     fig, ax = plt.subplots(figsize=(9, 5.2))
     ax.barh(m["label"], m["resp_dAIC"], color=colors)
+    ax.set_xlim(0, float(m["resp_dAIC"].max()) * 1.1)
     ax.set_xlabel("ΔAIC vs best (trial-level response likelihood)")
     ax.set_title("Trial-level response model comparison", fontweight="bold")
     for y, v in enumerate(m["resp_dAIC"]):
         ax.text(v + 40, y, f"{v:.0f}", va="center", fontsize=8)
     fig.tight_layout()
     fig.savefig(D / "consolidated_response_aic.png", dpi=200)
+    plt.close(fig)
+
+
+def plot_joint_ladder(jdf: pd.DataFrame) -> None:
+    plt.rcParams.update({"axes.spines.top": False, "axes.spines.right": False})
+    m = jdf.copy()
+    m["label"] = m["model_key"].map(lambda k: JOINT_LABELS.get(k, k))
+    m = m.sort_values("joint_dAIC", ascending=False)
+    colors = [_ladder_color(lab) for lab in m["label"]]
+    fig, ax = plt.subplots(figsize=(9, 4.4))
+    ax.barh(m["label"], m["joint_dAIC"], color=colors)
+    ax.set_xlim(0, float(m["joint_dAIC"].max()) * 1.1)
+    ax.set_xlabel("ΔAIC vs best (trial-level joint: response + RT)")
+    ax.set_title("Trial-level joint (response + RT) model comparison", fontweight="bold")
+    for y, v in enumerate(m["joint_dAIC"]):
+        ax.text(v + 40, y, f"{v:.0f}", va="center", fontsize=8)
+    fig.tight_layout()
+    fig.savefig(D / "consolidated_joint_aic.png", dpi=200)
     plt.close(fig)
 
 
@@ -178,6 +223,7 @@ def main() -> None:
     print(jdf.round(1).to_string(index=False))
 
     plot_response_ladder(master)
+    plot_joint_ladder(jdf)
     plot_heatmaps()
     plot_rt_metrics()
     print(f"\nSaved consolidated CSVs + figures to {D}")
