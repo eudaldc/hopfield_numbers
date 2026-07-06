@@ -39,6 +39,7 @@ if str(_ROOT) not in sys.path:
 
 import scripts.trial_level_model_comparison as T
 from scripts.trial_level_model_comparison import DurationData
+from figures.plot_style import C_ATTR, apply_style
 
 WINNER = "gaussian_freebeta_attractor"
 METRICS = ("hybrid", "entropy")
@@ -87,6 +88,7 @@ def restrict_data(trial: pd.DataFrame, d: int, nmax: int, r_max: int) -> Duratio
 
 
 def main() -> None:
+    apply_style(1.5)   # rendered at \textwidth (figure*), 15.5 in canvas
     spec = T.MODEL_BY_KEY[WINNER]
     quad = T.make_quadrature(801, kind="grid")
     trial = T.load_trials()
@@ -97,7 +99,8 @@ def main() -> None:
 
     rows = []
     fig, axes = plt.subplots(1, len(T.DURATIONS),
-                             figsize=(3.0 * len(T.DURATIONS), 3.8), squeeze=False)
+                             figsize=(3.1 * len(T.DURATIONS), 3.8), squeeze=False,
+                             sharey=False)
 
     for ci, d in enumerate(T.DURATIONS):
         theta = {p: float(wt.loc[d, p]) for p in spec.param_names}
@@ -107,13 +110,10 @@ def main() -> None:
         nmax = int(floor(ncrit))                    # last fully-resolvable integer
         grid = T.compute_grid(spec, theta, quad)    # all n = 1..15
 
-        # empirical RT per n (all n). Compare against the geometric mean (the
-        # log-normal RT MLE target = exp(mean log rt)); the median sits ~0.1-0.2 s
-        # below it because log RT is right-skewed, and would make the line look
-        # spuriously high. Median kept for reference.
+        # empirical RT per n (all n): the geometric mean, i.e. the log-normal RT
+        # MLE target (= exp(mean log rt)) — labelled simply "mean" in the figure
         lrt, ntr = data_full[d].logrt_trial, data_full[d].n_trial
         emp = np.array([np.exp(np.mean(lrt[ntr == int(nn)])) for nn in n])
-        emp_med = np.array([np.median(np.exp(lrt[ntr == int(nn)])) for nn in n])
         in_dom = n <= nmax
 
         data_dom = restrict_data(trial, d, nmax, r_max)
@@ -140,26 +140,28 @@ def main() -> None:
         # figure: hybrid domain fit -> solid within domain, dashed extrapolation
         ax = axes[0][ci]
         ph = pred_by_metric["hybrid"]
-        ax.plot(n, emp_med, ".", color="0.72", ms=5, label="data (median)")
-        ax.plot(n, emp, "k.", ms=8, label="data (geom. mean)")
-        ax.plot(n[in_dom], ph[in_dom], "-", color="#c0392b", lw=2,
-                label="fit (n < n_crit)")
-        ax.plot(n[~in_dom], ph[~in_dom], "--", color="#c0392b", lw=1.4, alpha=0.7,
-                label="extrapolation")
-        ax.axvline(ncrit, color="k", ls=":", lw=1.0)
-        ax.text(ncrit + 0.15, ax.get_ylim()[0] + 0.05 * (ax.get_ylim()[1] - ax.get_ylim()[0]),
-                f"n_crit≈{ncrit:.1f}", fontsize=7)
+        ax.plot(n, emp, "k.", ms=9, label="Data")
+        ax.plot(n[in_dom], ph[in_dom], "-", color=C_ATTR, lw=2.4, label="Model")
+        ax.plot(n[~in_dom], ph[~in_dom], "--", color=C_ATTR, lw=1.6, alpha=0.8,
+                label="Extrapolation")
+        ax.axvline(ncrit, color="0.25", ls=":", lw=1.2)
         rr = rows[-2]  # the hybrid row for this duration
-        ax.set_title(f"{d} ms  (R²|dom={rr['R2_domain_fit_on_domain']:.2f})", fontsize=9)
-        ax.set_xlabel("n shown")
+        ax.set_title(f"{d} ms")
+        ax.text(0.97, 0.05, f"$R^2 = {rr['R2_domain_fit_on_domain']:.2f}$",
+                transform=ax.transAxes, ha="right", va="bottom", fontsize=13,
+                zorder=6, bbox=dict(facecolor="white", edgecolor="none", pad=3))
+        ax.text(ncrit + 0.25, ax.get_ylim()[0] + 0.25 * (ax.get_ylim()[1] - ax.get_ylim()[0]),
+                r"$n_{\rm crit}$", fontsize=17, color="0.25")
         if ci == 0:
-            ax.set_ylabel("geometric-mean RT (s)")
-            ax.legend(fontsize=6.5, frameon=False, loc="lower right")
+            ax.set_ylabel("Mean RT (s)")
 
-    fig.suptitle("RT predicted within the model's domain (n < n_crit), extrapolated above "
-                 "(hybrid: steps + entropy)", y=1.03)
-    fig.tight_layout()
-    fig.savefig(OUT_FIG, dpi=190)
+    handles, leg_labels = axes[0][0].get_legend_handles_labels()
+    fig.tight_layout(rect=(0, 0.06, 0.90, 1))
+    fig.supxlabel("Number shown  $n$", fontsize=19, x=0.45)
+    fig.legend(handles, leg_labels, frameon=False, loc="center right",
+               bbox_to_anchor=(0.998, 0.4))
+    fig.savefig(OUT_FIG, dpi=300)
+    fig.savefig(OUT_FIG.with_suffix(".pdf"))
     plt.close(fig)
 
     df = pd.DataFrame(rows)

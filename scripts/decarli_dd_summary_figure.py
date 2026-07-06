@@ -31,8 +31,9 @@ if str(_ROOT) not in sys.path:
 
 import scripts.trial_level_model_comparison as T
 from scripts.decarli_gaussian_freebeta import DATA, NVALS, GROUPS, OUT_DIR, predict, PNAMES
+from figures.plot_style import C_ATTR, C_WARN, apply_style, panel_label
 
-COL = {"DD": "#c0392b", "contr": "#2c7fb8"}
+COL = {"DD": C_WARN, "contr": C_ATTR}
 LAB = {"DD": "DD", "contr": "control"}
 OUT_FIG = OUT_DIR / "decarli_dd_summary.png"
 
@@ -42,6 +43,7 @@ def stars(p: float) -> str:
 
 
 def main() -> None:
+    apply_style(2.0)   # rendered at \columnwidth, 11 in canvas
     quad = T.make_quadrature(401, kind="grid")
     df = pd.read_csv(DATA)
     fitted = pd.read_csv(OUT_DIR / "gaussian_freebeta_fitted.csv").set_index("group")
@@ -76,9 +78,9 @@ def main() -> None:
         s = stars(accp[i])
         if s:
             a.text(n, 100*max(acc["DD"][0][i], acc["contr"][0][i]) + 4, s,
-                   ha="center", fontsize=11, color="0.3")
-    a.set_xlabel("numerosity"); a.set_ylabel("% exact"); a.set_ylim(30, 105)
-    a.set_title("(A) Accuracy — DD deficit at the subitising edge"); a.legend(frameon=False, fontsize=9)
+                   ha="center", fontsize=20, color="0.3")
+    a.set_xlabel("Numerosity"); a.set_ylabel("% exact"); a.set_ylim(30, 105)
+    a.legend(frameon=False, loc="lower left"); panel_label(a, "a")
 
     # (B) RT
     b = ax[0][1]
@@ -89,8 +91,8 @@ def main() -> None:
         theta_vec = np.array([fitted.loc[grp, p] for p in PNAMES])
         _, prt = predict(theta_vec, quad)
         b.plot(NVALS, prt, "-", color=COL[grp], lw=1.4, alpha=0.6)
-    b.set_xlabel("numerosity"); b.set_ylabel("median RT (s)")
-    b.set_title("(B) RT — DD slower in the transition band"); b.legend(frameon=False, fontsize=9)
+    b.set_xlabel("Numerosity"); b.set_ylabel("Median RT (s)")
+    b.legend(frameon=False, loc="upper left"); panel_label(b, "b")
 
     # (C) model comparison SSE
     c = ax[1][0]
@@ -100,8 +102,8 @@ def main() -> None:
     lim = [0, max(locus.sse_A.max(), locus.sse_B.max()) * 1.05]
     c.plot(lim, lim, "0.6", lw=1)
     c.set_xlim(lim); c.set_ylim(lim)
-    c.set_xlabel("SSE — noise-only model"); c.set_ylabel("SSE — resolution-only model")
-    c.set_title("(C) Resolution beats noise 64/64 (p=3.5e-12)"); c.legend(frameon=False, fontsize=9)
+    c.set_xlabel("SSE, noise-only model"); c.set_ylabel("SSE, resolution-only model")
+    c.legend(frameon=False, loc="upper left"); panel_label(c, "c")
 
     # (D) n_crit violin
     d = ax[1][1]
@@ -115,15 +117,14 @@ def main() -> None:
     for i, (arr, grp) in enumerate(zip([ct, dd], ["contr", "DD"])):
         d.scatter(i + rng.normal(0, 0.05, arr.size), arr, s=14, color=COL[grp], alpha=0.7, zorder=3)
     d.set_xticks([0, 1]); d.set_xticklabels(["control", "DD"])
-    d.set_ylabel("per-subject n_crit (σ_n = 1)")
-    d.set_title(f"(D) Shorter exact range in DD  (p={p_nc:.3f})")
+    d.set_ylabel(r"per-subject $n_{\rm crit}$")
+    panel_label(d, "d")
 
-    fig.suptitle("De Carli developmental dyscalculia — coarser/shorter exact number code "
-                 "(super-linear Gaussian attractor)", y=1.01, fontsize=12)
     fig.tight_layout()
-    fig.savefig(OUT_FIG, dpi=190)
+    fig.savefig(OUT_FIG, dpi=300)
+    fig.savefig(OUT_FIG.with_suffix(".pdf"))
     plt.close(fig)
-    print(f"Saved {OUT_FIG}")
+    print(f"Saved {OUT_FIG} and .pdf")
 
 
 if __name__ == "__main__":

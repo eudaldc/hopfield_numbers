@@ -32,10 +32,19 @@ if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
 import scripts.trial_level_model_comparison as T
+from figures.plot_style import C_ATTR, apply_style, panel_label
+
+# Same house style as fig1/fig3 (comparable ~15-16in canvas width, so point
+# sizes end up the same physical size once the paper shrinks all three to
+# \columnwidth), but this figure packs 5x3 small panels rather than 2-3 full
+# width ones, so it uses a smaller font_scale tuned for that density.
+FONT_SCALE = 1.5
+apply_style(FONT_SCALE)
 
 WINNER = "gaussian_freebeta_attractor"
 THETA_CSV = T.OUT_DIR / "joint_refit_theta.csv"      # co-fit params (fallback below)
 OUT_FIG = T.OUT_DIR / "winner_cofit_summaries.png"
+OUT_FIG_PDF = T.OUT_DIR / "winner_cofit_summaries.pdf"
 
 
 def r2(obs: np.ndarray, pred: np.ndarray) -> float:
@@ -99,37 +108,37 @@ def main() -> None:
         ax0, ax1, ax2 = axes[0][ci], axes[1][ci], axes[2][ci]
         ax0.plot([1, 15], [1, 15], color="0.8", lw=0.8, zorder=0)
         ax0.plot(n, emp_mean, "k.", ms=8)
-        ax0.plot(n, pred_core_mean, color="#c0392b", lw=1.8)
+        ax0.plot(n, pred_core_mean, color=C_ATTR, lw=1.8)
         ax1.plot(n, emp_exact, "k.", ms=8)
-        ax1.plot(n, pred_exact, color="#c0392b", lw=1.8)
+        ax1.plot(n, pred_exact, color=C_ATTR, lw=1.8)
         ax2.plot(n, emp_rt_med, ".", color="0.72", ms=5)
         ax2.plot(n, emp_rt, "k.", ms=8)
-        ax2.plot(n, pred_rt, color="#2c7fb8", lw=1.8)
+        ax2.plot(n, pred_rt, color=C_ATTR, lw=1.8)
 
         ax0.set_title(f"{d} ms")
-        for ax, key in ((ax0, "mean"), (ax1, "exact"), (ax2, "rt")):
-            ax.text(0.04, 0.93, f"R²={r2s[key][-1]:.2f}", transform=ax.transAxes,
-                    fontsize=8, va="top")
+        for ax, key, hx, ha in ((ax0, "mean", 0.04, "left"),
+                                 (ax1, "exact", 0.96, "right"),
+                                 (ax2, "rt", 0.04, "left")):
+            ax.text(hx, 0.93, f"R²={r2s[key][-1]:.2f}", transform=ax.transAxes,
+                    fontsize=8.5 * FONT_SCALE, va="top", ha=ha)
         if ci == 0:
-            ax0.set_ylabel("mean guess (core)")
-            ax1.set_ylabel("% exact  P(r=n)")
-            ax2.set_ylabel("geom.-mean RT (s)")
+            ax0.set_ylabel("Mean guess")
+            ax1.set_ylabel("% exact")
+            ax2.set_ylabel("Mean RT (s)")
+            panel_label(ax0, "a")
+            panel_label(ax1, "b")
+            panel_label(ax2, "c")
         ax2.set_xlabel("n shown")
 
     # legend proxies
     from matplotlib.lines import Line2D
     axes[0][0].legend(handles=[
         Line2D([], [], marker=".", color="k", ls="", ms=9, label="data"),
-        Line2D([], [], color="#c0392b", lw=2, label="winner (co-fit)")],
-        fontsize=8, frameon=False, loc="lower right")
-
-    fig.suptitle("Winner joint co-fit — predicted (lines) vs data (dots; RT = geometric "
-                 "mean, median faint).  "
-                 f"Pooled R²: mean {np.nanmean(r2s['mean']):.2f}, "
-                 f"exact {np.nanmean(r2s['exact']):.2f}, RT {np.nanmean(r2s['rt']):.2f}",
-                 y=1.005)
+        Line2D([], [], color=C_ATTR, lw=2, label="winner (co-fit)")],
+        frameon=False, loc="lower right")
     fig.tight_layout()
-    fig.savefig(OUT_FIG, dpi=190)
+    fig.savefig(OUT_FIG_PDF, dpi=300)
+    fig.savefig(OUT_FIG, dpi=300)
     plt.close(fig)
 
     print(f"Saved {OUT_FIG}")

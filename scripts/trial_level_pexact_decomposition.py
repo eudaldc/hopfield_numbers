@@ -29,17 +29,20 @@ if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
 import scripts.trial_level_model_comparison as T
+from figures.plot_style import C_ATTR, C_BENCH, C_STATIC, apply_style, panel_label
 
 WIN = T.MODEL_BY_KEY["gaussian_freebeta_attractor"]
 OUT_FIG = T.OUT_DIR / "pexact_decomposition.png"
 
 
 def main() -> None:
+    apply_style(2.0)   # rendered at \columnwidth, 12 in canvas
     th = pd.read_csv(T.OUT_DIR / "winner_theta.csv").set_index("duration_ms")
     quad = T.make_quadrature(1601, kind="grid")
     n = T.N_SHOWN.astype(float)
 
-    fig, axes = plt.subplots(2, 2, figsize=(11, 8))
+    fig, axes = plt.subplots(2, 2, figsize=(12, 9), sharex=True)
+    letters = [["a", "c"], ["b", "d"]]
     for col, d in enumerate((80, 640)):
         theta = {p: float(th.loc[d, p]) for p in WIN.param_names}
         sigma_well = np.power(theta["sigma_c"] / T.FREQ, theta["beta"])   # per well 1..19
@@ -50,25 +53,30 @@ def main() -> None:
         pexact_off = np.array([g_off["p_resp"][i, int(nn) - 1] for i, nn in enumerate(n)]) * 100
 
         ax = axes[0][col]
-        ax.plot(T.WELLS, sigma_well, "o-", color="#2c7fb8", ms=3,
-                label=r"well width $\sigma_n$ (smooth)")
-        ax.plot(n, sd_sens, "s-", color="#7f8c8d", ms=3, label="sensory sd (smooth)")
-        ax.axhline(1.0, color="k", ls=":", lw=0.8)
-        ax.set_title(f"{d} ms — the 4-param landscape is SMOOTH")
-        ax.set_xlabel("n / well"); ax.set_ylabel("width")
-        ax.legend(fontsize=8, frameon=False)
+        ax.plot(T.WELLS, sigma_well, "o-", color=C_ATTR, ms=4,
+                label=r"Well width $\sigma_n$")
+        ax.plot(n, sd_sens, "s-", color=C_BENCH, ms=4, label="Sensory sd")
+        ax.axhline(1.0, color="0.25", ls=":", lw=1.0)
+        ax.set_ylabel("Width")
+        ax.legend(frameon=False, loc="upper left", fontsize=20)
+        ax.text(0.97, 0.06, f"{d} ms", transform=ax.transAxes, ha="right",
+                va="bottom", color="0.4")
+        panel_label(ax, letters[0][col])
 
         ax = axes[1][col]
-        ax.plot(n, pexact_on, "o-", color="#c0392b", ms=4, label="P(exact), cleanup ON")
-        ax.plot(n, pexact_off, "s--", color="#e08e0b", ms=3, label="P(exact), cleanup OFF")
-        ax.set_title(f"{d} ms — the READOUT on the integer lattice is bumpy")
-        ax.set_xlabel("n shown"); ax.set_ylabel("% exact")
-        ax.legend(fontsize=8, frameon=False)
+        ax.plot(n, pexact_on, "o-", color=C_ATTR, ms=5, label="Clean-up on")
+        ax.plot(n, pexact_off, "s--", color=C_STATIC, ms=4, label="Clean-up off")
+        ax.set_xlabel("Number shown  $n$"); ax.set_ylabel("% exact")
+        ax.legend(frameon=False, loc="upper right", fontsize=20)
+        ax.text(0.97, 0.55, f"{d} ms", transform=ax.transAxes, ha="right",
+                va="bottom", color="0.4")
+        panel_label(ax, letters[1][col])
 
     fig.tight_layout()
-    fig.savefig(OUT_FIG, dpi=160)
+    fig.savefig(OUT_FIG, dpi=300)
+    fig.savefig(OUT_FIG.with_suffix(".pdf"))
     plt.close(fig)
-    print(f"Saved {OUT_FIG}")
+    print(f"Saved {OUT_FIG} and .pdf")
 
 
 if __name__ == "__main__":

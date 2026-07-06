@@ -168,41 +168,44 @@ def make_figure(df: pd.DataFrame, corr: pd.DataFrame) -> None:
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
+    from figures.plot_style import apply_style, panel_label
 
+    apply_style(1.5)   # rendered at \textwidth (figure*), 16 in canvas
     quantities = list(PARAMS) + ["ncrit", "sigma3"]
     labels = {"sigma_c": r"$\sigma_c$ (log$_{10}$)", "s0": r"$s_0$ (log$_{10}$)",
               "lambda0": r"$\lambda_0$", "beta": r"$\beta$",
               "lapse": "lapse (log$_{10}$)", "ncrit": r"$n_{\rm crit}$ ($\sigma_n=1$)",
               "sigma3": r"$\sigma_3$ (log$_{10}$)"}
+    letters = "abcdefgh"
     fig, axes = plt.subplots(2, 4, figsize=(16, 8))
     cmap = plt.get_cmap("viridis")
     durs = sorted(df["duration_ms"].unique())
     colors = {d: cmap(i / max(1, len(durs) - 1)) for i, d in enumerate(durs)}
-    for ax, q in zip(axes.flat, quantities):
+    for k, (ax, q) in enumerate(zip(axes.flat, quantities)):
         g, r = _pair(df, q)
         for d in durs:
             m = (df["duration_ms"] == d).to_numpy()
-            ax.scatter(g[m], r[m], s=14, alpha=0.7, color=colors[d], label=f"{d} ms")
+            ax.scatter(g[m], r[m], s=16, alpha=0.75, color=colors[d], label=f"{d} ms")
         lo = np.nanmin([g.min(), r.min()])
         hi = np.nanmax([g.max(), r.max()])
-        ax.plot([lo, hi], [lo, hi], "--", color="grey", lw=1)
-        ax.set_xlabel("generating")
-        ax.set_ylabel("recovered")
-        ax.set_title(labels[q])
+        ax.plot([lo, hi], [lo, hi], "--", color="0.4", lw=1)
+        ax.set_xlabel(f"generating {labels[q]}")
+        ax.set_ylabel(f"recovered {labels[q]}")
+        panel_label(ax, letters[k])
     ax = axes.flat[-1]
-    im = ax.imshow(corr.to_numpy(), vmin=-1, vmax=1, cmap="RdBu_r")
-    ax.set_xticks(range(len(PARAMS)), PARAMS, rotation=45)
-    ax.set_yticks(range(len(PARAMS)), PARAMS)
-    for i in range(len(PARAMS)):
-        for j in range(len(PARAMS)):
-            ax.text(j, i, f"{corr.iloc[i, j]:.2f}", ha="center", va="center", fontsize=8)
-    ax.set_title("recovery-error correlations (Spearman)")
-    fig.colorbar(im, ax=ax, shrink=0.8)
-    axes.flat[0].legend(fontsize=8, loc="upper left")
-    fig.suptitle("Trial-level parameter recovery — super-linear Gaussian attractor (winner)")
+    # aspect="auto" + slim colorbar: the matrix fills the same axes box as the
+    # scatter panels instead of shrinking to a small square
+    im = ax.imshow(corr.to_numpy(), vmin=-1, vmax=1, cmap="RdBu_r", aspect="auto")
+    ticks = [r"$\sigma_c$", r"$s_0$", r"$\lambda_0$", r"$\beta$", "lapse"]
+    ax.set_xticks(range(len(PARAMS)), ticks)
+    ax.set_yticks(range(len(PARAMS)), ticks)
+    panel_label(ax, letters[len(quantities)])
+    fig.colorbar(im, ax=ax, fraction=0.046, pad=0.04)
+    axes.flat[0].legend(frameon=False, loc="upper left")
     fig.tight_layout()
-    fig.savefig(OUT_PNG, dpi=200)
-    print(f"Saved {OUT_PNG}")
+    fig.savefig(OUT_PNG, dpi=300)
+    fig.savefig(OUT_PNG.with_suffix(".pdf"))
+    print(f"Saved {OUT_PNG} and .pdf")
 
 
 def report(df: pd.DataFrame) -> None:

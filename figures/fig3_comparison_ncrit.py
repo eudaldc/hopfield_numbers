@@ -1,73 +1,117 @@
 #!/usr/bin/env python
-"""Figure 3 (revision): trial-level model comparison + the width law and n_crit.
+"""Figure 3 (revision): model comparison, RT channel, and the predicted limit.
 
-Panel a — Poisson-free response-AIC ladder from the trial-level comparison
-(consolidated_summary.csv). The width argument is carried by the nested
-fixed-sqrt(n) (beta = 1/2) Gaussian variants; the clean-up argument by the
-attractor vs static pairs at equal parameter count.
+Poisson-free throughout. Panels a and b are two column-aligned heatmaps with
+exposure durations as columns (plus a separated Total column); cells are dAIC
+relative to the best of each column, viridis, darker is better, shading scaled
+within each panel. Panel c is the width law.
 
-Panel b — the fitted width law sigma_n per exposure duration, the sigma_n = 1
-(adjacent-well d' = 1) resolvability line, and the emerging n_crit per duration:
-the model predicts its own limit, and the limit grows with exposure.
+  a — Response-likelihood dAIC over the ~53,000 individual responses, per
+      duration. Rows are model x dynamics: each well family split into its
+      clean-up and static variants, plus the Weber/ANS and normative
+      benchmarks. Shows the model comparison AND that the clean-up advantage
+      is concentrated at brief exposures (statics catch up at 320-640 ms).
+  b — RT-channel dAIC on the winning landscape, per duration: the hybrid
+      convergence-time + entropy link wins at every exposure, convergence
+      time alone stays close, the static entropy proxy degrades at longer
+      exposures. This is the response to the "RT is grafted on" objection.
+  c — The fitted width law sigma_n per exposure duration, the sigma_n = 1
+      resolvability line, and the emerging n_crit — the model predicts its own
+      limit, which grows with exposure.
 
     .venv/bin/python figures/fig3_comparison_ncrit.py
 """
 
 from __future__ import annotations
 
+import sys
 from pathlib import Path
 
 import matplotlib as mpl
-import matplotlib.gridspec as gridspec
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from matplotlib.patches import Rectangle
 
 ROOT = Path(__file__).resolve().parent.parent
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from figures.plot_style import apply_style, panel_label  # noqa: E402
+
 OUT_DIR = ROOT / "output" / "trial_level_model_comparison"
 OUT_STEM = ROOT / "figures" / "fig3_comparison_ncrit"
 
 FONT_SCALE = 2.1
-STYLE: dict = {
-    "figure.dpi": 150,
-    "savefig.dpi": 300,
-    "savefig.bbox": "tight",
-    "axes.titlesize": 13 * FONT_SCALE,
-    "axes.labelsize": 11 * FONT_SCALE,
-    "xtick.labelsize": 9 * FONT_SCALE,
-    "ytick.labelsize": 9 * FONT_SCALE,
-    "legend.fontsize": 8.5 * FONT_SCALE,
-    "font.family": "sans-serif",
-    "axes.spines.top": False,
-    "axes.spines.right": False,
-    "axes.grid": False,
-}
-mpl.rcParams.update(STYLE)
+apply_style(FONT_SCALE)
 
-# ── Panel a data: Poisson-free ladder ─────────────────────────────────
-LADDER = {
-    # model_key -> (label, category)
-    "gaussian_freebeta_attractor": ("Super-linear width attractor (free $\\beta$) $\\bigstar$", "attractor"),
-    "gaussian_pow_attractor": ("Power-law width attractor ($\\sigma_n \\propto n^p$)", "attractor"),
-    "gaussian_benford_free_beta": ("Super-linear width readout (no clean-up)", "static"),
-    "gaussian_pow_readout": ("Power-law width readout (no clean-up)", "static"),
-    "weber_ans": ("Weber/ANS ($\\sigma_n \\propto n$)", "benchmark"),
-    "gaussian_benford_attractor": ("Fixed $\\sqrt{n}$-width attractor ($\\beta = 1/2$)", "attractor"),
-    "gaussian_benford_no_cleanup": ("Fixed $\\sqrt{n}$-width readout (no clean-up)", "static"),
-    "cp_log_prior_proxy": ("C&P log-prior proxy", "benchmark"),
-}
-COLORS = {"attractor": "#4C72B0", "static": "#A3C0DE", "benchmark": "#9A9A9A"}
+CMAP = mpl.colormaps["viridis"]
+DUR_KEYS = [40, 80, 160, 320, 640, "total"]
+DUR_COLS = ["40 ms", "80", "160", "320", "640", "Total"]
 
-summary = pd.read_csv(OUT_DIR / "consolidated_summary.csv").set_index("model_key")
-rows = []
-for key, (label, cat) in LADDER.items():
-    rows.append({"key": key, "label": label, "cat": cat,
-                 "AIC": float(summary.loc[key, "resp_AIC"])})
-lad = pd.DataFrame(rows)
-lad["dAIC"] = lad["AIC"] - lad["AIC"].min()
-lad = lad.sort_values("dAIC", ascending=True).reset_index(drop=True)
+# ── Panel a: response dAIC per duration, model x dynamics ─────────────
+resp = pd.read_csv(OUT_DIR / "response_per_duration_aic.csv")
+piv_a = resp.pivot_table(index="model_key", columns="duration_ms", values="resp_AIC")
+piv_a["total"] = piv_a.sum(axis=1)
+piv_a = piv_a - piv_a.min(axis=0)
 
-# ── Panel b data: width law per duration ─────────────────────────────
+ROWS_A = [
+    ("Frequency wells + clean-up", "gaussian_freebeta_attractor"),
+    ("Frequency wells, static", "gaussian_benford_free_beta"),
+    ("Power-law wells + clean-up", "gaussian_pow_attractor"),
+    ("Power-law wells, static", "gaussian_pow_readout"),
+    ("Weber/ANS", "weber_ans"),
+    ("Normative (log-prior)", "cp_log_prior_proxy"),
+]
+vals_a = [[float(piv_a.loc[k, d]) for d in DUR_KEYS] for _, k in ROWS_A]
+
+# ── Panel b: RT-channel dAIC per duration on the winning landscape ────
+rt = pd.read_csv(OUT_DIR / "rt_exploration.csv")
+rt = rt[rt.model_key == "gaussian_freebeta_attractor"]
+piv_b = rt.pivot_table(index="metric", columns="duration_ms", values="AIC")
+piv_b = piv_b.loc[["hybrid", "steps", "entropy"]]
+piv_b["total"] = piv_b.sum(axis=1)
+piv_b = piv_b - piv_b.min(axis=0)
+
+ROWS_B = [
+    ("Convergence time + entropy", "hybrid"),
+    ("Convergence time", "steps"),
+    ("Readout entropy", "entropy"),
+]
+vals_b = [[float(piv_b.loc[k, d]) for d in DUR_KEYS] for _, k in ROWS_B]
+
+
+# ── Heatmap drawing helper ─────────────────────────────────────────────
+def heatmap(ax, vals, row_labels, xlabel, x_edges):
+    """dAIC heatmap: viridis on a sqrt scale (dark = best), values in the
+    cells, duration headers on top, channel label below the grid."""
+    nrow = len(vals)
+    vmax = max(v for row in vals for v in row)
+    for i, row in enumerate(vals):
+        y0 = nrow - 1 - i
+        for j, v in enumerate(row):
+            x0, x1 = x_edges[j]
+            frac = float(np.sqrt(v / vmax))
+            ax.add_patch(Rectangle((x0, y0), x1 - x0, 1.0, fc=CMAP(frac),
+                                   ec="white", lw=3, zorder=2))
+            ax.text((x0 + x1) / 2, y0 + 0.5, f"{v:.0f}", ha="center",
+                    va="center", fontsize=9.5 * FONT_SCALE,
+                    color="white" if frac < 0.55 else "0.15", zorder=3)
+    for (x0, x1), lab in zip(x_edges, DUR_COLS):
+        ax.text((x0 + x1) / 2, nrow + 0.13, lab, ha="center", va="bottom",
+                fontsize=8.5 * FONT_SCALE, color="0.15")
+    ax.set_xlabel(xlabel, labelpad=14)
+    ax.set_xlim(x_edges[0][0], x_edges[-1][1])
+    ax.set_ylim(0, nrow)
+    ax.set_xticks([])
+    ax.set_yticks([nrow - 0.5 - i for i in range(nrow)])
+    ax.set_yticklabels(row_labels)
+    ax.tick_params(length=0)
+    for s in ax.spines.values():
+        s.set_visible(False)
+
+
+# ── Panel c data: width law per duration ──────────────────────────────
 theta = pd.read_csv(OUT_DIR / "winner_theta.csv").set_index("duration_ms")
 DURATIONS = list(theta.index)
 
@@ -85,72 +129,49 @@ def ncrit(d: int) -> float:
 
 
 # ── Figure ────────────────────────────────────────────────────────────
-fig = plt.figure(figsize=(16, 15))
-gs = gridspec.GridSpec(2, 1, height_ratios=[1.0, 0.85], hspace=0.35)
-ax_lad = fig.add_subplot(gs[0])
-ax_w = fig.add_subplot(gs[1])
+fig = plt.figure(figsize=(15, 17.5))
 
-# Panel a — ladder
-ypos = np.arange(len(lad))[::-1]
-bars = ax_lad.barh(ypos, lad["dAIC"], height=0.62,
-                   color=[COLORS[c] for c in lad["cat"]],
-                   edgecolor=["0.1" if k == "gaussian_freebeta_attractor" else "none"
-                              for k in lad["key"]],
-                   linewidth=2.0, zorder=3)
-for y, (_, r) in zip(ypos, lad.iterrows()):
-    ax_lad.text(r["dAIC"] + 90, y, f"{r['dAIC']:.0f}" if r["dAIC"] > 0 else "best",
-                va="center", ha="left", fontsize=9 * FONT_SCALE, color="0.15")
-ax_lad.set_yticks(ypos)
-ax_lad.set_yticklabels(lad["label"])
-ax_lad.set_xlabel(r"$\Delta$AIC vs best (trial-level response likelihood)")
-ax_lad.set_xlim(0, lad["dAIC"].max() * 1.14)
-ax_lad.set_title("a", fontweight="bold", loc="left", x=-0.32)
+CELL_W, CELL_H = 0.082, 0.046
+GRID_LEFT = 0.364     # centres the heatmap block (labels + cells) on panel c
+X_EDGES = [(float(j), j + 1.0) for j in range(5)] + [(5.3, 6.3)]
+ax_a = fig.add_axes((GRID_LEFT, 0.955 - 6 * CELL_H, 6.3 * CELL_W, 6 * CELL_H))
+ax_b = fig.add_axes((GRID_LEFT, 0.60 - 3 * CELL_H, 6.3 * CELL_W, 3 * CELL_H))
+ax_c = fig.add_axes((0.10, 0.04, 0.87, 0.345))
 
-handles = [mpl.patches.Patch(color=COLORS[c], label=l) for c, l in
-           [("attractor", "attractor (clean-up)"), ("static", "static readout"),
-            ("benchmark", "benchmark")]]
-ax_lad.legend(handles=handles, loc="upper right", framealpha=0.9, edgecolor="0.75")
+heatmap(ax_a, vals_a, [r for r, _ in ROWS_A],
+        xlabel=r"$\Delta$AIC (response)", x_edges=X_EDGES)
+panel_label(ax_a, "a", x=-0.64, pad=30)
 
-# Panel b — width law and n_crit
+heatmap(ax_b, vals_b, [r for r, _ in ROWS_B],
+        xlabel=r"$\Delta$AIC (response time)", x_edges=X_EDGES)
+panel_label(ax_b, "b", x=-0.64, pad=30)
+
+# Panel c — width law and n_crit
 n_cont = np.linspace(1.0, 15.55, 800)
-dur_cmap = mpl.colormaps["viridis"]
-dur_colors = {d: dur_cmap(i / (len(DURATIONS) - 1)) for i, d in enumerate(DURATIONS)}
-
-ax_w.axhspan(1.0, 40.0, color="0.55", alpha=0.10, zorder=0)
-ax_w.axhline(1.0, color="0.25", lw=1.6, ls="--", zorder=2)
-
+dur_colors = {d: CMAP(i / (len(DURATIONS) - 1)) for i, d in enumerate(DURATIONS)}
+ax_c.axhspan(1.0, 40.0, color="0.55", alpha=0.10, zorder=0)
+ax_c.axhline(1.0, color="0.25", lw=1.6, ls="--", zorder=2)
 for d in DURATIONS:
-    s = sigma_of_n(d, n_cont)
-    ax_w.plot(n_cont, s, lw=2.4, color=dur_colors[d], zorder=3, label=f"{d} ms")
-    ax_w.plot(ncrit(d), 1.0, "o", ms=12, color=dur_colors[d], zorder=5,
+    ax_c.plot(n_cont, sigma_of_n(d, n_cont), lw=2.4, color=dur_colors[d], zorder=3,
+              label=f"{d} ms")
+    ax_c.plot(ncrit(d), 1.0, "o", ms=12, color=dur_colors[d], zorder=5,
               markeredgecolor="white", markeredgewidth=1.5)
 
-nc_min, nc_max = ncrit(DURATIONS[0]), ncrit(DURATIONS[-1])
-ax_w.annotate(
-    "", xy=(nc_max + 0.35, 1.0), xytext=(nc_min - 0.35, 1.0),
-    arrowprops=dict(arrowstyle="-|>", color="0.25", lw=2.0,
-                    shrinkA=0, shrinkB=0, connectionstyle="arc3,rad=-0.35"),
-    zorder=4,
-)
-ax_w.text(12.9, 5.4, "more exposure $\\rightarrow$\nexact range extends",
-          fontsize=9.5 * FONT_SCALE, ha="center", va="center", color="0.15",
-          bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="0.7", alpha=0.9))
-ax_w.text(1.45, 3.6, "wells merge:\napproximate regime",
+ax_c.text(1.45, 3.6, "Approximate regime",
           fontsize=9.5 * FONT_SCALE, ha="left", va="center", color="0.30")
-ax_w.text(5.2, 0.028, "wells resolvable:\nexact regime",
+ax_c.text(5.2, 0.028, "Exact regime",
           fontsize=9.5 * FONT_SCALE, ha="left", va="bottom", color="0.30")
-ax_w.text(15.35, 1.08, r"$\sigma_n = 1$  ($d' = 1$)",
+ax_c.text(15.35, 1.08, r"$\sigma_n = 1$",
           fontsize=9 * FONT_SCALE, ha="right", va="bottom", color="0.25")
-
-ax_w.set_yscale("log")
-ax_w.set_xlim(0.45, 15.55)
-ax_w.set_ylim(0.008, 12)
-ax_w.set_xticks(np.arange(1, 16))
-ax_w.set_xlabel("Number line  $n$")
-ax_w.set_ylabel(r"Well width  $\sigma_n$")
-ax_w.set_title("b", fontweight="bold", loc="left", x=-0.32)
-ax_w.legend(loc="lower right", ncols=2, framealpha=0.9, edgecolor="0.75",
-            title="exposure", title_fontsize=8.5 * FONT_SCALE)
+ax_c.set_yscale("log")
+ax_c.set_xlim(0.45, 15.55)
+ax_c.set_ylim(0.008, 12)
+ax_c.set_xticks(np.arange(1, 16))
+ax_c.set_xlabel("Number line  $n$")
+ax_c.set_ylabel(r"Well width  $\sigma_n$")
+panel_label(ax_c, "c", x=-0.075)
+ax_c.legend(loc="lower right", ncols=2, framealpha=0.9, edgecolor="0.75",
+            title="Exposure", title_fontsize=8.5 * FONT_SCALE)
 
 fig.savefig(f"{OUT_STEM}.png")
 fig.savefig(f"{OUT_STEM}.pdf")

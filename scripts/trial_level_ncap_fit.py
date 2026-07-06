@@ -26,7 +26,8 @@ To keep the landscape comparison apples-to-apples, the winner is re-fit on BOTH 
 capped (n <= NCAP) and full (n <= 15) data with identical optimiser settings here --
 we do not reuse an older saved fit.
 
-    .venv/bin/python -m scripts.trial_level_ncap_fit
+    .venv/bin/python -m scripts.trial_level_ncap_fit       # full refit (slow)
+    .venv/bin/python -m scripts.trial_level_ncap_figure    # figure only, from the saved CSVs
 """
 
 from __future__ import annotations
@@ -36,10 +37,6 @@ from pathlib import Path
 
 import numpy as np
 import pandas as pd
-import matplotlib
-
-matplotlib.use("Agg")
-import matplotlib.pyplot as plt
 
 _ROOT = Path(__file__).resolve().parent.parent
 if str(_ROOT) not in sys.path:
@@ -66,7 +63,6 @@ MAXITER, POPSIZE = 35, 10
 OUT_FIT = T.OUT_DIR / "ncap10_fit.csv"
 OUT_SUMMARY = T.OUT_DIR / "ncap10_summary.csv"
 OUT_NCRIT = T.OUT_DIR / "ncap10_ncrit.csv"
-OUT_FIG = T.OUT_DIR / "ncap10_comparison.png"
 
 
 def cap_trials(trial: pd.DataFrame, ncap: int) -> pd.DataFrame:
@@ -193,7 +189,9 @@ def main() -> None:
     ncrit = pd.DataFrame(ncrit_rows)
     ncrit.to_csv(OUT_NCRIT, index=False)
 
-    make_fig(fit_df, summ, ncrit)
+    # the SM figure is owned by the standalone script (replots from the CSVs)
+    from scripts.trial_level_ncap_figure import main as make_ncap_figure
+    make_ncap_figure()
 
     print("\n=== (B) ranking within n<=%d (capped, AIC summed over durations) ===" % NCAP)
     print(summ[["model", "AIC_total", "dAIC", "akaike_weight"]]
@@ -202,60 +200,7 @@ def main() -> None:
     show = ncrit.pivot_table(index="duration_ms", columns="regime",
                              values=["beta", "n_crit_sigma1", "n_pct_exact_50"])
     print(show.round(2).to_string())
-    print(f"\nSaved {OUT_FIT.name}, {OUT_SUMMARY.name}, {OUT_NCRIT.name}, {OUT_FIG.name}")
-
-
-def make_fig(fit_df: pd.DataFrame, summ: pd.DataFrame, ncrit: pd.DataFrame) -> None:
-    fig, axes = plt.subplots(1, 3, figsize=(13.5, 4.2))
-
-    # (1) n_crit vs duration, capped vs full
-    ax = axes[0]
-    for regime, mk, col in (("cap", "o-", "#c0392b"), ("full", "s--", "#2c7fb8")):
-        g = ncrit[ncrit.regime == regime].sort_values("duration_ms")
-        ax.plot(g["duration_ms"], g["n_crit_sigma1"], mk, color=col,
-                label=f"{regime} (sigma_n=1)")
-        ax.plot(g["duration_ms"], g["n_pct_exact_50"], mk, color=col, alpha=0.4,
-                label=f"{regime} (P(exact)=50%)")
-    ax.axhspan(4, 9, color="0.85", alpha=0.5, zorder=0, label="hypothesised 4-9")
-    ax.axhline(NCAP, color="k", ls=":", lw=0.8)
-    ax.set_xscale("log")
-    ax.set_xticks(T.DURATIONS)
-    ax.set_xticklabels([str(d) for d in T.DURATIONS])
-    ax.set_xlabel("exposure (ms)")
-    ax.set_ylabel("n_crit")
-    ax.set_title("(C) exact->approximate boundary")
-    ax.legend(fontsize=6.5, frameon=False)
-
-    # (2) beta capped vs full
-    ax = axes[1]
-    piv = ncrit.pivot_table(index="duration_ms", columns="regime", values="beta")
-    x = np.arange(len(piv.index))
-    ax.bar(x - 0.2, piv["cap"], 0.4, color="#c0392b", label="n<=%d" % NCAP)
-    ax.bar(x + 0.2, piv["full"], 0.4, color="#2c7fb8", label="n<=15")
-    ax.set_xticks(x)
-    ax.set_xticklabels([str(d) for d in piv.index])
-    ax.set_xlabel("exposure (ms)")
-    ax.set_ylabel(r"width exponent $\beta$")
-    ax.set_title("(A) did the tail distort the landscape?")
-    ax.legend(fontsize=8, frameon=False)
-
-    # (3) model ranking within n<=NCAP
-    ax = axes[2]
-    order = summ.sort_values("dAIC")
-    cols = ["#c0392b" if c else "#7f8c8d" for c in order["cleanup"]]
-    lbl = [T.MODEL_BY_KEY[k].label.split(" (")[0] for k in order["model_key"]]
-    ax.barh(np.arange(len(order)), order["dAIC"], color=cols)
-    ax.set_yticks(np.arange(len(order)))
-    ax.set_yticklabels(lbl, fontsize=8)
-    ax.invert_yaxis()
-    ax.set_xlabel(r"$\Delta$AIC (summed over durations)")
-    ax.set_title("(B) model ranking within n<=%d" % NCAP)
-
-    fig.suptitle("Small-range (n<=%d) refit: is this a mechanistic small-number model "
-                 "that predicts the ANS transition?" % NCAP, y=1.02, fontsize=11)
-    fig.tight_layout()
-    fig.savefig(OUT_FIG, dpi=190)
-    plt.close(fig)
+    print(f"\nSaved {OUT_FIT.name}, {OUT_SUMMARY.name}, {OUT_NCRIT.name}")
 
 
 if __name__ == "__main__":

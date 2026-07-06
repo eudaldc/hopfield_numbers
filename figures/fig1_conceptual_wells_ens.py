@@ -24,38 +24,30 @@ from __future__ import annotations
 
 from pathlib import Path
 
+import sys
+
 import matplotlib as mpl
 import matplotlib.gridspec as gridspec
+import matplotlib.patches as mpatches
 import matplotlib.patheffects as pe
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from matplotlib.colors import Normalize
+from matplotlib.path import Path as MplPath
 
 ROOT = Path(__file__).resolve().parent.parent
+if str(ROOT) not in sys.path:
+    sys.path.insert(0, str(ROOT))
+
+from figures.plot_style import C_STATIC, PALETTE, apply_style, panel_label  # noqa: E402
+
 THETA_CSV = ROOT / "output" / "trial_level_model_comparison" / "winner_theta.csv"
 OUT_STEM = ROOT / "figures" / "conceptual_attractor_wells_ens"
 
 # ── Project house style ───────────────────────────────────────────────
 FONT_SCALE = 2.1
-
-STYLE: dict = {
-    "figure.dpi": 150,
-    "savefig.dpi": 300,
-    "savefig.bbox": "tight",
-    "axes.titlesize": 13 * FONT_SCALE,
-    "axes.labelsize": 11 * FONT_SCALE,
-    "xtick.labelsize": 9 * FONT_SCALE,
-    "ytick.labelsize": 9 * FONT_SCALE,
-    "legend.fontsize": 8.5 * FONT_SCALE,
-    "font.family": "sans-serif",
-    "axes.spines.top": False,
-    "axes.spines.right": False,
-    "axes.grid": False,
-}
-mpl.rcParams.update(STYLE)
-
-PALETTE = ["#4C72B0", "#DD8452", "#55A868", "#C44E52", "#8172B3"]
+apply_style(FONT_SCALE)
 
 N_DISPLAY = 15
 N_LATTICE_MODEL = 19    # panel a: the fitted model's lattice (stimuli 1..15 + padding)
@@ -197,7 +189,9 @@ RT_ALPHA = float(rt_row["rt0"])
 RT_BETA = float(rt_row["rt1"])
 RT_at_int = RT_T0 + RT_ALPHA * ET_at_int + RT_BETA * H_at_int
 
-cmap_wells = mpl.colormaps["plasma"]
+# viridis is the paper's one continuous scale (fig. 2c durations, SM recovery);
+# here it encodes the number frequency f_n that sets each well's width/depth
+cmap_wells = mpl.colormaps["viridis"]
 norm_c = Normalize(vmin=-0.10, vmax=1.15)
 
 
@@ -230,51 +224,39 @@ for i in range(N_DISPLAY):
         zorder=5,
     )
 
-ax_land.axvline(NCRIT_SHOW, color="0.25", lw=1.6, ls=":", zorder=3)
 ax_land.text(
-    NCRIT_SHOW + 0.15, -3.35, r"$n_{\rm crit}$  ($\sigma_n = 1$)",
-    fontsize=9.5 * FONT_SCALE, color="0.25", ha="left", va="bottom",
-)
-
-ax_land.annotate(
-    "Deep, isolated wells:\nexact readout",
-    xy=(0.10, 0.34), xycoords="axes fraction",
-    xytext=(0.22, 0.10), textcoords="axes fraction",
-    fontsize=10 * FONT_SCALE, color="0.15", ha="center",
-    arrowprops=dict(arrowstyle="-|>", color="0.30", lw=1.5,
-                    connectionstyle="arc3,rad=0.30"),
+    0.2, 0.05, "Deep, isolated wells:\nexact readout",
+    transform=ax_land.transAxes,
+    fontsize=10 * FONT_SCALE, color="0.15", ha="center", va="bottom",
     zorder=6,
     bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="0.7", alpha=0.9),
 )
-ax_land.annotate(
-    "Shallow, merged wells:\napproximate readout",
-    xy=(0.90, 0.78), xycoords="axes fraction",
-    xytext=(0.70, 0.44), textcoords="axes fraction",
-    fontsize=10 * FONT_SCALE, color="0.15", ha="center",
-    arrowprops=dict(arrowstyle="-|>", color="0.30", lw=1.5,
-                    connectionstyle="arc3,rad=-0.25"),
+ax_land.text(
+    0.8, 0.52, "Shallow, merged wells:\napproximate readout",
+    transform=ax_land.transAxes,
+    fontsize=10 * FONT_SCALE, color="0.15", ha="center", va="bottom",
     zorder=6,
     bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="0.7", alpha=0.9),
 )
 
 ax_land.set_xlim(*XLIM)
 ax_land.set_ylim(-4.6, 0.55)
-ax_land.set_xlabel("Evidence axis  $x$  (the number line a trial's state moves on)")
-ax_land.set_ylabel("Energy  $E(x)$")
-ax_land.set_title("a", fontweight="bold", loc="left", x=0.015)
+ax_land.set_xlabel("Evidence axis  $x$")
+ax_land.set_ylabel("Energy")
+panel_label(ax_land, "a")
 ax_land.set_xticks(integers_display)
 ax_land.set_xticklabels([str(n) for n in integers_display])
 ax_land.set_yticks([])
 
 # Secondary y-axis: number frequency (drives the well widths)
-FREQ_COLOR = "#CC6677"
+FREQ_COLOR = PALETTE[1]   # deep-palette orange — the external frequency prior f_n
 ax_fq = ax_land.twinx()
 ax_fq.plot(
     integers_display, benford_freq[:N_DISPLAY], "-o",
     color=FREQ_COLOR, ms=5, lw=1.8, alpha=0.85,
     markeredgecolor="white", markeredgewidth=0.8, zorder=7,
 )
-ax_fq.set_ylabel(r"Number frequency  $f_n$", color=FREQ_COLOR, labelpad=10)
+ax_fq.set_ylabel("Number frequency", color=FREQ_COLOR, labelpad=10)
 ax_fq.tick_params(axis="y", colors=FREQ_COLOR)
 ax_fq.set_ylim(0, benford_freq[0] * 1.15)
 ax_fq.spines["right"].set_visible(True)
@@ -284,65 +266,25 @@ ax_fq.spines["right"].set_alpha(0.5)
 # ──────────────────────────────────────────────────────────────────────
 #  Panel b — Posterior entropy before vs after clean-up
 # ──────────────────────────────────────────────────────────────────────
-ax_ent.plot(n_int, H_pre_i, "-", color="0.68", lw=1.8, zorder=2)
-ax_ent.plot(n_int, H_at_int, "-", color="0.10", lw=2.6, zorder=3)
+ax_ent.plot(n_int, H_at_int, "-", color="0.10", lw=2.6, zorder=7)
 
 for i in range(N_DISPLAY):
-    ax_ent.axvline(wells_a[i], color="0.92", lw=0.3, zorder=0)
     ax_ent.plot(wells_a[i], H_at_int[i], "o", color=well_color(i), ms=10,
-                zorder=6, markeredgecolor="white", markeredgewidth=1.5)
+                zorder=8, markeredgecolor="white", markeredgewidth=1.5)
 
-ax_ent.axvline(NCRIT_SHOW, color="0.25", lw=1.6, ls=":", zorder=1)
-
+# fixed vertical scale (kept independent of the plotted curve so the panel
+# layout and the inset placements do not shift)
 H_max = float(np.max(H_pre_i))
-
-# inline labels for the two curves
-ax_ent.annotate(
-    "before clean-up",
-    xy=(3.0, H_pre_i[2]), xytext=(3.4, H_max * 1.10),
-    fontsize=9.5 * FONT_SCALE, color="0.45", ha="center", fontstyle="italic",
-    arrowprops=dict(arrowstyle="-|>", color="0.55", lw=1.4,
-                    connectionstyle="arc3,rad=-0.2"),
-    zorder=8,
-)
-ax_ent.annotate(
-    "after clean-up",
-    xy=(11.0, H_at_int[10]),
-    xytext=(11.6, H_max * 0.52),
-    fontsize=9.5 * FONT_SCALE, color="0.10", ha="center", fontstyle="italic",
-    arrowprops=dict(arrowstyle="-|>", color="0.30", lw=1.4,
-                    connectionstyle="arc3,rad=0.25"),
-    zorder=8,
-)
-
-# twin axis: the attractor's convergence time (the second RT ingredient)
-STEPS_COLOR = "#4C72B0"
-ax_st = ax_ent.twinx()
-ax_st.plot(n_int, ET_at_int, "-", color=STEPS_COLOR, lw=2.4, alpha=0.9, zorder=2)
-ax_st.set_ylabel("Convergence steps  $E[T]$", color=STEPS_COLOR, labelpad=10)
-ax_st.tick_params(axis="y", colors=STEPS_COLOR)
-ax_st.set_ylim(0, 215)
-ax_st.spines["right"].set_visible(True)
-ax_st.spines["right"].set_color(STEPS_COLOR)
-ax_st.spines["right"].set_alpha(0.5)
-ax_st.annotate(
-    "clean-up steps",
-    xy=(6.0, ET_at_int[5]), xytext=(7.9, 52),
-    fontsize=9.5 * FONT_SCALE, color=STEPS_COLOR, ha="center", fontstyle="italic",
-    arrowprops=dict(arrowstyle="-|>", color=STEPS_COLOR, lw=1.4,
-                    connectionstyle="arc3,rad=0.25"),
-    zorder=8,
-)
 
 # Insets: example posteriors after clean-up (sharp / moderate / broad)
 INSET_HALF = 3
 INSET_PAD = 0.8
 inset_ns = [2, 6, 12]
-inset_labels = ["sharp", "moderate", "broad"]
+inset_labels = ["sharp", "moderate", "broad"]   # kept for per-inset scaling/axis logic; not shown in titles
 inset_bounds = [
-    [0.028, 0.50, 0.15, 0.36],
-    [0.40, 0.58, 0.15, 0.36],
-    [0.78, 0.62, 0.15, 0.36],
+    [0.028, 0.392, 0.15, 0.36],   # sharp (y0=2): centred above n=2, lowered 0.3h
+    [0.325, 0.52, 0.15, 0.36],   # moderate (y0=6): axis trimmed to 5-9, box shifted so n=6 sits above n=6
+    [0.690, 0.70, 0.15, 0.24],   # broad (y0=12): raised above the E[H] curve; title moved to its right
 ]
 post_at = posterior_of(mu_star)
 global_max_p = 0.0
@@ -353,7 +295,7 @@ INSET_YLIM = global_max_p * 1.10
 
 for n_pos, lbl, bounds in zip(inset_ns, inset_labels, inset_bounds):
     ins = ax_ent.inset_axes(bounds)
-    ins.set_facecolor("white")
+    ins.set_facecolor("none")   # transparent so the readout curve reads on top, uncut
     post_n = post_at[n_pos - 1, :]
     mask = (wells_b >= n_pos - INSET_HALF) & (wells_b <= n_pos + INSET_HALF)
     ns_show = wells_b[mask].astype(int)
@@ -361,23 +303,80 @@ for n_pos, lbl, bounds in zip(inset_ns, inset_labels, inset_bounds):
     colors_show = [well_color(min(j, N_LATTICE_MODEL - 1)) for j in np.where(mask)[0]]
     ins.bar(ns_show, ps_show, color=colors_show, edgecolor="white",
             linewidth=0.4, width=0.7)
-    ins.set_xlim(ns_show[0] - INSET_PAD, ns_show[-1] + INSET_PAD)
-    ins.set_ylim(0, INSET_YLIM)
-    ins.set_xticks(ns_show)
-    step_lbl = ns_show[::2]
-    ins.set_xticklabels([str(n) if n in step_lbl else "" for n in ns_show],
-                        fontsize=8.5 * FONT_SCALE)
+    # moderate/broad readouts have low peaks; give them their own scale so the bars stay legible
+    if lbl == "broad":
+        ins.set_ylim(0, ps_show.max() * 1.05)   # tight headroom: small gap between bars and title
+    elif lbl == "moderate":
+        ins.set_ylim(0, ps_show.max() * 1.20)
+    else:
+        ins.set_ylim(0, INSET_YLIM)
+    if lbl == "sharp":
+        # single bar at n_pos: trim the empty 4-5 tail, label every integer shown (1-3)
+        ins.set_xlim(n_pos - 1.6, n_pos + 1.6)
+        ins.set_xticks([n_pos - 1, n_pos, n_pos + 1])
+        ins.set_xticklabels([str(n_pos - 1), str(n_pos), str(n_pos + 1)], fontsize=8.5 * FONT_SCALE)
+        ins.tick_params(axis="x", pad=2.0)   # raise the labels a point toward the axis
+    elif lbl == "moderate":
+        # bars at 3-4 are ~0: start the axis at 5, label every integer 5..9
+        ticks = [n for n in ns_show if n >= 5]
+        ins.set_xlim(5 - 0.5, ns_show[-1] + INSET_PAD)
+        ins.set_xticks(ticks)
+        ins.set_xticklabels([str(n) for n in ticks], fontsize=8.5 * FONT_SCALE)
+    else:  # broad: label the even numbers so that 12 (the presented value) is shown
+        ins.set_xlim(ns_show[0] - INSET_PAD, ns_show[-1] + INSET_PAD)
+        ins.set_xticks(ns_show)
+        ins.set_xticklabels([str(n) if n % 2 == 0 else "" for n in ns_show],
+                            fontsize=8.5 * FONT_SCALE)
     ins.set_yticks([])
-    ins.set_title(f"$p(n \\mid x^*)$, $y_0\\!=\\!{n_pos}$ — {lbl}\n"
-                  f"$H = {H_single[n_pos - 1]:.2f}$",
-                  fontsize=8 * FONT_SCALE, y=0.97)
+    title_txt = f"$y_0\\!=\\!{n_pos}$\n$H = {H_single[n_pos - 1]:.2f}$"
+    if lbl == "broad":
+        # title placed to the right of the bars (not above) so the whole
+        # inset can sit above the E[H] curve without the title crossing it
+        ins.text(1.08, 0.5, title_txt, transform=ins.transAxes,
+                  fontsize=8 * FONT_SCALE, ha="left", va="center")
+    else:
+        ins.set_title(title_txt, fontsize=8 * FONT_SCALE, y=0.97)
     for sp in ("top", "right", "left"):
         ins.spines[sp].set_visible(False)
 
+# Single label explaining what the three insets show, with a concave arrow to each
+LABEL_ANCHOR = ((10.0 - XLIM[0]) / (XLIM[1] - XLIM[0]), 0.06)   # above the "10" tick
+ARROW_COLOR = "0.35"
+label_text = ax_ent.text(
+    *LABEL_ANCHOR, "Posterior distribution\nover input $y_0$",
+    transform=ax_ent.transAxes, fontsize=9.5 * FONT_SCALE,
+    ha="center", va="bottom", color=ARROW_COLOR, zorder=9,
+)
+fig.canvas.draw()   # so the label's rendered extent is known before placing arrows above it
+label_top = ax_ent.transAxes.inverted().transform(
+    label_text.get_window_extent(renderer=fig.canvas.get_renderer()))[1, 1]
+
+PANEL_DIP = 1.0 / 12    # arrows sag this fraction of the panel height below the chord
+ARROW_GAP = 1.0 / 40    # arrows start this far above the label's top, clear of the text
+ARROW_START = (LABEL_ANCHOR[0], label_top + ARROW_GAP)
+ARROW_TARGET_ADJUST = {   # (dx, dy) in units of the inset's own height h
+    "sharp": (0.18, 0.08),
+    "moderate": (0.16, 0.04),
+    "broad": (0.0, 0.0),
+}
+for lbl, (x0, y0, w, h) in zip(inset_labels, inset_bounds):
+    dx, dy = ARROW_TARGET_ADJUST[lbl]
+    target = (x0 + w / 2 + dx * h, y0 - 0.32 * h + dy * h)
+    control = ((ARROW_START[0] + target[0]) / 2,
+               (ARROW_START[1] + target[1]) / 2 - PANEL_DIP)
+    path = MplPath([ARROW_START, control, target],
+                   [MplPath.MOVETO, MplPath.CURVE3, MplPath.CURVE3])
+    ax_ent.add_patch(mpatches.FancyArrowPatch(
+        path=path, transform=ax_ent.transAxes,
+        arrowstyle="->", color=ARROW_COLOR, lw=1.1,
+        shrinkA=4, shrinkB=6, mutation_scale=14,
+        zorder=3,   # under the E[H] curve/dots (zorder 7-8): arrows read as pointers, not clutter
+    ))
+
 ax_ent.set_xlim(*XLIM)
 ax_ent.set_ylim(-0.03, H_max * 1.75)
-ax_ent.set_ylabel("Expected readout entropy  $E[H]$")
-ax_ent.set_title("b", fontweight="bold", loc="left", x=0.015)
+ax_ent.set_ylabel("Readout entropy")
+panel_label(ax_ent, "b")
 ax_ent.set_xticks(integers_display)
 ax_ent.set_xticklabels([str(n) for n in integers_display])
 ax_ent.set_yticks([])
@@ -389,33 +388,31 @@ band_t0 = np.full_like(n_int, RT_T0)
 band_steps = RT_ALPHA * ET_at_int
 band_H = RT_BETA * H_at_int
 ax_rt.stackplot(n_int, band_t0, band_steps, band_H,
-                colors=["0.92", "#A3C0DE", "#C9B8D8"], zorder=1)
+                colors=["0.92", C_STATIC, "#C9B8D8"], zorder=1)  # tint of PALETTE[4]
 RT_line = band_t0 + band_steps + band_H
 ax_rt.plot(n_int, RT_line, color="0.10", lw=2.6, zorder=4)
 for i in range(N_DISPLAY):
     ax_rt.plot(wells_a[i], RT_at_int[i], "o", color=well_color(i), ms=10,
                zorder=6, markeredgecolor="white", markeredgewidth=1.5)
-ax_rt.axvline(NCRIT_SHOW, color="0.25", lw=1.6, ls=":", zorder=3)
-
 handles = [
-    mpl.patches.Patch(color="0.92", label="basal latency  $t_0$"),
-    mpl.patches.Patch(color="#A3C0DE", label=r"attractor time  $\alpha\,E[T]$"),
-    mpl.patches.Patch(color="#C9B8D8", label=r"readout uncertainty  $\beta_H\,E[H]$"),
+    mpl.patches.Patch(color="0.92", label="Basal latency  $t_0$"),
+    mpl.patches.Patch(color=C_STATIC, label=r"Attractor time  $\alpha\,E[T]$"),
+    mpl.patches.Patch(color="#C9B8D8", label=r"Readout uncertainty  $\beta_H\,E[H]$"),
 ]
 ax_rt.legend(handles=handles, loc="upper left", framealpha=0.95, edgecolor="0.75")
-ax_rt.text(0.985, 0.06, r"$\mathrm{RT} = t_0 + \alpha\,E[T] + \beta_H\,E[H]$",
+ax_rt.text(0.90, 0.20, r"$\mathrm{RT} = t_0 + \alpha\,E[T] + \beta_H\,E[H]$",
            transform=ax_rt.transAxes, ha="right", va="bottom",
            fontsize=10 * FONT_SCALE, color="0.15")
-ax_rt.text(1.7, RT_at_int[0] + 0.22, "fast, exact", fontsize=9.5 * FONT_SCALE,
+ax_rt.text(1.7, RT_at_int[0] + 0.22, "Fast, exact", fontsize=9.5 * FONT_SCALE,
            color=PALETTE[2], fontweight="bold", ha="left")
-ax_rt.text(14.9, RT_line.max() - 0.30, "slow, approximate",
+ax_rt.text(14.9, RT_line.max() - 0.30, "Slow, approximate",
            fontsize=9.5 * FONT_SCALE, color=PALETTE[3], fontweight="bold", ha="right")
 
 ax_rt.set_xlim(*XLIM)
 ax_rt.set_ylim(1.05, RT_line.max() * 1.06)
 ax_rt.set_ylabel("Predicted RT  (s)")
-ax_rt.set_xlabel("Presented numerosity  $n$  (one clean-up episode per trial)")
-ax_rt.set_title("c", fontweight="bold", loc="left", x=0.015)
+ax_rt.set_xlabel("Presented numerosity  $n$")
+panel_label(ax_rt, "c")
 ax_rt.set_xticks(integers_display)
 ax_rt.set_xticklabels([str(n) for n in integers_display])
 
