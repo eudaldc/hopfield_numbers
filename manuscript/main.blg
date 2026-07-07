@@ -1,48 +1,46 @@
-This is BibTeX, Version 0.99d (TeX Live 2025)
+This is BibTeX, Version 0.99e (TeX Live 2026)
 Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: main.aux
 The style file: SageH.bst
 Database file #1: references.bib
-Warning--empty pages in ramsauer_hopfield_2021
-You've used 28 entries,
+You've used 38 entries,
             2905 wiz_defined-function locations,
-            825 strings with 11865 characters,
-and the built_in function-call counts, 32743 in all, are:
-= -- 3476
-> -- 856
-< -- 14
-+ -- 340
-- -- 301
-* -- 2490
-:= -- 4040
-add.period$ -- 86
-call.type$ -- 28
-change.case$ -- 246
-chr.to.int$ -- 29
-cite$ -- 29
-duplicate$ -- 3216
-empty$ -- 2427
-format.name$ -- 398
-if$ -- 6658
+            894 strings with 14118 characters,
+and the built_in function-call counts, 45059 in all, are:
+= -- 4800
+> -- 1204
+< -- 16
++ -- 475
+- -- 424
+* -- 3452
+:= -- 5570
+add.period$ -- 119
+call.type$ -- 38
+change.case$ -- 334
+chr.to.int$ -- 39
+cite$ -- 38
+duplicate$ -- 4409
+empty$ -- 3306
+format.name$ -- 555
+if$ -- 9147
 int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 300
-newline$ -- 149
-num.names$ -- 112
-pop$ -- 1492
+missing$ -- 407
+newline$ -- 202
+num.names$ -- 152
+pop$ -- 2040
 preamble$ -- 1
-purify$ -- 212
+purify$ -- 293
 quote$ -- 0
-skip$ -- 454
+skip$ -- 610
 stack$ -- 0
-substring$ -- 3732
-swap$ -- 777
+substring$ -- 5162
+swap$ -- 1061
 text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 246
-warning$ -- 1
-while$ -- 231
+type$ -- 336
+warning$ -- 0
+while$ -- 321
 width$ -- 0
-write$ -- 399
-(There was 1 warning)
+write$ -- 545

@@ -36,10 +36,14 @@ from scripts.decarli_gaussian_freebeta_subjects import (
 MIRROR_BOUNDS = [(1e-6, 0.5), (1e-4, 0.5), (0.05, 1.5), (0.0, 6.0)]
 
 
-def cohens_d(a: np.ndarray, b: np.ndarray) -> float:
-    na, nb = a.size, b.size
-    sp = np.sqrt(((na - 1) * a.var(ddof=1) + (nb - 1) * b.var(ddof=1)) / (na + nb - 2))
-    return float((a.mean() - b.mean()) / sp) if sp > 0 else np.nan
+def rank_biserial(a: np.ndarray, b: np.ndarray) -> float:
+    """Rank-biserial correlation for the Mann-Whitney comparison of a vs b.
+
+    Positive means a tends to rank above b; ties handled via scipy's U (which
+    splits them at 0.5). This is the effect size that matches the MW test.
+    """
+    u = mannwhitneyu(a, b, alternative="two-sided")[0]
+    return float(2.0 * u / (a.size * b.size) - 1.0)
 
 
 def fit_noise_subject(acc, rt, common, quad, x0) -> dict:
@@ -96,15 +100,15 @@ def main() -> None:
     dd_a, ct_a = band_acc("DD"), band_acc("contr")
     dd_r, ct_r = band_rt("DD"), band_rt("contr")
     print(f"  accuracy n=4-6: DD {dd_a.mean():.3f} vs contr {ct_a.mean():.3f}  "
-          f"Cohen d={cohens_d(dd_a, ct_a):+.2f}")
+          f"r_rb={rank_biserial(dd_a, ct_a):+.2f}")
     print(f"  median RT n=4-7: DD {dd_r.mean():.3f}s vs contr {ct_r.mean():.3f}s  "
-          f"Cohen d={cohens_d(dd_r, ct_r):+.2f}")
+          f"r_rb={rank_biserial(dd_r, ct_r):+.2f}")
     # n_crit effect size for comparison (from the width-free fit)
     subj = pd.read_csv(_ROOT / "output" / "decarli_fit" / "gaussian_freebeta_subjects.csv")
     ncd = subj[subj.group == "DD"].n_crit_sigma1.to_numpy()
     ncc = subj[subj.group == "contr"].n_crit_sigma1.to_numpy()
     print(f"  n_crit (width-free fit): DD {np.median(ncd):.2f} vs contr {np.median(ncc):.2f}  "
-          f"Cohen d={cohens_d(ncd, ncc):+.2f}")
+          f"r_rb={rank_biserial(ncd, ncc):+.2f}")
     print("\nSaved gaussian_freebeta_locus.csv")
 
 

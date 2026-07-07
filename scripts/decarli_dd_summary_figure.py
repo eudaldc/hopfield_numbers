@@ -23,6 +23,8 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
+from matplotlib.patches import Patch
 from scipy.stats import mannwhitneyu
 
 _ROOT = Path(__file__).resolve().parent.parent
@@ -34,12 +36,8 @@ from scripts.decarli_gaussian_freebeta import DATA, NVALS, GROUPS, OUT_DIR, pred
 from figures.plot_style import C_ATTR, C_WARN, apply_style, panel_label
 
 COL = {"DD": C_WARN, "contr": C_ATTR}
-LAB = {"DD": "DD", "contr": "control"}
+LAB = {"DD": "DD", "contr": "Control"}
 OUT_FIG = OUT_DIR / "decarli_dd_summary.png"
-
-
-def stars(p: float) -> str:
-    return "***" if p < 1e-3 else "**" if p < 1e-2 else "*" if p < 0.05 else ""
 
 
 def main() -> None:
@@ -59,9 +57,6 @@ def main() -> None:
             out[grp] = (mean, sem)
         return out
     acc, rt = summ("Accuracy"), summ("RTs")
-    accp = [mannwhitneyu(df[(df.Group=="DD")&(df.Numerosity==n)].Accuracy,
-                         df[(df.Group=="contr")&(df.Numerosity==n)].Accuracy,
-                         alternative="two-sided")[1] for n in NVALS]
 
     fig, ax = plt.subplots(2, 2, figsize=(11, 8.6))
 
@@ -70,29 +65,31 @@ def main() -> None:
     for grp in GROUPS:
         mean, sem = acc[grp]
         a.errorbar(NVALS, 100*mean, yerr=100*sem, fmt="o", color=COL[grp], ms=6,
-                   capsize=3, label=f"{LAB[grp]} (data)")
+                   capsize=3)
         theta_vec = np.array([fitted.loc[grp, p] for p in PNAMES])
         pe, _ = predict(theta_vec, quad)
         a.plot(NVALS, 100*pe, "-", color=COL[grp], lw=1.4, alpha=0.6)
-    for i, n in enumerate(NVALS):
-        s = stars(accp[i])
-        if s:
-            a.text(n, 100*max(acc["DD"][0][i], acc["contr"][0][i]) + 4, s,
-                   ha="center", fontsize=20, color="0.3")
     a.set_xlabel("Numerosity"); a.set_ylabel("% exact"); a.set_ylim(30, 105)
-    a.legend(frameon=False, loc="lower left"); panel_label(a, "a")
+    a.set_xticks(NVALS)
+    # legend shared with (b): color = group, style = data vs model
+    handles = [Patch(facecolor=COL["DD"], label="DD"),
+               Patch(facecolor=COL["contr"], label="Control"),
+               a.errorbar([np.nan], [np.nan], yerr=[1], fmt="o", color="0.3", ms=6,
+                          capsize=3, label="Data"),
+               Line2D([], [], color="0.3", lw=1.4, label="Model")]
+    a.legend(handles=handles, frameon=False, loc="lower left"); panel_label(a, "a")
 
     # (B) RT
     b = ax[0][1]
     for grp in GROUPS:
         mean, sem = rt[grp]
-        b.errorbar(NVALS, mean, yerr=sem, fmt="o", color=COL[grp], ms=6, capsize=3,
-                   label=f"{LAB[grp]} (data)")
+        b.errorbar(NVALS, mean, yerr=sem, fmt="o", color=COL[grp], ms=6, capsize=3)
         theta_vec = np.array([fitted.loc[grp, p] for p in PNAMES])
         _, prt = predict(theta_vec, quad)
         b.plot(NVALS, prt, "-", color=COL[grp], lw=1.4, alpha=0.6)
     b.set_xlabel("Numerosity"); b.set_ylabel("Median RT (s)")
-    b.legend(frameon=False, loc="upper left"); panel_label(b, "b")
+    b.set_xticks(NVALS)
+    panel_label(b, "b")
 
     # (C) model comparison SSE
     c = ax[1][0]
@@ -102,22 +99,34 @@ def main() -> None:
     lim = [0, max(locus.sse_A.max(), locus.sse_B.max()) * 1.05]
     c.plot(lim, lim, "0.6", lw=1)
     c.set_xlim(lim); c.set_ylim(lim)
-    c.set_xlabel("SSE, noise-only model"); c.set_ylabel("SSE, resolution-only model")
+    c.set_xlabel("SSE, noise-only"); c.set_ylabel("SSE, resolution-only")
     c.legend(frameon=False, loc="upper left"); panel_label(c, "c")
 
-    # (D) n_crit violin
+    # (D) n_crit boxplot
     d = ax[1][1]
     dd = locus[locus.group == "DD"].n_crit_A.to_numpy()
     ct = locus[locus.group == "contr"].n_crit_A.to_numpy()
     p_nc = mannwhitneyu(dd, ct, alternative="two-sided")[1]
-    parts = d.violinplot([ct, dd], positions=[0, 1], showmedians=True, widths=0.8)
-    for pc, grp in zip(parts["bodies"], ["contr", "DD"]):
-        pc.set_facecolor(COL[grp]); pc.set_alpha(0.4)
+    bp = d.boxplot([ct, dd], positions=[0, 1], widths=0.5, patch_artist=True,
+                   showfliers=False, medianprops={"color": "black"})
+    for patch, grp in zip(bp["boxes"], ["contr", "DD"]):
+        patch.set_facecolor(COL[grp]); patch.set_alpha(0.4)
     rng = np.random.default_rng(0)
     for i, (arr, grp) in enumerate(zip([ct, dd], ["contr", "DD"])):
         d.scatter(i + rng.normal(0, 0.05, arr.size), arr, s=14, color=COL[grp], alpha=0.7, zorder=3)
-    d.set_xticks([0, 1]); d.set_xticklabels(["control", "DD"])
+    d.set_xticks([0, 1]); d.set_xticklabels(["Control", "DD"])
     d.set_ylabel(r"per-subject $n_{\rm crit}$")
+    # significance bar: Mann-Whitney p + rank-biserial correlation (DD - Control;
+    # negative = DD resolve to fewer numerosities, matching the manuscript sign)
+    u_dd = mannwhitneyu(dd, ct, alternative="two-sided")[0]
+    r_rb = 2 * u_dd / (dd.size * ct.size) - 1
+    lo = min(ct.min(), dd.min()); hi = max(ct.max(), dd.max()); span = hi - lo
+    y0, tick = hi + 0.08*span, 0.03*span
+    d.plot([0, 0, 1, 1], [y0, y0 + tick, y0 + tick, y0], color="black", lw=1.2)
+    p_txt = f"p = {p_nc:.3f}" if p_nc >= 1e-3 else "p < 0.001"
+    d.text(0.5, y0 + tick + 0.02*span, f"{p_txt}, $r_{{\\rm rb}}$ = {r_rb:.2f}",
+           ha="center", va="bottom")
+    d.set_ylim(lo - 0.06*span, y0 + 0.28*span)
     panel_label(d, "d")
 
     fig.tight_layout()
