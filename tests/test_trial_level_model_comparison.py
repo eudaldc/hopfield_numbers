@@ -25,6 +25,7 @@ def test_response_probs_sum_to_one_all_models() -> None:
         "gaussian": dict(sigma_c=0.05, s0=0.0018, lambda0=3.4),
         "gaussian_freebeta": dict(sigma_c=0.05, s0=0.0018, lambda0=3.4, beta=1.8),
         "gaussian_pow": dict(sigma_c=0.1, s0=0.0018, lambda0=3.4, pow=1.6),
+        "gaussian_const": dict(sigma_c=0.1, s0=0.0018, lambda0=3.4),
         "weber": dict(sigma0=0.2, exponent=0.5, decision_width=0.15),
         "cp": dict(sigma_log=0.3, alpha=0.5, readout_temp=1.0),
     }
@@ -90,9 +91,19 @@ def test_poisson_pow_reduces_to_poisson_at_qvar_one() -> None:
     assert np.allclose(g_p["ET"], g_pp["ET"])
 
 
+def test_constant_width_reduces_to_power_law_at_p_zero() -> None:
+    theta = dict(sigma_c=0.1, s0=0.0018, lambda0=3.4)
+    const = T.MODEL_BY_KEY["gaussian_const_attractor"]
+    power = T.MODEL_BY_KEY["gaussian_pow_attractor"]
+    g_const = T.compute_grid(const, theta, QUAD)
+    g_power = T.compute_grid(power, dict(theta, pow=0.0), QUAD)
+    assert np.allclose(g_const["p_resp"], g_power["p_resp"], atol=1e-12)
+    assert np.allclose(g_const["ET"], g_power["ET"])
+
+
 def test_winner_is_registered_with_dynamics() -> None:
     spec = T.MODEL_BY_KEY[T.WINNER_KEY]
-    assert spec.family == "gaussian_freebeta" and spec.cleanup
+    assert spec.family == "gaussian_pow" and spec.cleanup
     assert spec.has_dynamics  # so steps/hybrid RT metrics apply
 
 

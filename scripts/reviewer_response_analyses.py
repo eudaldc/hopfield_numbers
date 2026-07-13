@@ -13,7 +13,7 @@ manuscript / supplementary material:
      invariant and only the sensory input changes with exposure.
 
   C. Point 3 -- DD vs control differences re-expressed as recoverable
-     derived quantities (n_crit = 1/c and the noise profile sigma(n)),
+     derived quantities (n_width = 1/c and the noise profile sigma(n)),
      rather than as individual, partly trading-off parameters.
 
 Run from the project root:
@@ -303,7 +303,7 @@ DERIVED_N = (1, 4, 7)  # representative numerosities within the fitted DD range
 
 def _derived_from_draws(draws: pd.DataFrame) -> pd.DataFrame:
     out = pd.DataFrame()
-    out["n_crit"] = 1.0 / draws["sigma_c"]
+    out["n_width"] = 1.0 / draws["sigma_c"]
     for n in DERIVED_N:
         out[f"sigma_n{n}"] = np.sqrt(draws["s0"] * np.power(float(n), draws["lambda0"]))
     # mean noise SD across the fitted range n = 1..7

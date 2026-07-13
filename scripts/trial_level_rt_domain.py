@@ -1,20 +1,18 @@
-"""RT prediction restricted to the model's domain of validity (n < n_crit).
+"""RT sensitivity analysis using the width-based window n < n_width.
 
-Framing test. The winner is a small-range (exact) mechanism valid up to the
-resolvability limit n_crit (well width sigma_n = 1 <=> adjacent-well d' = 1). Above
-n_crit people leave the exact regime (fast approximate guessing -> the RT dip the
-monotone model cannot capture). So the honest RT question is not "does it fit all
-n?" but "does it predict RT *within its domain* (n < n_crit)?".
+The continuous index n_width is defined by sigma_n = 1. It is used here only
+to specify a reproducible lower-numerosity fitting window, not as a model-validity,
+exact-range, or topological boundary.
 
 Procedure (two-stage, RT never touches the landscape):
   * landscape + lapse are taken from the accuracy-only fit (`winner_theta.csv`);
-  * n_crit(duration) = sigma_n = 1 crossing of that landscape;
+  * n_width(duration) = sigma_n = 1 crossing of that landscape;
   * the RT link (latent effort -> seconds; alpha, beta, sigma) is fit on trials with
-    n <= floor(n_crit) only, then the SHAPE (fixed by the accuracy landscape) is
-    compared to data within the domain and extrapolated above n_crit.
+    n <= floor(n_width) only, then the shape fixed by the accuracy landscape is
+    compared inside and outside that fitting window.
 
-We report R^2 of the median-RT curve (a) within the domain for the domain-restricted
-fit, and (b) the full-range fit over all n, for both the entropy and dynamics
+We report R^2 of the median-RT curve (a) inside the width-based window and
+(b) over all n, for both the entropy and dynamics
 (steps+entropy hybrid) read-outs.
 
     .venv/bin/python -m scripts.trial_level_rt_domain
@@ -52,7 +50,7 @@ def sigma_n(theta: dict, n: np.ndarray) -> np.ndarray:
     return theta["sigma_c"] * np.power(np.asarray(n, float), theta["pow"])
 
 
-def ncrit_crossing(theta: dict, level: float = 1.0) -> float:
+def n_width_crossing(theta: dict, level: float = 1.0) -> float:
     ns = np.linspace(1.0, 40.0, 40000)
     s = sigma_n(theta, ns)
     idx = np.where(s >= level)[0]
@@ -106,52 +104,52 @@ def main() -> None:
         theta = {p: float(wt.loc[d, p]) for p in spec.param_names}
         lapse = float(wt.loc[d, "lapse"])
         resp_fit = {"theta": theta, "lapse": lapse}
-        ncrit = ncrit_crossing(theta)
-        nmax = int(floor(ncrit))                    # last fully-resolvable integer
+        n_width = n_width_crossing(theta)
+        n_width_max = int(floor(n_width))
         grid = T.compute_grid(spec, theta, quad)    # all n = 1..15
 
         # empirical RT per n (all n): the geometric mean, i.e. the log-normal RT
         # MLE target (= exp(mean log rt)) — labelled simply "mean" in the figure
         lrt, ntr = data_full[d].logrt_trial, data_full[d].n_trial
         emp = np.array([np.exp(np.mean(lrt[ntr == int(nn)])) for nn in n])
-        in_dom = n <= nmax
+        in_window = n <= n_width_max
 
-        data_dom = restrict_data(trial, d, nmax, r_max)
+        data_window = restrict_data(trial, d, n_width_max, r_max)
         pred_by_metric = {}
         for metric in METRICS:
-            rt_dom = T.fit_rt(spec, data_dom, resp_fit, quad, metric=metric,
-                              seed=T.SEED + d)
+            rt_window = T.fit_rt(spec, data_window, resp_fit, quad, metric=metric,
+                                 seed=T.SEED + d)
             rt_full = T.fit_rt(spec, data_full[d], resp_fit, quad, metric=metric,
                                seed=T.SEED + d)
-            pred_dom = predicted_median_rt(metric, rt_dom["scale"], grid)
+            pred_window = predicted_median_rt(metric, rt_window["scale"], grid)
             pred_full = predicted_median_rt(metric, rt_full["scale"], grid)
-            pred_by_metric[metric] = pred_dom
+            pred_by_metric[metric] = pred_window
             rows.append({
                 "duration_ms": int(d), "metric": metric,
-                "n_crit": round(ncrit, 2), "n_domain_max": nmax,
-                "n_domain_levels": int(in_dom.sum()),
-                "R2_domain_fit_on_domain": r2(emp[in_dom], pred_dom[in_dom]),
-                "R2_full_fit_on_domain": r2(emp[in_dom], pred_full[in_dom]),
+                "n_width": round(n_width, 2), "n_width_window_max": n_width_max,
+                "n_width_window_levels": int(in_window.sum()),
+                "R2_width_fit_in_window": r2(emp[in_window], pred_window[in_window]),
+                "R2_full_fit_in_window": r2(emp[in_window], pred_full[in_window]),
                 "R2_full_fit_all_n": r2(emp, pred_full),
-                **{f"scale_{k}": v for k, v in rt_dom["scale"].items()},
-                "sigma_rt_domain": rt_dom["sigma_rt"],
+                **{f"scale_{k}": v for k, v in rt_window["scale"].items()},
+                "sigma_rt_width_window": rt_window["sigma_rt"],
             })
 
         # figure: hybrid domain fit -> solid within domain, dashed extrapolation
         ax = axes[0][ci]
         ph = pred_by_metric["hybrid"]
         ax.plot(n, emp, "k.", ms=9, label="Data")
-        ax.plot(n[in_dom], ph[in_dom], "-", color=C_ATTR, lw=2.4, label="Model")
-        ax.plot(n[~in_dom], ph[~in_dom], "--", color=C_ATTR, lw=1.6, alpha=0.8,
-                label="Extrapolation")
-        ax.axvline(ncrit, color="0.25", ls=":", lw=1.2)
+        ax.plot(n[in_window], ph[in_window], "-", color=C_ATTR, lw=2.4, label="Fit window")
+        ax.plot(n[~in_window], ph[~in_window], "--", color=C_ATTR, lw=1.6, alpha=0.8,
+                label="Outside window")
+        ax.axvline(n_width, color="0.25", ls=":", lw=1.2)
         rr = rows[-2]  # the hybrid row for this duration
         ax.set_title(f"{d} ms")
-        ax.text(0.97, 0.05, f"$R^2 = {rr['R2_domain_fit_on_domain']:.2f}$",
+        ax.text(0.97, 0.05, f"$R^2 = {rr['R2_width_fit_in_window']:.2f}$",
                 transform=ax.transAxes, ha="right", va="bottom", fontsize=13,
                 zorder=6, bbox=dict(facecolor="white", edgecolor="none", pad=3))
-        ax.text(ncrit + 0.25, ax.get_ylim()[0] + 0.25 * (ax.get_ylim()[1] - ax.get_ylim()[0]),
-                r"$n_{\rm crit}$", fontsize=17, color="0.25")
+        ax.text(n_width + 0.25, ax.get_ylim()[0] + 0.25 * (ax.get_ylim()[1] - ax.get_ylim()[0]),
+                r"$n_{\rm width}$", fontsize=17, color="0.25")
         if ci == 0:
             ax.set_ylabel("Mean RT (s)")
 
@@ -167,9 +165,10 @@ def main() -> None:
     df = pd.DataFrame(rows)
     df.to_csv(OUT_CSV, index=False)
 
-    print("=== RT fit restricted to the exact regime (n <= floor(n_crit)) ===")
-    show = df[["duration_ms", "metric", "n_crit", "n_domain_max", "n_domain_levels",
-               "R2_domain_fit_on_domain", "R2_full_fit_on_domain", "R2_full_fit_all_n"]]
+    print("=== RT fit in the width-based window (n <= floor(n_width)) ===")
+    show = df[["duration_ms", "metric", "n_width", "n_width_window_max",
+               "n_width_window_levels", "R2_width_fit_in_window",
+               "R2_full_fit_in_window", "R2_full_fit_all_n"]]
     print(show.round(3).to_string(index=False))
     print(f"\nSaved {OUT_CSV.name}, {OUT_FIG.name}")
 

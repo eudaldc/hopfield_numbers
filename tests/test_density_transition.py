@@ -4,7 +4,7 @@ Assertions focus on three things:
 
   1. The extended-support simulation returns consistent shapes and
      produces bounded, normalised posteriors.
-  2. The analytical ``n_crit = 1/c`` and the numerical ``d' < 1``
+  2. The analytical ``n_width = 1/c`` and the numerical ``d' < 1``
      criterion agree to within a single integer (the numerical rule
      can only land on an integer grid point).
   3. The four per-n metrics behave monotonically in the expected
@@ -75,7 +75,7 @@ def test_dprime_matches_one_over_c(sim_small: dict, theta_ref: dict) -> None:
     metrics = compute_metrics(sim_small, c=theta_ref["sigma_c"])
     crit = critical_n_from_metrics(metrics, c=theta_ref["sigma_c"])
     # d' < 1 must fire on the integer grid nearest to 1/c, within one step.
-    assert abs(crit["n_crit_dprime"] - crit["n_crit_analytical"]) <= 1.0
+    assert abs(crit["n_width_dprime"] - crit["n_width_analytical"]) <= 1.0
 
 
 def test_reynvoet_sqrt_model_closed_form(theta_ref: dict) -> None:

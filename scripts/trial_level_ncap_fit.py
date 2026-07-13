@@ -1,26 +1,21 @@
-"""Small-range (n<=NCAP) refit + n_crit re-derivation.
+"""Small-range (n<=NCAP) refit + n_width re-derivation.
 
-Research question (reframed). The attractor may not be a *unified* OTS+ANS model
-but a **mechanistic model of small-range (exact/subitising) numerosity** that, as an
-emergent property, also predicts the exact->approximate transition (n ~ 4-9). This
-script tests that reframing directly by fitting only to n <= NCAP and asking:
+This robustness analysis fits only n <= NCAP and asks:
 
   (A) Does the fitted landscape move vs the full-range fit? If the large-n tail was
       dragging the width exponent up (to accommodate the wide approximate regime),
-      restricting to n <= NCAP should give a *purer* small-range mechanism.
+      restricting to n <= NCAP should change the fitted width profile.
   (B) Within n <= NCAP, does the attractor + clean-up still beat Weber/ANS and its
       own static (no-clean-up) twin? If the discrete mechanism is doing real work in
       the small range, its advantage should survive -- or grow -- when the tail is
       removed.
-  (C) Where does the re-derived n_crit (well width sigma_n = 1  <=>  adjacent-well
-      d' = 1) land? Self-consistency for a "small-range" model means it should fall
-      *inside* the fitted range (exact -> approximate ~ 8-10), i.e. the model knows
-      where it stops being valid.
+  (C) Does the re-derived n_width, defined by sigma_n=1, remain stable? This is a
+      robustness check on the continuous width proxy, not a test of model validity
+      or attractor disappearance.
 
 Only n <= NCAP trials enter the response likelihood (counts for n > NCAP are zero,
-so they contribute nothing to sum counts*log p). n_crit and the predicted curves are
-still evaluated over the full 1..15 support, to show the *extrapolated* transition
-the small-range fit predicts for numerosities it never saw.
+so they contribute nothing to sum counts*log p). n_width and the predicted curves are
+still evaluated over the full 1..15 support.
 
 To keep the landscape comparison apples-to-apples, the winner is re-fit on BOTH the
 capped (n <= NCAP) and full (n <= 15) data with identical optimiser settings here --
@@ -61,7 +56,7 @@ MAXITER, POPSIZE = 35, 10
 
 OUT_FIT = T.OUT_DIR / "ncap10_fit.csv"
 OUT_SUMMARY = T.OUT_DIR / "ncap10_summary.csv"
-OUT_NCRIT = T.OUT_DIR / "ncap10_ncrit.csv"
+OUT_N_WIDTH = T.OUT_DIR / "ncap10_ncrit.csv"
 
 
 def cap_trials(trial: pd.DataFrame, ncap: int) -> pd.DataFrame:
@@ -73,7 +68,7 @@ def sigma_n(theta: dict, n: np.ndarray) -> np.ndarray:
     return theta["sigma_c"] * np.power(np.asarray(n, dtype=float), theta["pow"])
 
 
-def ncrit_crossing(theta: dict, level: float = 1.0) -> float:
+def n_width_crossing(theta: dict, level: float = 1.0) -> float:
     """Smallest n where sigma_n(n) >= level (linear interpolation)."""
     ns = np.linspace(1.0, 40.0, 40000)
     s = sigma_n(theta, ns)
@@ -163,9 +158,9 @@ def main() -> None:
     summ = summ.sort_values("AIC_total").reset_index(drop=True)
     summ.to_csv(OUT_SUMMARY, index=False)
 
-    # ── (A/C) landscape shift + n_crit, winner capped vs full ───────────────
+    # ── (A/C) landscape shift + n_width, winner capped vs full ─────────────
     win = T.MODEL_BY_KEY[WINNER]
-    ncrit_rows = []
+    n_width_rows = []
     for d in T.DURATIONS:
         for regime, data_by_dur in (("cap", data_cap), ("full", data_full)):
             r = fit_df[(fit_df.regime == regime) & (fit_df.model_key == WINNER)
@@ -175,17 +170,17 @@ def main() -> None:
             pf = T.apply_lapse(grid["p_resp"], float(r["lapse"]), r_max)
             psum = T.predicted_summaries(pf)
             pct_exact = psum["pct_exact"].to_numpy(float)
-            ncrit_rows.append({
+            n_width_rows.append({
                 "duration_ms": int(d), "regime": regime,
                 "sigma_c": theta["sigma_c"], "s0": theta["s0"],
                 "lambda0": theta["lambda0"], "pow": theta["pow"],
-                "n_crit_sigma1": ncrit_crossing(theta, 1.0),
-                "n_crit_sigma2": ncrit_crossing(theta, 2.0),
+                "n_width": n_width_crossing(theta, 1.0),
+                "n_sigma2_crossing": n_width_crossing(theta, 2.0),
                 "n_pct_exact_50": pct_exact_crossing(pct_exact, 50.0),
                 "sigma_at_ncap": float(sigma_n(theta, np.array([NCAP]))[0]),
             })
-    ncrit = pd.DataFrame(ncrit_rows)
-    ncrit.to_csv(OUT_NCRIT, index=False)
+    n_width = pd.DataFrame(n_width_rows)
+    n_width.to_csv(OUT_N_WIDTH, index=False)
 
     # the SM figure is owned by the standalone script (replots from the CSVs)
     from scripts.trial_level_ncap_figure import main as make_ncap_figure
@@ -194,11 +189,11 @@ def main() -> None:
     print("\n=== (B) ranking within n<=%d (capped, AIC summed over durations) ===" % NCAP)
     print(summ[["model", "AIC_total", "dAIC", "akaike_weight"]]
           .round({"AIC_total": 1, "dAIC": 1, "akaike_weight": 3}).to_string(index=False))
-    print("\n=== (A/C) winner landscape + n_crit: capped vs full ===")
-    show = ncrit.pivot_table(index="duration_ms", columns="regime",
-                             values=["pow", "n_crit_sigma1", "n_pct_exact_50"])
+    print("\n=== (A/C) winner landscape + n_width: capped vs full ===")
+    show = n_width.pivot_table(index="duration_ms", columns="regime",
+                              values=["pow", "n_width", "n_pct_exact_50"])
     print(show.round(2).to_string())
-    print(f"\nSaved {OUT_FIT.name}, {OUT_SUMMARY.name}, {OUT_NCRIT.name}")
+    print(f"\nSaved {OUT_FIT.name}, {OUT_SUMMARY.name}, {OUT_N_WIDTH.name}")
 
 
 if __name__ == "__main__":

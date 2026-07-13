@@ -6,7 +6,7 @@
 > `scripts/trial_level_model_comparison.py`. Outputs:
 > `output/trial_level_model_comparison/`. **Not yet wired into the manuscript.**
 
-> **STATUS / headline (updated 2026-07).** Winning model unchanged — the symmetric **super-linear-width Gaussian attractor** (free Benford exponent β) with a clean-up and a convergence-time (steps + entropy) RT channel; `WINNER_KEY = "gaussian_freebeta_attractor"`. Two framing updates since June: (1) the model is now presented as a **mechanistic small-range (exact) account that predicts the exact→approximate (ANS) transition**, fit on the *full* range n = 1..15 with the small-range scope argued post-hoc (n_crit emerges at σ_n = 1 ≈ 4.6–10, growing with exposure); (2) the RT channel is **not** the structural weakness stated in June — that was a median-vs-skew artefact; against the geometric mean the dynamics-RT cross-predicts at pooled R² ≈ 0.86 and its only residual (over-prediction above n_crit) is itself the regime-change signature. Response ladder: winner ΔAIC 0; the whole √n family sits +4400…+5650 behind. Joint ladder: winner + dynamics-RT best. **Still not wired into the manuscript.** Consolidated artifacts (via `scripts/trial_level_consolidate.py`, no re-optimisation): `consolidated_summary.csv`, `consolidated_joint_summary.csv`, `consolidated_response_aic.png`, `consolidated_heatmaps.png` (data vs winner vs published Hopfield-Poisson), `consolidated_rt_metrics.png`.
+> **STATUS / headline (updated 2026-07).** Winning model unchanged — the symmetric **super-linear-width Gaussian attractor** (free Benford exponent β) with a clean-up and a convergence-time (steps + entropy) RT channel; `WINNER_KEY = "gaussian_freebeta_attractor"`. The continuous width index `n_width` is defined by σ_n=1 and grows with exposure. It is distinct from `n_topo`, the last consecutive integer retaining an independent basin. The RT plateau occurs in a similar numerical region to `n_width`, but the proxy does not define that behavioural boundary. Response ladder: winner ΔAIC 0; the whole √n family sits +4400…+5650 behind. Joint ladder: winner + dynamics-RT best.
 
 ## Summary — key steps and decisions (most important first)
 
@@ -22,15 +22,15 @@
 
 6. **Full joint co-fit.** Co-optimising landscape + lapse + RT leaves the ranking unchanged and moves the landscape negligibly (the ~53k-trial response channel dominates). Consequence: RT can be treated as a **downstream cross-prediction** channel without contaminating the accuracy/landscape conclusions.
 
-7. **Framing decision (2026-07) — small-range mechanism, not unified OTS+ANS.** The model is presented as a **mechanistic small-range (exact) account** whose virtue is that it **predicts the exact→approximate transition** as an emergent property. **We fit the full range n = 1..15** (no arbitrary cutoff, all data used) and argue the small-range scope *post-hoc*; an n ≤ 10 refit (`trial_level_ncap_fit.py`) confirms the landscape does not depend on the tail (robustness only). n_crit = the well-width **resolvability limit** σ_n = 1 ⇔ adjacent-well d′ = 1, emerging at ≈ 4.6–10 (growing with exposure), **inside** the fitted range. One mechanism degrading continuously (clean-up active + wells resolvable → exact; wells merged → coarse approximate), **not** a density/texture threshold.
+7. **Framing decision (2026-07).** **We fit the full range n=1..15**; an n≤10 refit (`trial_level_ncap_fit.py`) confirms that the fitted width profile does not depend on the tail. `n_width=σ_c^{-1/p}` is the continuous σ_n=1 width proxy. `n_topo` is the topological limit. Neither quantity is a density/texture threshold.
 
-8. **RT correction (2026-07) — the "structural weakness" was a statistic mismatch.** The log-normal RT MLE fits the **geometric mean** (exp of the mean of log-RT), but we had been scoring against the **median**; log-RT is right-skewed (skew ≈ +1.5–3), so the median sits ~0.1–0.2 s low and deflated every R². Re-scored against the geometric mean, **dynamics-RT pooled R² ≈ 0.86** (0.82–0.93 per duration), close to the in-sample Fig. 2 (0.89–0.98) and a genuine cross-prediction. The residual (over-prediction **above** n_crit, where the data RT plateaus because people switch to fast approximate guessing) is the **regime-change signature**: the RT plateau onset ≈ n_crit, an independent cross-channel convergence on the same boundary.
+8. **RT correction (2026-07).** The log-normal RT MLE fits the **geometric mean** rather than the median. Re-scored against the geometric mean, dynamics-RT pooled R²≈0.86. The prediction keeps rising where empirical RT plateaus. Segmenting this mismatch around `n_width` is descriptive and does not make the width proxy a behavioural boundary.
 
-9. **Modelling decisions on RT.** Keep the **log-normal** link (secondary cross-prediction channel; ex-Gaussian would add a tail parameter the model does not predict — the principled upgrade would instead be the attractor's own convergence-**time distribution**, a first-passage model). **Do not** truncate the RT fit to n < n_crit (at 80 ms it cuts just before saturation and overshoots, R²|dom 0.41); fit the latent→seconds link on all n and *report* within-domain. No further robustness control needed (user decision).
+9. **Modelling decisions on RT.** Keep the **log-normal** link. Do not truncate the RT fit at `n_width`; fit the latent-to-seconds link on all n. The lower-numerosity sensitivity window is reported separately.
 
 10. **Aside — why P(exact) "wiggles" with only 4 parameters.** The 4-parameter landscape (σ_n, sensory sd) is smooth; the shoulder in P(r = n) is the **discrete cleanup basins on the fixed integer lattice** (it vanishes with clean-up off), i.e. a signature of the mechanism, not extra fitted degrees of freedom (`pexact_decomposition.png`).
 
-**Standing rules / open items.** Do **not** edit the manuscript (.tex) until explicitly told — everything above lives in `output/trial_level_model_comparison/` + these notes. Report honestly (RT correction, subitising under-prediction, the 40 ms noise regime). **Open:** propagate the resolvability n_crit to SM4 (n_crit), SM5/Decarli (derived quantities), and Reynvoet/density (now a *second*, coarser σ_n ≈ 2–3 boundary at ~14–17); then draft the reviewer-response paragraph around the cross-channel (accuracy + RT) convergence on n_crit.
+**Standing rules / open items.** Report honestly (RT correction, subitising under-prediction, the 40 ms noise regime). Use `n_width` only for the continuous width-law proxy and `n_topo` for the last consecutive independent basin.
 
 ## What the analysis does (methods, fixed)
 
@@ -441,25 +441,19 @@ dots now geometric mean with the median shown faint):
   in-sample Fig. 2 (0.89–0.98). Dynamics beats entropy at 4/5 durations, so the
   attractor's convergence time carries real RT signal.
 
-The residual that remains is **not a fixable "dip" but the regime-change
-signature**: within the exact regime (n < n_crit) the model tracks the
-geometric-mean RT (`rt_domain.png`: R²|domain 0.75/0.83/0.88/0.88 for
-40/160/320/640 ms); **above n_crit the model over-predicts** — its monotone
-deliberation-time keeps rising while the data RT **plateaus**, because people have
-left the exact regime (fast approximate guessing). The RT plateau onset ≈ n_crit
-(derived independently from accuracy) — a **cross-channel convergence** on the same
-exact→approximate boundary.
+The residual is a chronometric mismatch: the model tracks geometric-mean RT over
+lower numerosities, but its monotone deliberation-time prediction keeps rising
+where the data plateau. The `rt_domain.png` segmentation around `n_width` visualizes
+this mismatch; it does not define an exact-range or model-validity boundary.
 
 Caveats kept honest: (1) log RT is not exactly log-normal (the skew is real), so the
 geometric mean is the *consistent* statistic for this model, not a perfect one;
 (2) Fig. 2 was *in-sample*; ours is cross-prediction; (3) a mild over-prediction
-above n_crit remains (expected). **Do not truncate the RT fit to n < n_crit** — at
-80 ms n_crit ≈ 7.5 cuts just before saturation and the truncated fit overshoots
+at larger numerosities remains. **Do not truncate the RT fit at n_width**; at
+80 ms n_width≈7.5 cuts just before saturation and the truncated fit overshoots
 (R²|domain 0.41); fit the latent→seconds link on all n and *report* within-domain.
 **Revised conclusion: RT is a solid cross-prediction (dynamics pooled R² 0.86)
-within the model's domain, not the structural weakness earlier stated; the ~0.69
-was a median/skew artefact, and the out-of-domain over-prediction is itself
-evidence for the small-range framing.**
+over lower numerosities, but the model misses the empirical plateau.**
 
 ### Robustness / caveats
 
@@ -503,37 +497,33 @@ Evidence, all from the full-range winner fit (`winner_theta.csv`):
   contribution to the response likelihood (`regime_change.csv`) is large at
   n ≤ 3–4 and ≈ 0 by n ≥ 5 — the attractor actively snaps evidence to integers
   only in the subitising band.
-* **n_crit emerges inside the fitted range.** The well-width criterion
+* **n_width lies inside the fitted range.** The width-law criterion
   σ_n = 1 ⇔ adjacent-well d′ = 1 (`ncrit_rederivation.csv`, benford-free-β row) is
   crossed at ≈ 4.6, 7.5, 8.7, 9.2, 10.0 for 40/80/160/320/640 ms — growing with
-  exposure, well within n = 1..15. Because it is *not* imposed by a fitting cutoff,
-  it is a genuine prediction: more exposure → sharper evidence → the discrete code
-  survives to higher n (exact range widens from ~4 at a 40 ms flash to ~10 at
-  640 ms).
-* **One mechanism, two regimes.** Above n_crit the same integer lattice — clean-up
-  inert, wells merged (σ_n > 1) — behaves as a coarse *approximate* magnitude code.
-  The transition is internal and emergent, parameterised by the single crossing
-  σ_n = 1; n_crit is the **resolvability limit of the discrete code**, not a
-  density/texture threshold (a density account would instead flag the coarser
-  σ_n ≈ 2–3 boundary at ~14–17).
+  exposure, well within n=1..15. It summarizes the fitted width profile and is not
+  an exact-range or topological boundary.
+* **One mechanism, graded readout.** The same integer lattice produces progressively
+  coarser responses as the fitted components broaden and overlap.
+  The width crossing σ_n=1 is a continuous proxy. Basin disappearance is measured
+  separately by n_topo.
 
 (`scripts/trial_level_ncap_fit.py` re-fits on n ≤ 10 as a one-off check and returns
-the same β and n_crit for 80–640 ms — the mechanism is not an artefact of the
+the same β and n_width for 80–640 ms — the width profile is not an artefact of the
 fitting range — but this robustness check is not part of the main argument.)
 
 ## De Carli developmental dyscalculia (SM5) — winner model applied (2026-07)
 
-Context: a reviewer suggested dropping the DD group-comparison (SM5); the author wants to keep it, made as strong and honest as possible. We applied the winning `gaussian_freebeta_attractor` (super-linear Gaussian attractor, free β + clean-up) to the De Carli exact-enumeration data (accuracy + RT per subject × numerosity, 32 DD vs 32 controls, **n = 1..7** — dropping n = 8 exactly as De Carli do, for the guessing end-effect they report). Done **non-destructively** by reusing the trial-level `compute_grid` in new scripts writing new `output/decarli_fit/gaussian_freebeta_*` files — the shared config, `fit_helpers`, and the published Poisson outputs are untouched. Scripts: `decarli_gaussian_freebeta.py` (group fit), `decarli_gaussian_freebeta_subjects.py` (per-subject n_crit), `decarli_locus.py` + `decarli_locus_clean.py` (resolution-vs-noise locus), `decarli_dd_summary_figure.py` (the consolidated 4-panel figure `decarli_dd_summary.png`).
+Context: a reviewer suggested dropping the DD group-comparison (SM5); the author wants to keep it, made as strong and honest as possible. We applied the winning `gaussian_freebeta_attractor` to the De Carli exact-enumeration data (accuracy + RT per subject × numerosity, 32 DD vs 32 controls, **n=1..7**). Scripts: `decarli_gaussian_freebeta.py` (group fit), `decarli_gaussian_freebeta_subjects.py` (per-subject n_width), `decarli_locus.py` + `decarli_locus_clean.py` (width-vs-noise locus), and `decarli_dd_summary_figure.py`.
 
-First, the winner model **fits both groups well** (accuracy sigmoid + RT rise), and — a cross-dataset validation — the De Carli data independently want **super-linear width** (β ≈ 1.4–1.6, not railed). The re-derived **n_crit(σ_n = 1) ≈ 8** is far more plausible for exact enumeration than the old Poisson 1/c value (~25–28: no one enumerates 26 exactly).
+First, the winner model fits both groups well, and the De Carli data independently favour super-linear width (β≈1.4–1.6). The fitted **n_width≈8** describes this width profile; it is not a boundary on exact enumeration.
 
 The DD argument has three tiers, strongest-anchored first:
 
 * **Tier 1 — model-agnostic deficit (bulletproof).** DD are ~10 % less accurate at n = 4–6 (**Cohen d = −0.62**) and ~0.3 s slower at n = 4–7 (**d = +0.61**), the difference **concentrated at n = 4** (Mann–Whitney p = 0.001) — the subitising edge, not a uniform slowdown. Needs no model.
-* **Tier 2 — the deficit is *resolution*-shaped, not *noise*-shaped.** With an exhaustive global grid search and a fixed common lapse, a single-mechanism **resolution** model (well-merging; sensory noise off) fits each subject's accuracy curve far better than a single-mechanism **noise** model (well-width off): **64/64 subjects, mean SSE 0.010 vs 0.079 (8× better), Wilcoxon p = 3.5e-12**. So the exact-enumeration accuracy decline is a discrete-resolution phenomenon, not a sensory-noise one — which both validates the attractor framework on independent data and says *where* the group effect must live.
-* **Tier 3 — the group difference localises to resolution.** Per-subject **n_crit: DD 7.9 vs control 8.7** — accuracy-only (strict, lapse-fixed) **p = 0.044**, with RT included **p = 0.007** (`gaussian_freebeta_subjects.png`). Note the standardised effect is the same size as the raw deficit (**d(n_crit) = −0.65 ≈ d(accuracy) = −0.62**): the small *raw* n_crit shift (0.66 numerosities) is a units illusion, not a small effect. Sensory noise shows only a weak trend (σ(n = 5) DD 0.44 vs control 0.38, p = 0.073) and fits worse.
+* **Tier 2 — the deficit is width-shaped, not noise-shaped.** With an exhaustive global grid search and a fixed common lapse, a width-only model fits each subject's accuracy curve better than a noise-only model: **64/64 subjects, mean SSE 0.010 vs 0.079, Wilcoxon p=3.5e-12**.
+* **Tier 3 — the group difference localises to the fitted width profile.** Per-subject **n_width: DD 7.9 vs control 8.7**; accuracy-only **p=0.044**, with RT included **p=0.007**. Sensory noise shows only a weak trend and fits worse.
 
-**Interpretation for the paper:** DD is **not "noisier perception" but a coarser, shorter exact number code** — the discrete code's resolution runs out earlier (n_crit ~8 vs ~9), right at the subitising edge. A specific, mechanistic, falsifiable claim, much stronger than "DD perform worse".
+**Interpretation for the paper:** the fitted group difference is in the width profile rather than the sensory-noise parameter. The analysis does not estimate n_topo.
 
-Honest caveats: coarse data (8 trials/cell); exploratory, **not in the .tex**; the locus is a *lean* (noise/width/lapse are partly degenerate) but backed by the decisive 64/64 model comparison and the model-free effect sizes; a small noise component may coexist (don't claim zero). **This reopens SM5's current conclusion** (which reports *no* group difference in n_crit, P = 0.33, from a group-mean + subject-bootstrap fit of the old Poisson model): the individual-level design (the author's idea) plus the plausible new n_crit turns that into a significant, well-characterised DD deficit. Much of the power gain is the per-subject design, not the model per se — state that honestly.
+Honest caveats: coarse data (8 trials/cell); exploratory; noise, width, and lapse are partly degenerate; a small noise component may coexist. Much of the power gain is the per-subject design, not the model per se.
 

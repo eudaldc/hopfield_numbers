@@ -5,7 +5,7 @@
   (B) raw median RT (mean ± SEM per group) with the model group fit               (Tier 1).
   (C) per-subject model comparison: resolution-only vs noise-only SSE — every
       subject below the diagonal → the accuracy decline is resolution-shaped (Tier 2).
-  (D) per-subject n_crit (σ_n = 1) distributions, DD vs control                   (Tier 3).
+  (D) per-subject n_width (σ_n = 1) distributions, DD vs control                  (Tier 3).
 
 Reuses the saved fits/CSVs; non-destructive. Writes decarli_dd_summary.png.
 
@@ -102,10 +102,10 @@ def main() -> None:
     c.set_xlabel("SSE, noise-only"); c.set_ylabel("SSE, resolution-only")
     c.legend(frameon=False, loc="upper left"); panel_label(c, "c")
 
-    # (D) n_crit boxplot
+    # (D) n_width boxplot
     d = ax[1][1]
-    dd = locus[locus.group == "DD"].n_crit_A.to_numpy()
-    ct = locus[locus.group == "contr"].n_crit_A.to_numpy()
+    dd = locus[locus.group == "DD"].n_width_A.to_numpy()
+    ct = locus[locus.group == "contr"].n_width_A.to_numpy()
     p_nc = mannwhitneyu(dd, ct, alternative="two-sided")[1]
     bp = d.boxplot([ct, dd], positions=[0, 1], widths=0.5, patch_artist=True,
                    showfliers=False, medianprops={"color": "black"})
@@ -115,9 +115,9 @@ def main() -> None:
     for i, (arr, grp) in enumerate(zip([ct, dd], ["contr", "DD"])):
         d.scatter(i + rng.normal(0, 0.05, arr.size), arr, s=14, color=COL[grp], alpha=0.7, zorder=3)
     d.set_xticks([0, 1]); d.set_xticklabels(["Control", "DD"])
-    d.set_ylabel(r"per-subject $n_{\rm crit}$")
+    d.set_ylabel(r"Per-subject $n_{\rm width}$")
     # significance bar: Mann-Whitney p + rank-biserial correlation (DD - Control;
-    # negative = DD resolve to fewer numerosities, matching the manuscript sign)
+    # negative = lower fitted width index in DD, matching the manuscript sign)
     u_dd = mannwhitneyu(dd, ct, alternative="two-sided")[0]
     r_rb = 2 * u_dd / (dd.size * ct.size) - 1
     lo = min(ct.min(), dd.min()); hi = max(ct.max(), dd.max()); span = hi - lo

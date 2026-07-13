@@ -19,6 +19,16 @@ pow_static,Power-law readout (no clean-up),gaussian_pow_readout,80,47905.9604752
 pow_static,Power-law readout (no clean-up),gaussian_pow_readout,160,42973.69609616284,258.31321083268267
 pow_static,Power-law readout (no clean-up),gaussian_pow_readout,320,41485.479867122056,0.02679698986321455
 pow_static,Power-law readout (no clean-up),gaussian_pow_readout,640,37766.82268689227,89.9860897274848
+const_attr,Constant-width attractor,gaussian_const_attractor,40,60062.80052122312,2930.2708291524177
+const_attr,Constant-width attractor,gaussian_const_attractor,80,48170.69397077666,1308.1685871478985
+const_attr,Constant-width attractor,gaussian_const_attractor,160,43454.94609450492,739.5632091747611
+const_attr,Constant-width attractor,gaussian_const_attractor,320,42599.6969387583,1114.2438686261085
+const_attr,Constant-width attractor,gaussian_const_attractor,640,38699.46747037226,1022.6308732074758
+const_static,Constant-width readout (no clean-up),gaussian_const_readout,40,60070.62034976485,2938.090657694149
+const_static,Constant-width readout (no clean-up),gaussian_const_readout,80,48322.24080569363,1459.7154220648736
+const_static,Constant-width readout (no clean-up),gaussian_const_readout,160,43507.87519993947,792.4923146093133
+const_static,Constant-width readout (no clean-up),gaussian_const_readout,320,42598.69648720567,1113.2434170734778
+const_static,Constant-width readout (no clean-up),gaussian_const_readout,640,38715.47902700423,1038.6424298394413
 weber,Weber/ANS,weber_ans,40,58551.68602898,1419.1563369092983
 weber,Weber/ANS,weber_ans,80,48071.952822747495,1209.4274391187355
 weber,Weber/ANS,weber_ans,160,43149.77874729369,434.3958619635305

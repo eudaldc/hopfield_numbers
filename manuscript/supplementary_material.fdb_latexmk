@@ -1,19 +1,19 @@
 # Fdb version 4
-["bibtex supplementary_material"] 1783661235.347 "supplementary_material.aux" "supplementary_material.bbl" "supplementary_material" 1783661235.79352 0
+["bibtex supplementary_material"] 1783956478.90302 "supplementary_material.aux" "supplementary_material.bbl" "supplementary_material" 1783956479.19267 0
   "./SageH.bst" 1775669046.47233 30763 e9cf3bda853a6eedae2781a529a11a19 ""
-  "./references.bib" 1783507340.51509 109418 5c13309dcd4d9be6a830b8672a47deb9 ""
-  "supplementary_material.aux" 1783661235.71255 15551 d29ba98cc1a6b72f60871093418c79e9 "pdflatex"
+  "./references.bib" 1783954262.21043 115994 491d4c563f06909c37360f9349101736 ""
+  "supplementary_material.aux" 1783956479.14775 15146 bfdc272ec6c541d5b5f93667d1fe1448 "pdflatex"
   (generated)
   "supplementary_material.bbl"
   "supplementary_material.blg"
   (rewritten before read)
-["pdflatex"] 1783661235.36417 "supplementary_material.tex" "supplementary_material.pdf" "supplementary_material" 1783661235.79375 0
+["pdflatex"] 1783956478.91323 "supplementary_material.tex" "supplementary_material.pdf" "supplementary_material" 1783956479.1928 0
   "../output/decarli_fit/decarli_dd_summary.pdf" 1783572508.83557 31838 b8a32c1161f8747f94d865995d1a499e ""
-  "../output/trial_level_model_comparison/ncap10_comparison.pdf" 1783533916.81555 20021 a2022323af0a8993e190765f1d63fe59 ""
+  "../output/trial_level_model_comparison/ncap10_comparison.pdf" 1783945802.93938 19545 a79ca9df2b938612e3a878950c7c49f7 ""
   "../output/trial_level_model_comparison/pexact_decomposition.pdf" 1783528208.13636 19483 a83eb1a61454b6dda3b0396f56e4754f ""
-  "../output/trial_level_model_comparison/recovery_winner.pdf" 1783551786.17327 46784 a5d9122955e7791680d2964c83468295 ""
+  "../output/trial_level_model_comparison/recovery_winner.pdf" 1783945176.00887 46784 b636a4073caab3ba5191677b7eec5dd5 ""
   "../output/trial_level_model_comparison/rt_domain.pdf" 1783528324.38362 22102 c68f2acdbf0897209f9952ad7556520c ""
-  "../output/trial_level_model_comparison/weber_fraction.pdf" 1783572506.9057 18756 47b708d969a9a02ce3aabf1f553cfdaa ""
+  "../output/trial_level_model_comparison/weber_fraction.pdf" 1783945180.2007 18759 5c52be278b27f4c5ebadd862745ef18f ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/courier/pcrr7t.tfm" 1136768653 960 379cc0019370a9e0208a0a3f949f847a ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/courier/pcrr8r.tfm" 1136768653 1292 bd42be2f344128bff6d35d98474adfe3 ""
@@ -62,7 +62,6 @@
   "/home/eudald/.TinyTeX/texmf-dist/fonts/tfm/public/latex-fonts/lasy9.tfm" 1136768653 520 1cc7cc05f4d7bae5c23bf7516f88fa52 ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb" 1248133631 30251 6afa5cb1d0204815a708a080681d4674 ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb" 1248133631 36299 5f9df58c2139e7edcf37c8fca4bd384d ""
-  "/home/eudald/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb" 1248133631 36741 fa121aac0049305630cf160b86157ee4 ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi6.pfb" 1248133631 37166 8ab3487cbe3ab49ebce74c29ea2418db ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb" 1248133631 36281 c355509802a035cadc5f15869451dcee ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi9.pfb" 1248133631 36094 798f80770b3b148ceedd006d487db67c ""
@@ -70,7 +69,6 @@
   "/home/eudald/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb" 1248133631 31809 8670ca339bf94e56da1fc21c80635e2a ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr6.pfb" 1248133631 32734 69e00a6b65cedb993666e42eedb3d48f ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb" 1248133631 32762 224316ccc9ad3ca0423a14971cfa7fc1 ""
-  "/home/eudald/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr8.pfb" 1248133631 32726 0a1aea6fcd6468ee2cf64d891f5c43c8 ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb" 1248133631 33993 9b89b85fd2d9df0482bd47194d1d3bf3 ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb" 1248133631 32569 5e5ddc8df908dea60932f3c484a54c0d ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb" 1248133631 32716 08e384dc442464e7285e891af9f45947 ""
@@ -169,13 +167,13 @@
   "/home/eudald/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1783413055 350349 1b8175931eaf295295318c82f7243e5b ""
   "/home/eudald/.TinyTeX/texmf-var/web2c/pdftex/pdflatex.fmt" 1783413194 2250895 39947f911b05e4587ca272e3002a957d ""
   "/home/eudald/.TinyTeX/texmf.cnf" 1764231884.31392 673 00b2d43d146d9f37d3c51b45f06b782c ""
-  "main.aux" 1783574481.66258 14844 8f1a0a077c38717c02af6670ffde3d48 ""
-  "main.tex" 1783574475.12959 35016 3fbcb4299b5be24f5f6b5a33994c6d3a ""
+  "main.aux" 1783956476.95475 15793 a867dee61d510558c2072e5d3e98e1ce ""
+  "main.tex" 1783956366.92757 40022 a76d4b774a85f27bcb4b51d8020484e5 ""
   "sagej.cls" 1775628020.28977 15958 5fa98adc3dbacfa813e0251e7c0042fe ""
-  "supplementary_material.aux" 1783661235.71255 15551 d29ba98cc1a6b72f60871093418c79e9 "pdflatex"
-  "supplementary_material.bbl" 1783661235.35956 2056 f64f161a798081a56f9b55b7f0fbc7e5 "bibtex supplementary_material"
-  "supplementary_material.out" 1783661235.71355 1715 24c7f1862ad40ca174f32954bdcccb52 "pdflatex"
-  "supplementary_material.tex" 1783661216.8186 26608 b56ca640aab9de86e638b22eba56344b ""
+  "supplementary_material.aux" 1783956479.14775 15146 bfdc272ec6c541d5b5f93667d1fe1448 "pdflatex"
+  "supplementary_material.bbl" 1783956478.91075 2056 f64f161a798081a56f9b55b7f0fbc7e5 "bibtex supplementary_material"
+  "supplementary_material.out" 1783956479.14775 1805 6176a266c888a6cf1af5ef72b3627f86 "pdflatex"
+  "supplementary_material.tex" 1783955897.72047 26710 71d3fa49af305e9f41f490557ddde2ee ""
   (generated)
   "supplementary_material.aux"
   "supplementary_material.log"

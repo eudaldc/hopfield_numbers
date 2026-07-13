@@ -66,7 +66,7 @@ Every driven model is fully shared across durations: exposure duration enters on
 
 - Primary in-sample comparison: total response logL / AIC / BIC / mean log score, M0 (both forms, reproduced to 1e-11 in `repro_stage0.py`) vs M1/M2/M3 by both evidence processes.
 - Participant-blocked 5-fold CV (seed 20260711): all models refit per fold (M0 included), scored on held-out participants; reported in total, per fold, and per participant.
-- Parameter recovery (Stage 4): 40 synthetic datasets at jittered truths, full refits, identity R^2 / Spearman + error correlations, including derived quantities (n_crit = sigma_c^{-1/p}, sigma(5)).
+- Parameter recovery (Stage 4): 40 synthetic datasets at jittered truths, full refits, identity R^2 / Spearman + error correlations, including derived quantities (n_width = sigma_c^{-1/p}, sigma(5)).
 
 ## 7. RT channel (Stage 7)
 
@@ -172,7 +172,7 @@ Held-out log predictive density (all models refit per fold, warm-started; lapse 
 | rho | 0.992 | 0.996 |
 | tau_x | -59.8 | 0.471 |
 | beta | -23.5 | 0.351 |
-| n_crit = sigma_c^{-1/p} | 0.998 | 0.999 |
+| n_width = sigma_c^{-1/p} | 0.998 | 0.999 |
 | sigma(5) | 0.998 | 1.000 |
 
 The landscape and the evidence rate are well identified (the sigma_c-p error correlation is -0.96, the familiar width trade-off, but the interpreted derived quantities recover essentially perfectly). **The two parameters that carry the "continuous driving" interpretation — tau_x and beta — do not recover at all**: once the fitted tether is stiff (beta/tau_x large), x(t) = K(t) for any values along the ridge, so the dynamical constants are structurally unidentifiable at the optimum the data select. Even if the driven model had been competitive, its driving dynamics would not have been interpretable quantities.

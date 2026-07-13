@@ -3,10 +3,11 @@
 
 Two stacked panels sharing the number-line x-axis (n = 1..15), 160 ms fitted
 parameters:
-  a — energy landscape: deep, isolated wells for small n; shallow, merged wells
-      beyond n_crit. Well widths drawn to scale, floored at 0.1 for visibility
+  a — energy landscape: deep, isolated wells for small n and broader,
+      overlapping components at larger n. Well widths are drawn to scale,
+      floored at 0.1 for visibility
       (the n = 1 well is 0.02 wide); depths are the true well depths
-      -log sigma_n, floored at 0.05 so merged wells remain visible. Lattice
+      -log sigma_n, floored at 0.05 so broad wells remain visible. Lattice
       n = 1..19 as in the fitted model.
   b — posterior entropy BEFORE clean-up (grey: the raw readout of a position x,
       with high ridges between the narrow small-n wells, where a flat readout
@@ -62,15 +63,6 @@ POW = float(theta.loc[SHOW_DURATION, "pow"])
 def widths(wells: np.ndarray) -> np.ndarray:
     # power-law wells: sigma_n = sigma_c * n^p
     return SIGMA_C * np.asarray(wells, float) ** POW
-
-
-def ncrit() -> float:
-    # sigma_n = sigma_c * n^p = 1  ->  n_crit = sigma_c^(-1/p)
-    return float(SIGMA_C ** (-1.0 / POW))
-
-
-NCRIT_SHOW = ncrit()
-
 wells_a = np.arange(1, N_LATTICE_MODEL + 1, dtype=float)
 sigma_a = widths(wells_a)
 wells_b = np.arange(1, N_LATTICE_ILLUS + 1, dtype=float)
@@ -191,10 +183,10 @@ RT_ALPHA = float(rt_row["alpha"])
 RT_BETA = float(rt_row["beta"])
 RT_at_int = RT_T0 + RT_ALPHA * ET_at_int + RT_BETA * H_at_int
 
-# viridis is the paper's one continuous scale (fig. 2c durations, SM recovery);
+# Magma is the paper's one continuous scale (fig. 2c durations, SM recovery);
 # here it encodes number frequency (higher for small n), which motivates the
 # narrow-to-wide well profile
-cmap_wells = mpl.colormaps["viridis"]
+cmap_wells = mpl.colormaps["magma"]
 norm_c = Normalize(vmin=-0.10, vmax=1.15)
 
 
@@ -235,7 +227,7 @@ ax_land.text(
     bbox=dict(boxstyle="round,pad=0.3", fc="white", ec="0.7", alpha=0.9),
 )
 ax_land.text(
-    0.8, 0.52, "Shallow, merged wells:\napproximate readout",
+    0.8, 0.52, "Broad, overlapping components:\ncoarser readout",
     transform=ax_land.transAxes,
     fontsize=10 * FONT_SCALE, color="0.15", ha="center", va="bottom",
     zorder=6,

@@ -3,8 +3,8 @@
 `decarli_gaussian_freebeta_subjects.py` frees sigma_c (beta common) and finds a DD deficit.
 `decarli_locus_beta.py` frees beta (sigma_c common) and finds the same deficit. Both cannot
 be independent evidence: for power-law wells sigma_n = sigma_c * n^beta the resolvability
-limit is n_crit = sigma_c^(-1/beta), so the two parameters trade off exactly along curves of
-constant n_crit.
+continuous width index is n_width = sigma_c^(-1/beta), so the two parameters trade
+off exactly along curves of constant n_width.
 
 This script fits BOTH per subject on a 2-D grid (nuisance parameters lapse, t0, rt_scale
 profiled out exactly, as in `decarli_locus_beta`) and measures what the accuracy+RT curves
@@ -12,11 +12,11 @@ actually constrain, via profile likelihood:
 
   * profile over sigma_c   (minimising over beta)
   * profile over beta      (minimising over sigma_c)
-  * profile over n_crit    (minimising over every (sigma_c, beta) on that contour)
+  * profile over n_width   (minimising over every (sigma_c, beta) on that contour)
 
-If the 2-unit profile interval is wide for sigma_c and beta but narrow for n_crit, then the
-individual width parameters are not identified from these data and n_crit is the quantity
-the data speak about. The group comparison is then correctly run on n_crit.
+If the 2-unit profile interval is wide for sigma_c and beta but narrow for n_width, then
+the individual width parameters are not identified from these data and n_width is the
+width-profile quantity the data constrain. The group comparison is then run on n_width.
 
     .venv/bin/python -m scripts.decarli_pooled_cache      # once
     .venv/bin/python -m scripts.decarli_locus_joint
@@ -44,7 +44,7 @@ import scripts.trial_level_model_comparison as T
 from scripts.decarli_gaussian_freebeta import SPEC, DATA, OUT_DIR, NVALS, GROUPS
 from scripts.decarli_gaussian_freebeta_subjects import subj_targets
 from scripts.decarli_locus import rank_biserial
-from scripts.decarli_locus_beta import ncrit_closed, model_curves, LAPSE_BOUNDS, RT_LO, RT_HI
+from scripts.decarli_locus_beta import n_width_closed, model_curves, LAPSE_BOUNDS, RT_LO, RT_HI
 from scripts.decarli_pooled_cache import load_pooled
 
 NSC, NB = 72, 72
@@ -135,7 +135,7 @@ def main() -> None:
     print("Building (sigma_c x beta) curve surface ...", flush=True)
     ps, ehs = build_surface(pooled, quad)
 
-    NC = np.power(SC_GRID[:, None], -1.0 / B_GRID[None, :])    # n_crit at every node
+    NC = np.power(SC_GRID[:, None], -1.0 / B_GRID[None, :])    # n_width at every node
 
     rows, flat_rt = [], []
     for grp in GROUPS:
@@ -156,10 +156,10 @@ def main() -> None:
             rows.append({
                 "group": grp, "subject": int(s),
                 "sigma_c_hat": SC_GRID[i], "beta_hat": B_GRID[j],
-                "n_crit_hat": ncrit_closed(SC_GRID[i], B_GRID[j]), "neg_ll": lo,
+                "n_width_hat": n_width_closed(SC_GRID[i], B_GRID[j]), "neg_ll": lo,
                 "sigma_c_lo": sc_lo, "sigma_c_hi": sc_hi,
                 "beta_lo": b_lo, "beta_hi": b_hi,
-                "n_crit_lo": nc_lo, "n_crit_hi": nc_hi,
+                "n_width_lo": nc_lo, "n_width_hi": nc_hi,
                 "at_edge": bool(i in (0, NSC - 1) or j in (0, NB - 1)),
             })
         print(f"  fitted {grp}", flush=True)
@@ -178,29 +178,29 @@ def main() -> None:
     for name, lo_c, hi_c, span in (
         ("sigma_c", "sigma_c_lo", "sigma_c_hi", SC_GRID[-1] / SC_GRID[0]),
         ("beta", "beta_lo", "beta_hi", B_GRID[-1] / B_GRID[0]),
-        ("n_crit", "n_crit_lo", "n_crit_hi", float(NC.max() / NC.min())),
+        ("n_width", "n_width_lo", "n_width_hi", float(NC.max() / NC.min())),
     ):
         w = sub[hi_c] / sub[lo_c]
         print(f"  {name:>8}: interval spans x{w.median():.2f} (median), "
               f"x{w.quantile(0.9):.2f} (p90), x{w.max():.2f} (max)  "
               f"[{100 * np.log(w.median()) / np.log(span):.0f}% of searched log-range]")
-    print("  -> n_crit is the best-constrained direction, but its tail is heavy: for the")
+    print("  -> n_width is the best-constrained direction, but its tail is heavy: for the")
     print("     subjects whose beta drifts low it is an extrapolation past the n=1..7 data.")
 
-    blow = sub[sub.n_crit_hat > 15]
-    print(f"\n  {len(blow)}/{len(sub)} subjects have joint n_crit_hat > 15 (all with beta_hat "
-          f"<= {blow.beta_hat.max():.2f}): n_crit ~ 8 lies beyond the fitted range, so a low")
+    blow = sub[sub.n_width_hat > 15]
+    print(f"\n  {len(blow)}/{len(sub)} subjects have joint n_width_hat > 15 (all with beta_hat "
+          f"<= {blow.beta_hat.max():.2f}): n_width ~ 8 lies beyond the fitted range, so a low")
     print("     exponent extrapolates it away. Their point estimates are not meaningful.")
 
     r = np.corrcoef(np.log(sub.sigma_c_hat), sub.beta_hat)[0, 1]
     print(f"\n  across subjects, corr(log sigma_c_hat, beta_hat) = {r:+.3f}")
-    print("  This is the ridge sigma_c = n_crit^(-beta): the two width parameters are")
+    print("  This is the ridge sigma_c = n_width^(-beta): the two width parameters are")
     print("  exchangeable, so neither is separately identified from these curves.")
 
     print("\n=== group comparison on the JOINT MLE -- UNDER-IDENTIFIED, DO NOT INTERPRET ===")
-    print(f"    (per-subject n_crit_hat sd = {sub.n_crit_hat.std():.2f}, vs ~1.6 when one width")
+    print(f"    (per-subject n_width_hat sd = {sub.n_width_hat.std():.2f}, vs ~1.6 when one width")
     print("     parameter is held fixed; the point estimates wander along the ridge)")
-    for col, lab in (("n_crit_hat", "n_crit"), ("beta_hat", "beta"), ("sigma_c_hat", "sigma_c")):
+    for col, lab in (("n_width_hat", "n_width"), ("beta_hat", "beta"), ("sigma_c_hat", "sigma_c")):
         dd = sub[sub.group == "DD"][col].to_numpy()
         ct = sub[sub.group == "contr"][col].to_numpy()
         p = mannwhitneyu(dd, ct, alternative="two-sided")[1]
@@ -219,7 +219,7 @@ def main() -> None:
     X, Y = np.meshgrid(B_GRID, SC_GRID)
     im = ax[0].pcolormesh(X, Y, np.minimum(nll - lo, 12), shading="auto", cmap="viridis_r")
     cs = ax[0].contour(X, Y, NC, levels=[5, 6, 8, 10, 13, 17], colors="w", linewidths=0.8)
-    ax[0].clabel(cs, fmt="n_crit=%.0f", fontsize=7)
+    ax[0].clabel(cs, fmt="n_width=%.0f", fontsize=7)
     ax[0].contour(X, Y, nll - lo, levels=[DELTA], colors="r", linewidths=1.6)
     ax[0].set_yscale("log"); ax[0].set_xlabel("beta"); ax[0].set_ylabel("sigma_c")
     ax[0].set_title("DD subject 1: profiled neg_ll (red = 2-unit region)")
@@ -234,7 +234,7 @@ def main() -> None:
         ax[1].annotate(f"{nc}", (bb[-1], np.power(float(nc), -bb[-1])), fontsize=7, color="0.4")
     ax[1].set_yscale("log"); ax[1].set_xlabel("beta_hat"); ax[1].set_ylabel("sigma_c_hat")
     ax[1].set_xlim(B_GRID[0], B_GRID[-1]); ax[1].set_ylim(SC_GRID[0], SC_GRID[-1])
-    ax[1].set_title("joint MLEs lie along constant-n_crit curves")
+    ax[1].set_title("joint MLEs lie along constant-n_width curves")
     ax[1].legend(frameon=False, fontsize=8)
 
     fig.suptitle("De Carli — sigma_c and beta are not separately identifiable", y=1.02)

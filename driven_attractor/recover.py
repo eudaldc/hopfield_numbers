@@ -8,7 +8,7 @@ responses are drawn from the model's own p_final tables with the real trial
 design (same per-cell counts), and the model is refit from scratch
 (differential evolution + polish; no warm start at truth). Reports identity
 R^2 and Spearman rho per parameter and for the derived quantities the paper
-interprets (n_crit = sigma_c^(-1/p), sigma(5), E[K] at 160 ms), plus the
+interprets (n_width = sigma_c^(-1/p), sigma(5), E[K] at 160 ms), plus the
 error-correlation matrix (trade-off structure).
 """
 
@@ -77,7 +77,7 @@ def _one_synth(job):
         row[f"est_{name}"] = est_theta.get(name, np.nan)
     for lab, th in (("true", truth_theta), ("est", est_theta)):
         sc, p = th["sigma_c"], th["p"]
-        row[f"{lab}_ncrit"] = sc ** (-1.0 / p)
+        row[f"{lab}_n_width"] = sc ** (-1.0 / p)
         row[f"{lab}_sigma5"] = sc * 5.0 ** p
     return row
 
@@ -120,7 +120,7 @@ def main() -> None:
     df.to_csv(OUT / f"recovery_{tag}.csv", index=False)
 
     print(f"=== recovery: {tag} ({args.n_synth} synths) ===")
-    quants = names + ["ncrit", "sigma5"]
+    quants = names + ["n_width", "sigma5"]
     summ = []
     for q in quants:
         t, e = df[f"true_{q}"], df[f"est_{q}"]

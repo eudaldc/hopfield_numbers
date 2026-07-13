@@ -7,12 +7,12 @@ hold sigma_c common and let the per-subject width EXPONENT beta vary.
 
 Motivation: for power-law wells sigma_n = sigma_c * n^beta, the resolvability limit is
 
-    n_crit = sigma_c ** (-1 / beta)
+    n_width = sigma_c ** (-1 / beta)
 
-so sigma_c and beta are two routes to the same n_crit and must trade off. In the published
+so sigma_c and beta are two routes to the same n_width and must trade off. In the published
 *group* fit (`gaussian_freebeta_fitted.csv`) the two groups have essentially the same
 sigma_c (0.0440 DD vs 0.0442 contr) and differ in beta (1.515 vs 1.470): at the group level
-the whole n_crit gap is carried by the exponent, not the scale. This script asks whether
+the whole n_width gap is carried by the exponent, not the scale. This script asks whether
 that also holds per subject, and whether a free-beta account fits the individual curves as
 well as the free-sigma_c one.
 
@@ -75,10 +75,10 @@ GRIDS = {
 }
 
 
-def ncrit_closed(sigma_c: float, beta: float) -> float:
-    """Resolvability limit sigma_n = 1 for power-law wells: n_crit = sigma_c^(-1/beta).
+def n_width_closed(sigma_c: float, beta: float) -> float:
+    """Continuous width index sigma_n = 1: n_width = sigma_c^(-1/beta).
 
-    Exact inverse of `decarli_gaussian_freebeta.ncrit`, which grid-searches and caps at
+    Exact inverse of `decarli_gaussian_freebeta.n_width`, which grid-searches and caps at
     n = 60 (returning NaN beyond). With beta free per subject some subjects legitimately
     land above that cap, and censoring them would bias the group medians.
     """
@@ -180,7 +180,7 @@ def main() -> None:
     pooled = load_pooled()
     sc0, s00, lam0, beta0 = pooled[:4]
     print(f"Pooled landscape: sigma_c={sc0:.6f} s0={s00:.4g} lambda0={lam0:.6f} beta={beta0:.6f}")
-    print(f"  pooled n_crit = {ncrit_closed(sc0, beta0):.3f}\n", flush=True)
+    print(f"  pooled n_width = {n_width_closed(sc0, beta0):.3f}\n", flush=True)
 
     print("Precomputing model curves along each 1-D landscape grid ...", flush=True)
     curves = {}
@@ -199,11 +199,11 @@ def main() -> None:
             rows.append({
                 "group": grp, "subject": int(s),
                 # C: free exponent (this script's question)
-                "beta_C": fb["value"], "n_crit_C": ncrit_closed(sc0, fb["value"]),
+                "beta_C": fb["value"], "n_width_C": n_width_closed(sc0, fb["value"]),
                 "well_sigma_n7_C": sc0 * 7.0 ** fb["value"],
                 "lapse_C": fb["lapse"], "neg_ll_C": fb["neg_ll"],
                 # A: free scale (published per-subject analysis)
-                "sigma_c_A": fs["value"], "n_crit_A": ncrit_closed(fs["value"], beta0),
+                "sigma_c_A": fs["value"], "n_width_A": n_width_closed(fs["value"], beta0),
                 "neg_ll_A": fs["neg_ll"],
                 # B: free sensory noise (decarli_locus mirror)
                 "s0_B": fn["value"],
@@ -225,13 +225,13 @@ def main() -> None:
         print(f"{flag} {col}: {n_lo} at lower bound, {n_hi} at upper bound")
 
     print("\n=== C: FREE EXPONENT beta (sigma_c held common) ===")
-    for col, lab in (("beta_C", "beta"), ("n_crit_C", "n_crit"),
+    for col, lab in (("beta_C", "beta"), ("n_width_C", "n_width"),
                      ("well_sigma_n7_C", "well sigma(n=7)")):
         md, mc, p, r = mw(sub, col)
         print(f"  {lab:>16}: DD {md:.3f}  contr {mc:.3f}   MW p={p:.4f}  r_rb={r:+.2f}")
 
     print("\n=== A: free scale sigma_c (beta held common) ===")
-    for col, lab in (("sigma_c_A", "sigma_c"), ("n_crit_A", "n_crit")):
+    for col, lab in (("sigma_c_A", "sigma_c"), ("n_width_A", "n_width")):
         md, mc, p, r = mw(sub, col)
         print(f"  {lab:>16}: DD {md:.4f}  contr {mc:.4f}   MW p={p:.4f}  r_rb={r:+.2f}")
 
@@ -251,8 +251,8 @@ def main() -> None:
         print(f"  {nx} better than {ny} in {int(np.sum(x < y))}/{len(x)} subjects "
               f"(Wilcoxon p={wp:.4g}, mean dnegll={np.mean(x - y):+.3f})")
 
-    r_nc = np.corrcoef(sub["n_crit_A"], sub["n_crit_C"])[0, 1]
-    print(f"\n  n_crit(free sigma_c) vs n_crit(free beta): Pearson r={r_nc:.3f}")
+    r_nc = np.corrcoef(sub["n_width_A"], sub["n_width_C"])[0, 1]
+    print(f"\n  n_width(free sigma_c) vs n_width(free beta): Pearson r={r_nc:.3f}")
 
     # ---- validation against the published per-subject fit (single-start Nelder-Mead) ----
     # Model A here is the SAME model and objective as `decarli_gaussian_freebeta_subjects.py`,
@@ -261,9 +261,9 @@ def main() -> None:
     # local minimum.
     pub = OUT_DIR / "gaussian_freebeta_subjects.csv"
     if pub.exists():
-        old = pd.read_csv(pub).rename(columns={"n_crit_sigma1": "n_crit_pub",
+        old = pd.read_csv(pub).rename(columns={"n_width_sigma1": "n_width_pub",
                                                "neg_ll": "neg_ll_pub"})
-        m = sub.merge(old[["group", "subject", "n_crit_pub", "neg_ll_pub"]],
+        m = sub.merge(old[["group", "subject", "n_width_pub", "neg_ll_pub"]],
                       on=["group", "subject"])
         d = m["neg_ll_A"] - m["neg_ll_pub"]          # negative = this fit is better
         stalled = m.loc[d < -0.5]
@@ -272,20 +272,20 @@ def main() -> None:
               f"published better in {int((d > 1e-6).sum())} (max by {max(0.0, d.max()):.4f})")
         print(f"  published NM stalled (dnegll < -0.5) in {len(stalled)} subjects: "
               f"{[f'{r.group}{r.subject}' for r in stalled.itertuples()]}")
-        r = np.corrcoef(m["n_crit_A"], m["n_crit_pub"])[0, 1]
-        print(f"  n_crit_A vs published: r={r:.4f}, median abs diff="
-              f"{np.median(np.abs(m['n_crit_A'] - m['n_crit_pub'])):.3f}")
+        r = np.corrcoef(m["n_width_A"], m["n_width_pub"])[0, 1]
+        print(f"  n_width_A vs published: r={r:.4f}, median abs diff="
+              f"{np.median(np.abs(m['n_width_A'] - m['n_width_pub'])):.3f}")
         dd, ct = m[m.group == "DD"], m[m.group == "contr"]
-        p_pub = mannwhitneyu(dd["n_crit_pub"], ct["n_crit_pub"], alternative="two-sided")[1]
-        p_new = mannwhitneyu(dd["n_crit_A"], ct["n_crit_A"], alternative="two-sided")[1]
-        print(f"  n_crit group test: published p={p_pub:.4f}  ->  global-optimum p={p_new:.4f}")
+        p_pub = mannwhitneyu(dd["n_width_pub"], ct["n_width_pub"], alternative="two-sided")[1]
+        p_new = mannwhitneyu(dd["n_width_A"], ct["n_width_A"], alternative="two-sided")[1]
+        print(f"  n_width group test: published p={p_pub:.4f}  ->  global-optimum p={p_new:.4f}")
 
     # ---- figure ----
     fig, ax = plt.subplots(1, 3, figsize=(12.6, 4.2))
     colors = {"DD": "#c0392b", "contr": "#2c7fb8"}
     rng = np.random.default_rng(0)
     for k, (col, lab) in enumerate((("beta_C", "per-subject beta (free exponent)"),
-                                    ("n_crit_C", "per-subject n_crit (free exponent)"))):
+                                    ("n_width_C", "per-subject n_width (free exponent)"))):
         dd = sub[sub.group == "DD"][col].to_numpy()
         ct = sub[sub.group == "contr"][col].to_numpy()
         parts = ax[k].violinplot([ct, dd], positions=[0, 1], showmedians=True, widths=0.8)

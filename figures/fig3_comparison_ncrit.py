@@ -4,7 +4,7 @@
 Poisson-free throughout. The model comparison is shown at two levels: a joint
 fit (one fit shared across all five durations, on the left) and the per-duration
 fit (each duration fitted independently, on the right). Heatmap cells are dAIC
-relative to the best row of each block, viridis, darker is better; the joint and
+relative to the best row of each block, magma, darker is better; the joint and
 per-duration blocks are separate fits, each colour-scaled on its own range.
 
   a — Accuracy channel, joint fit: one landscape shared across all durations
@@ -21,9 +21,9 @@ per-duration blocks are separate fits, each colour-scaled on its own range.
       the "RT is grafted on" point.
   e — The fitted width law sigma_n: the joint fit's single shared landscape
       (black dashed, the primary analysis; it lies on the 160 ms curve) over
-      the per-duration fits, the sigma_n = 1 resolvability line, and the
-      emerging n_crit — the model predicts its own limit, common at ~8.3 in
-      the joint fit and growing with exposure in the separate fits.
+      the per-duration fits. Circles show n_width, the continuous sigma_n = 1
+      proxy; squares show n_topo, the last consecutive integer retaining a
+      separate basin.
 
     .venv/bin/python figures/fig3_comparison_ncrit.py
 """
@@ -37,6 +37,7 @@ import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
+from matplotlib.lines import Line2D
 from matplotlib.patches import Rectangle
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -48,11 +49,12 @@ from figures.plot_style import apply_style, panel_label  # noqa: E402
 OUT_DIR = ROOT / "output" / "trial_level_model_comparison"
 CP_DIR = ROOT / "output" / "cp_exact"
 OUT_STEM = ROOT / "figures" / "fig3_comparison_ncrit"
+TOPO_PATH = OUT_DIR / "topological_resolution_summary.csv"
 
 FONT_SCALE = 2.1
 apply_style(FONT_SCALE)
 
-CMAP = mpl.colormaps["viridis"]
+CMAP = mpl.colormaps["magma"]
 DUR_KEYS = [40, 80, 160, 320, 640]
 DUR_LABELS = ["40 ms", "80", "160", "320", "640"]
 
@@ -63,9 +65,9 @@ DUR_LABELS = ["40 ms", "80", "160", "320", "640"]
 resp = pd.read_csv(OUT_DIR / "response_per_duration_aic.csv")
 piv_a = resp.pivot_table(index="model_key", columns="duration_ms", values="resp_AIC")
 # Exact Cheyette & Piantadosi (2020) model. Its per-duration form (separate-fit
-# panel/table) is the free-budget ceiling: the information budget and lapse fitted
-# at each duration (k = 2/duration); its shared form (joint panel/table) ties
-# (B, R, eps) across all durations (k = 3). Both are read from output/cp_exact/.
+# panel/table) is the free-budget ceiling: the information budget and lapse are
+# fitted at each duration (k = 2/duration). Its joint form shares (B, R) while
+# retaining a duration-specific lapse (k = 7), matching the other joint fits.
 cp_ceil = pd.read_csv(CP_DIR / "cp_exact_ceiling.csv").set_index("duration_ms")
 piv_a.loc["cp_exact"] = [4.0 - 2.0 * float(cp_ceil.loc[d, "ceiling_logL"])
                          for d in piv_a.columns]
@@ -77,13 +79,15 @@ cp_fit = pd.read_csv(CP_DIR / "cp_exact_fits.csv").set_index("variant")
 ROWS_A = [
     ("Power-law wells + clean-up", "gaussian_pow_attractor"),
     ("Power-law wells, static", "gaussian_pow_readout"),
+    ("Constant-width wells + clean-up", "gaussian_const_attractor"),
+    ("Constant-width wells, static", "gaussian_const_readout"),
     ("Weber/ANS", "weber_ans"),
     ("Normative (C&P)", "cp_exact"),
 ]
 piv_a = piv_a.loc[[k for _, k in ROWS_A]]
 piv_a = piv_a - piv_a.min(axis=0)                       # dAIC vs best displayed in each column
 pow_joint_ref = float(ladder.loc["gaussian_pow_attractor", "joint_AIC"])
-cp_joint_dAIC = float(cp_fit.loc["uniform", "AIC"]) - pow_joint_ref
+cp_joint_dAIC = float(cp_fit.loc["uniform_duration_lapse", "AIC"]) - pow_joint_ref
 dur_a = [[float(piv_a.loc[k, d]) for d in DUR_KEYS] for _, k in ROWS_A]
 joint_a = [[cp_joint_dAIC if k == "cp_exact"
             else float(ladder.loc[k, "joint_AIC"]) - pow_joint_ref]
@@ -109,7 +113,7 @@ joint_b = [[float(rtj.loc[k, "dAIC"])] for _, k in ROWS_B]
 
 # ── Heatmap drawing helper ─────────────────────────────────────────────
 def draw_heat(ax, rows_vals, col_labels, row_labels, framed=False):
-    """dAIC heatmap into `ax` (viridis, sqrt scale, dark = best), one value per
+    """dAIC heatmap into `ax` (magma, sqrt scale, dark = best), one value per
     cell. Colour range is local to the axes. Empty strings in `col_labels` draw
     no top header; `row_labels=None` hides the y labels (shared with the panel
     on the left); `framed` boxes the block to mark it as the joint fit. The
@@ -148,15 +152,23 @@ def draw_heat(ax, rows_vals, col_labels, row_labels, framed=False):
 # ── Panel e data: width law per duration (power-law wells sigma_n = c n^p) ──
 theta = pd.read_csv(OUT_DIR / "pow_theta.csv").set_index("duration_ms")
 DURATIONS = list(theta.index)
+topology = pd.read_csv(TOPO_PATH)
+topology = topology[topology.grid_points == topology.grid_points.max()]
+topology_by_duration = topology[topology.fit_type == "separate"].set_index("duration_ms")
+topology_joint = topology[topology.fit_type == "joint"].iloc[0]
 
 
 def sigma_of_n(d: int, n: np.ndarray) -> np.ndarray:
     return float(theta.loc[d, "sigma_c"]) * np.asarray(n, float) ** float(theta.loc[d, "pow"])
 
 
-def ncrit(d: int) -> float:
-    # sigma_n = sigma_c * n^p = 1  ->  n_crit = sigma_c^(-1/p)
+def n_width(d: int) -> float:
+    # sigma_n = sigma_c * n^p = 1  ->  n_width = sigma_c^(-1/p)
     return float(theta.loc[d, "sigma_c"]) ** (-1.0 / float(theta.loc[d, "pow"]))
+
+
+def ntopo(d: int) -> int:
+    return int(topology_by_duration.loc[d, "n_topo"])
 
 
 # ── Figure ────────────────────────────────────────────────────────────
@@ -169,9 +181,12 @@ GAP = 0.35 * CELL_W
 DUR_LEFT = LAB_LEFT + JW + GAP        # per-duration panel left edge
 DW = 5 * CELL_W                      # per-duration panel = 5 columns
 ROW1_TOP, ROW2_TOP = 0.955, 0.585    # top edges of the response and RT blocks
+N_RESPONSE_ROWS = len(ROWS_A)
 
-ax_aj = fig.add_axes((LAB_LEFT, ROW1_TOP - 6 * CELL_H, JW, 6 * CELL_H))
-ax_ad = fig.add_axes((DUR_LEFT, ROW1_TOP - 6 * CELL_H, DW, 6 * CELL_H))
+ax_aj = fig.add_axes((LAB_LEFT, ROW1_TOP - N_RESPONSE_ROWS * CELL_H, JW,
+                      N_RESPONSE_ROWS * CELL_H))
+ax_ad = fig.add_axes((DUR_LEFT, ROW1_TOP - N_RESPONSE_ROWS * CELL_H, DW,
+                      N_RESPONSE_ROWS * CELL_H))
 ax_cj = fig.add_axes((LAB_LEFT, ROW2_TOP - 3 * CELL_H, JW, 3 * CELL_H))
 ax_cd = fig.add_axes((DUR_LEFT, ROW2_TOP - 3 * CELL_H, DW, 3 * CELL_H))
 ax_e = fig.add_axes((0.10, 0.035, 0.87, 0.315))
@@ -195,7 +210,7 @@ def channel_labels(y_block_bottom, joint_txt, dur_txt, daic_txt):
 # response channel: a = joint (one shared landscape), b = per-duration
 draw_heat(ax_aj, joint_a, [""], [r for r, _ in ROWS_A], framed=True)
 draw_heat(ax_ad, dur_a, DUR_LABELS, None)
-channel_labels(ROW1_TOP - 6 * CELL_H, "Joint fit", "Separate fits",
+channel_labels(ROW1_TOP - N_RESPONSE_ROWS * CELL_H, "Joint fit", "Separate fits",
                r"$\Delta$AIC (accuracy)")
 panel_label(ax_aj, "a", x=-2.4, pad=24)
 panel_label(ax_ad, "b", x=-0.04, pad=24)
@@ -208,20 +223,22 @@ channel_labels(ROW2_TOP - 3 * CELL_H, "Joint fit", "Separate fits",
 panel_label(ax_cj, "c", x=-2.4, pad=24)
 panel_label(ax_cd, "d", x=-0.04, pad=24)
 
-# Panel e — width law and n_crit
+# Panel e — width law, n_width, and n_topo
 n_cont = np.linspace(1.0, 15.55, 800)
 dur_colors = {d: CMAP(i / (len(DURATIONS) - 1)) for i, d in enumerate(DURATIONS)}
-ax_e.axhspan(1.0, 40.0, color="0.55", alpha=0.10, zorder=0)
 ax_e.axhline(1.0, color="0.25", lw=1.6, ls="--", zorder=2)
 for d in DURATIONS:
     ax_e.plot(n_cont, sigma_of_n(d, n_cont), lw=2.4, color=dur_colors[d], zorder=3,
               label=f"{d} ms")
-    ax_e.plot(ncrit(d), 1.0, "o", ms=12, color=dur_colors[d], zorder=5,
+    ax_e.plot(n_width(d), 1.0, "o", ms=12, color=dur_colors[d], zorder=5,
               markeredgecolor="white", markeredgewidth=1.5)
+    ax_e.plot(ntopo(d), sigma_of_n(d, ntopo(d)), "s", ms=11,
+              color=dur_colors[d], zorder=5,
+              markeredgecolor="black", markeredgewidth=1.2)
 
 # joint fit: the single landscape shared across the five durations (primary
 # analysis). It coincides with the 160 ms landscape, so it is drawn dashed on
-# top: the 160 ms line shows through the gaps. Its n_crit dot sits behind the
+# top: the 160 ms line shows through the gaps. Its n_width dot sits behind the
 # 160 ms dot as a larger black ring.
 sc_j = float(ladder.loc["gaussian_pow_attractor", "shared_sigma_c"])
 p_j = float(ladder.loc["gaussian_pow_attractor", "shared_pow"])
@@ -229,11 +246,10 @@ ax_e.plot(n_cont, sc_j * n_cont ** p_j, lw=3.6, color="black",
           ls=(0, (5, 2.4)), zorder=4, label="Joint fit")
 ax_e.plot(sc_j ** (-1.0 / p_j), 1.0, "o", ms=17, color="black", zorder=4.5,
           markeredgecolor="white", markeredgewidth=1.5)
+n_topo_joint = int(topology_joint["n_topo"])
+ax_e.plot(n_topo_joint, sc_j * n_topo_joint ** p_j, "s", ms=15,
+          color="black", zorder=5, markeredgecolor="white", markeredgewidth=1.5)
 
-ax_e.text(1.45, 3.6, "Approximate regime",
-          fontsize=9.5 * FONT_SCALE, ha="left", va="center", color="0.30")
-ax_e.text(5.2, 0.028, "Exact regime",
-          fontsize=9.5 * FONT_SCALE, ha="left", va="bottom", color="0.30")
 ax_e.text(15.35, 1.08, r"$\sigma_n = 1$",
           fontsize=9 * FONT_SCALE, ha="right", va="bottom", color="0.25")
 ax_e.set_yscale("log")
@@ -245,7 +261,14 @@ ax_e.set_ylabel(r"Well width  $\sigma_n$")
 panel_label(ax_e, "e", x=-0.075)
 handles, labels = ax_e.get_legend_handles_labels()
 order = [len(handles) - 1] + list(range(len(handles) - 1))  # joint fit first
-ax_e.legend([handles[i] for i in order], [labels[i] for i in order],
+marker_handles = [
+    Line2D([], [], color="black", marker="o", linestyle="none", markersize=9,
+           markeredgecolor="white", label=r"$n_{\mathrm{width}}$"),
+    Line2D([], [], color="black", marker="s", linestyle="none", markersize=8,
+           markeredgecolor="black", label=r"$n_{\mathrm{topo}}$"),
+]
+ax_e.legend([handles[i] for i in order] + marker_handles,
+            [labels[i] for i in order] + [h.get_label() for h in marker_handles],
             loc="lower right", ncols=2, framealpha=0.9, edgecolor="0.75")
 
 fig.savefig(f"{OUT_STEM}.png")

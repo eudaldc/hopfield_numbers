@@ -11,7 +11,7 @@ exact headline pipeline (differential evolution maxiter 35 / popsize 10 on the
 Synthetic counts are sampled from the accurate 1601-node grid with the same
 per-(duration, numerosity) trial counts as the real data, including the lapse
 channel. Recovery is reported for the five response parameters AND for the derived
-quantities the manuscript actually interprets: n_crit (sigma_n = 1 crossing), the
+quantities the manuscript actually interprets: n_width (sigma_n = 1), the
 well width sigma_3, and the sensory sd at n = 5.
 
     .venv/bin/python -m scripts.trial_level_recovery_winner            # full run (parallel)
@@ -48,7 +48,7 @@ PARAMS = ("sigma_c", "s0", "lambda0", "pow", "lapse")
 LOG_SCALE = ("sigma_c", "s0", "lapse", "sigma3")
 # multiplicative (log-uniform) jitter half-width per parameter
 JITTER = {"sigma_c": 0.35, "s0": 0.50, "lambda0": 0.20, "pow": 0.25, "lapse": 0.40}
-DERIVED = ("ncrit", "sigma3", "sensory_sd5")
+DERIVED = ("n_width", "sigma3", "sensory_sd5")
 
 _W: dict = {}
 
@@ -58,8 +58,8 @@ def _sigma_n(sigma_c: float, p: float, n: np.ndarray) -> np.ndarray:
     return sigma_c * np.power(np.asarray(n, float), p)
 
 
-def ncrit_sigma1(sigma_c: float, p: float) -> float:
-    """Continuous n where sigma_n = sigma_c n^p = 1, i.e. n_crit = sigma_c^(-1/p)."""
+def n_width_sigma1(sigma_c: float, p: float) -> float:
+    """Continuous width index where sigma_n = sigma_c n^p = 1."""
     return float(sigma_c ** (-1.0 / p)) if p > 0 else float("nan")
 
 
@@ -106,8 +106,8 @@ def _one(task: tuple[int, int]) -> dict:
     row: dict = {"duration_ms": d, "rep": rep}
     row |= {f"gen_{p}": gen[p] for p in PARAMS}
     row |= {f"rec_{p}": rec[p] for p in PARAMS}
-    row["gen_ncrit"] = ncrit_sigma1(gen["sigma_c"], gen["pow"])
-    row["rec_ncrit"] = ncrit_sigma1(rec["sigma_c"], rec["pow"])
+    row["gen_n_width"] = n_width_sigma1(gen["sigma_c"], gen["pow"])
+    row["rec_n_width"] = n_width_sigma1(rec["sigma_c"], rec["pow"])
     row["gen_sigma3"] = float(_sigma_n(gen["sigma_c"], gen["pow"], np.array([3.0]))[0])
     row["rec_sigma3"] = float(_sigma_n(rec["sigma_c"], rec["pow"], np.array([3.0]))[0])
     row["gen_sensory_sd5"] = float(T.evidence_sd(np.array([5.0]), gen["s0"], gen["lambda0"])[0])
@@ -162,14 +162,14 @@ def make_figure(df: pd.DataFrame, corr: pd.DataFrame) -> None:
     from figures.plot_style import apply_style, panel_label
 
     apply_style(1.5)   # rendered at \textwidth (figure*), 16 in canvas
-    quantities = list(PARAMS) + ["ncrit", "sigma3"]
+    quantities = list(PARAMS) + ["n_width", "sigma3"]
     labels = {"sigma_c": r"$\sigma_c$ (log$_{10}$)", "s0": r"$s_0$ (log$_{10}$)",
               "lambda0": r"$\lambda_0$", "pow": r"$p$",
-              "lapse": "lapse (log$_{10}$)", "ncrit": r"$n_{\rm crit}$ ($\sigma_n=1$)",
+              "lapse": "lapse (log$_{10}$)", "n_width": r"$n_{\rm width}$ ($\sigma_n=1$)",
               "sigma3": r"$\sigma_3$ (log$_{10}$)"}
     letters = "abcdefgh"
     fig, axes = plt.subplots(2, 4, figsize=(16, 8))
-    cmap = plt.get_cmap("viridis")
+    cmap = plt.get_cmap("magma")
     durs = sorted(df["duration_ms"].unique())
     colors = {d: cmap(i / max(1, len(durs) - 1)) for i, d in enumerate(durs)}
     for k, (ax, q) in enumerate(zip(axes.flat, quantities)):
@@ -177,8 +177,8 @@ def make_figure(df: pd.DataFrame, corr: pd.DataFrame) -> None:
         for d in durs:
             m = (df["duration_ms"] == d).to_numpy()
             ax.scatter(g[m], r[m], s=16, alpha=0.75, color=colors[d], label=f"{d} ms")
-        if q == "ncrit":
-            # n_crit = sigma_c^(-1/p) is a heavy-tailed transform of the traded-off
+        if q == "n_width":
+            # n_width = sigma_c^(-1/p) is a heavy-tailed transform of the traded-off
             # (sigma_c, p): a few ridge fits blow up. Clip to the meaningful range so
             # the on-diagonal bulk is visible; the handful of off-scale fits are the
             # ridge cases described in the text.
@@ -187,7 +187,7 @@ def make_figure(df: pd.DataFrame, corr: pd.DataFrame) -> None:
             lo = np.nanmin([g.min(), r.min()])
             hi = np.nanmax([g.max(), r.max()])
         ax.plot([lo, hi], [lo, hi], "--", color="0.4", lw=1)
-        if q == "ncrit":
+        if q == "n_width":
             ax.set_xlim(lo, hi)
             ax.set_ylim(lo, hi)
         ax.set_xlabel(f"generating {labels[q]}")
@@ -247,7 +247,7 @@ def main(argv=None) -> None:
             rows.append(row)
             print(f"  [{i}/{len(tasks)}] dur={row['duration_ms']}ms rep={row['rep']} "
                   f"gen_pow={row['gen_pow']:.2f} rec_pow={row['rec_pow']:.2f} "
-                  f"gen_ncrit={row['gen_ncrit']:.1f} rec_ncrit={row['rec_ncrit']:.1f} "
+                  f"gen_n_width={row['gen_n_width']:.1f} rec_n_width={row['rec_n_width']:.1f} "
                   f"({(time.time() - t0) / 60:.1f} min)", flush=True)
     df = pd.DataFrame(rows).sort_values(["duration_ms", "rep"])
     df.to_csv(out_csv, index=False)

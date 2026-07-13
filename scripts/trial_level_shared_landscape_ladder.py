@@ -36,6 +36,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from scipy.optimize import differential_evolution, minimize
+from tqdm.auto import tqdm
 
 _ROOT = Path(__file__).resolve().parent.parent
 if str(_ROOT) not in sys.path:
@@ -66,18 +67,24 @@ SPECS: dict[str, T.ModelSpec] = {
         family="gaussian_pow", cleanup=False,
         param_names=("sigma_c", "s0", "lambda0", "pow"),
         bounds=((1e-4, 1.0), (1e-6, 0.1), (0.1, 4.0), (0.1, 4.0))),
+    "gaussian_const_attractor": T.MODEL_BY_KEY["gaussian_const_attractor"],
+    "gaussian_const_readout": T.MODEL_BY_KEY["gaussian_const_readout"],
 }
 LANDSCAPE: dict[str, tuple[str, ...]] = {
     "gaussian_freebeta_attractor": ("sigma_c", "beta"),
     "gaussian_benford_free_beta": ("sigma_c", "beta"),
     "gaussian_pow_attractor": ("sigma_c", "pow"),
     "gaussian_pow_readout": ("sigma_c", "pow"),
+    "gaussian_const_attractor": ("sigma_c",),
+    "gaussian_const_readout": ("sigma_c",),
 }
 WELL_LABELS = {
     "gaussian_freebeta_attractor": "Frequency wells + clean-up",
     "gaussian_benford_free_beta": "Frequency wells, static",
     "gaussian_pow_attractor": "Power-law wells + clean-up",
     "gaussian_pow_readout": "Power-law wells, static",
+    "gaussian_const_attractor": "Constant-width wells + clean-up",
+    "gaussian_const_readout": "Constant-width wells, static",
 }
 BENCHMARKS = {
     "weber_ans": "Weber/ANS",
@@ -160,8 +167,10 @@ def _polish_nuis(args) -> tuple[int, np.ndarray, float]:
     return d, np.asarray(x0, float), float(_ll(key, shared, x0, nuis_names, d, _W["quad_fit"]))
 
 
-def _ncrit(shared_names: tuple[str, ...], shared: dict) -> float:
-    """n at which sigma_n crosses 1 (adjacent-well d'=1). Landscape property."""
+def _n_width(shared_names: tuple[str, ...], shared: dict) -> float:
+    """Continuous width index at which sigma_n crosses one."""
+    if len(shared_names) == 1:
+        return 1.0 if shared["sigma_c"] >= 1.0 else float("nan")
     ns = np.linspace(1.0, 60.0, 60000)
     if "beta" in shared_names:  # frequency (Benford) wells
         s = np.power(shared["sigma_c"] / np.log10(1.0 + 1.0 / ns), shared["beta"])
@@ -235,7 +244,7 @@ def fit_shared(key: str, pool: Pool, free_theta: dict, durs: tuple[int, ...],
         "shared_params": "+".join(shared_names),
         "shared_k": k, "shared_logL": logl,
         "shared_AIC": 2 * k - 2 * logl, "shared_BIC": k * np.log(n_tot) - 2 * logl,
-        "ncrit_shared": _ncrit(shared_names, shared),
+        "n_width_shared": _n_width(shared_names, shared),
     }
     for p in shared_names:
         row[f"shared_{p}"] = float(shared[p])
@@ -267,21 +276,39 @@ def benchmark_row(key: str, resp: pd.DataFrame, n_by_dur: dict) -> dict:
     bic = k * np.log(n_tot) - 2 * logl
     return {"model_key": key, "label": BENCHMARKS[key], "has_landscape": False,
             "shared_params": "", "shared_k": k, "shared_logL": logl,
-            "shared_AIC": aic, "shared_BIC": bic, "ncrit_shared": np.nan}
+            "shared_AIC": aic, "shared_BIC": bic, "n_width_shared": np.nan}
 
 
 def main(argv=None) -> None:
     ap = argparse.ArgumentParser()
     ap.add_argument("--smoke", action="store_true")
+    ap.add_argument(
+        "--constant-width-only",
+        action="store_true",
+        help="Fit the two p=0 models and merge them into the existing ladder outputs.",
+    )
     args = ap.parse_args(argv)
 
-    fit_nodes = 101 if args.smoke else 201
-    free_maxiter = 8 if args.smoke else 35
-    de_maxiter = 6 if args.smoke else 25
-    de_popsize = 5 if args.smoke else 10
-    max_rounds = 2 if args.smoke else 8
-    durs = tuple(T.DURATIONS[:2]) if args.smoke else tuple(T.DURATIONS)
-    well_keys = ["gaussian_freebeta_attractor"] if args.smoke else list(SPECS)
+    fit_nodes = 31 if args.smoke and args.constant_width_only else (101 if args.smoke else 201)
+    free_maxiter = 2 if args.smoke and args.constant_width_only else (8 if args.smoke else 35)
+    de_maxiter = 1 if args.smoke and args.constant_width_only else (6 if args.smoke else 25)
+    de_popsize = 3 if args.smoke and args.constant_width_only else (5 if args.smoke else 10)
+    max_rounds = 1 if args.smoke and args.constant_width_only else (2 if args.smoke else 8)
+    durs = (
+        tuple(T.DURATIONS[:1])
+        if args.smoke and args.constant_width_only
+        else (tuple(T.DURATIONS[:2]) if args.smoke else tuple(T.DURATIONS))
+    )
+    if args.smoke:
+        well_keys = [
+            "gaussian_const_attractor"
+            if args.constant_width_only
+            else "gaussian_freebeta_attractor"
+        ]
+    elif args.constant_width_only:
+        well_keys = ["gaussian_const_attractor", "gaussian_const_readout"]
+    else:
+        well_keys = list(SPECS)
 
     _init_worker(fit_nodes)  # parent needs data/quad for the shared step
     n_by_dur = {d: _W["data"][d].n_total for d in T.DURATIONS}
@@ -291,7 +318,14 @@ def main(argv=None) -> None:
         # 1. Free per-duration fits (warm-starts + the free column of the table)
         free_tasks = [(key, d, T.SEED + d, free_maxiter, de_popsize)
                       for key in well_keys for d in durs]
-        free_res = pool.map(_fit_free, free_tasks)
+        free_res = list(
+            tqdm(
+                pool.imap_unordered(_fit_free, free_tasks),
+                total=len(free_tasks),
+                desc="Free per-duration fits",
+                unit="fit",
+            )
+        )
         free_theta: dict[str, dict] = {key: {} for key in well_keys}
         free_ll: dict[str, float] = {key: 0.0 for key in well_keys}
         free_bic: dict[str, float] = {key: 0.0 for key in well_keys}
@@ -301,7 +335,7 @@ def main(argv=None) -> None:
             free_bic[key] += bic
 
         # 2. Constrained shared-landscape fits
-        for key in well_keys:
+        for key in tqdm(well_keys, desc="Shared-landscape fits", unit="model"):
             row, trs = fit_shared(key, pool, free_theta[key], durs,
                                   de_maxiter=de_maxiter, de_popsize=de_popsize,
                                   max_rounds=max_rounds)
@@ -317,11 +351,21 @@ def main(argv=None) -> None:
 
     # 3. Benchmarks (no landscape): free = joint-training form
     resp = pd.read_csv(T.OUT_DIR / "response_per_duration_aic.csv")
-    if not args.smoke:
+    if not args.smoke and not args.constant_width_only:
         for key in BENCHMARKS:
             rows.append(benchmark_row(key, resp, n_by_dur))
 
     out = pd.DataFrame(rows)
+    theta = pd.DataFrame(theta_rows)
+    if args.constant_width_only and not args.smoke:
+        fitted = set(well_keys)
+        previous = pd.read_csv(OUT_CSV)
+        previous = previous[~previous["model_key"].isin(fitted)]
+        out = pd.concat([previous, out], ignore_index=True, sort=False)
+        previous_theta = pd.read_csv(OUT_THETA)
+        previous_theta = previous_theta[~previous_theta["model_key"].isin(fitted)]
+        theta = pd.concat([previous_theta, theta], ignore_index=True, sort=False)
+
     # joint-training score: the constrained shared-landscape fit for the well
     # models, the (unconstrained) free fit for the no-landscape benchmarks. Both
     # already live in the shared_AIC/BIC columns.
@@ -331,7 +375,6 @@ def main(argv=None) -> None:
     out["joint_dBIC"] = out["joint_BIC"] - out["joint_BIC"].min()
     out = out.sort_values("joint_AIC").reset_index(drop=True)
 
-    theta = pd.DataFrame(theta_rows)
     if args.smoke:
         pd.set_option("display.width", 250)
         print(out.round(2).to_string(index=False))
@@ -343,7 +386,7 @@ def main(argv=None) -> None:
     pd.set_option("display.width", 250)
     print("\n=== Joint training: one shared landscape across the five durations ===")
     cols = ["model_key", "has_landscape", "shared_k", "shared_AIC", "shared_BIC",
-            "joint_dAIC", "joint_dBIC", "free_AIC", "ncrit_shared"]
+            "joint_dAIC", "joint_dBIC", "free_AIC", "n_width_shared"]
     print(out[[c for c in cols if c in out.columns]].round(1).to_string(index=False))
     print(f"\nSaved {OUT_CSV} and {OUT_THETA}")
 

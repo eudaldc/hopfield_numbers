@@ -117,7 +117,7 @@ def _polish_nuis(args) -> tuple[int, np.ndarray, float]:
     return d, np.asarray(x0, float), float(_ll(shared, x0, nuis_names, d))
 
 
-def _ncrit(sigma_c: float, beta: float) -> float:
+def _n_width(sigma_c: float, beta: float) -> float:
     ns = np.linspace(1.0, 60.0, 60000)
     s = np.power(sigma_c / np.log10(1.0 + 1.0 / ns), beta)
     above = np.where(s >= 1.0)[0]
@@ -206,14 +206,14 @@ def run_one(variant: str, dsname: str, pool: Pool, th_free: pd.DataFrame,
     for p in shared_names:
         row[f"shared_{p}"] = float(shared[p])
     if set(shared_names) == {"sigma_c", "beta"}:
-        row["ncrit_shared"] = _ncrit(shared["sigma_c"], shared["beta"])
+        row["n_width_shared"] = _n_width(shared["sigma_c"], shared["beta"])
 
     theta_rows = []
     for d in durs:
         tr = {"variant": variant, "durations": dsname, "duration_ms": d}
         full = dict(shared) | dict(zip(nuis_names, nuis[d]))
         tr |= {p: float(full[p]) for p in ORDER}
-        tr["ncrit"] = _ncrit(full["sigma_c"], full["beta"])
+        tr["n_width"] = _n_width(full["sigma_c"], full["beta"])
         theta_rows.append(tr)
     return row, theta_rows
 

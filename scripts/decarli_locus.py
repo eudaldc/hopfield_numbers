@@ -1,8 +1,8 @@
-"""Where does the De Carli DD deficit live: resolution (n_crit) or sensory noise?
+"""Where does the De Carli DD difference live: well width (n_width) or sensory noise?
 
-The per-subject n_crit analysis forced all between-subject variation into the
+The per-subject n_width analysis forced all between-subject variation into the
 well-width scale sigma_c (holding the noise common), and found a small but
-significant DD deficit (n_crit 8.2 vs 8.8). But accuracy alone cannot separate
+DD difference (n_width 8.2 vs 8.8). But accuracy alone cannot separate
 sensory NOISE from WELL WIDTH — both spread the read-out. This script runs the
 **mirror** fit (hold the well width common, let the per-subject sensory noise s0
 vary) and asks whether the group difference re-appears there too. If it does, the
@@ -103,11 +103,11 @@ def main() -> None:
           f"r_rb={rank_biserial(dd_a, ct_a):+.2f}")
     print(f"  median RT n=4-7: DD {dd_r.mean():.3f}s vs contr {ct_r.mean():.3f}s  "
           f"r_rb={rank_biserial(dd_r, ct_r):+.2f}")
-    # n_crit effect size for comparison (from the width-free fit)
+    # n_width effect size for comparison (from the width-free fit)
     subj = pd.read_csv(_ROOT / "output" / "decarli_fit" / "gaussian_freebeta_subjects.csv")
-    ncd = subj[subj.group == "DD"].n_crit_sigma1.to_numpy()
-    ncc = subj[subj.group == "contr"].n_crit_sigma1.to_numpy()
-    print(f"  n_crit (width-free fit): DD {np.median(ncd):.2f} vs contr {np.median(ncc):.2f}  "
+    ncd = subj[subj.group == "DD"].n_width_sigma1.to_numpy()
+    ncc = subj[subj.group == "contr"].n_width_sigma1.to_numpy()
+    print(f"  n_width (width-free fit): DD {np.median(ncd):.2f} vs contr {np.median(ncc):.2f}  "
           f"r_rb={rank_biserial(ncd, ncc):+.2f}")
     print("\nSaved gaussian_freebeta_locus.csv")
 

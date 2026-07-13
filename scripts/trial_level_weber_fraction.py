@@ -50,8 +50,8 @@ def cov_over(support: np.ndarray, p_row: np.ndarray) -> float:
     return float(np.sqrt(var) / mean)
 
 
-def ncrit(theta: dict) -> float:
-    # power-law wells: sigma_n = sigma_c * n^p = 1  ->  n_crit = sigma_c^(-1/p)
+def n_width(theta: dict) -> float:
+    # power-law wells: sigma_n = sigma_c * n^p = 1  ->  n_width = sigma_c^(-1/p)
     return float(theta["sigma_c"] ** (-1.0 / theta["pow"]))
 
 
@@ -77,7 +77,7 @@ def main() -> None:
 
     rows = []
     fig, ax = plt.subplots(figsize=(8, 6))
-    dur_cmap = matplotlib.colormaps["viridis"]
+    dur_cmap = matplotlib.colormaps["magma"]
     durs = list(T.DURATIONS)
     colors = {d: dur_cmap(i / (len(durs) - 1)) for i, d in enumerate(durs)}
 
@@ -85,14 +85,14 @@ def main() -> None:
         theta = {p: float(wt.loc[d, p]) for p in WIN.param_names}
         lapse = float(wt.loc[d, "lapse"])
         grid = T.compute_grid(WIN, theta, quad)
-        nc = ncrit(theta)
+        nc = n_width(theta)
         pf = T.apply_lapse(grid["p_resp"], lapse, r_max)  # (n, r_max) as fitted
         # in-support CoV, renormalised, the like-for-like match to the data dots
         model = np.array([cov_over(wells, pf[i, : wells.size]) for i in range(n.size)])
         emp = empirical_cov(trial, d)
 
         for nn, mm, ee in zip(n, model, emp):
-            rows.append({"duration_ms": d, "n": int(nn), "n_crit": round(nc, 2),
+            rows.append({"duration_ms": d, "n": int(nn), "n_width": round(nc, 2),
                          "model_cov": mm, "empirical_cov": ee})
         # n = 1 has no lower neighbour, so its CoV is an edge artefact; plot n >= 2
         ax.plot(n[1:], model[1:], "-", color=colors[d], lw=2.2, label=f"{d} ms")
@@ -115,14 +115,15 @@ def main() -> None:
     df.to_csv(OUT_CSV, index=False)
 
     # characterise the Weber plateau: power law w_eff ~ a n^gamma over the
-    # estimation range (n >= n_crit) for the fitted model CoV and the data
+    # Preserve the width-based analysis window (n >= n_width) used for the
+    # fitted model CoV and the data; this is not a topological boundary.
     print("=== Effective Weber fraction: CoV of the fitted model response ===")
     print(df.pivot(index="n", columns="duration_ms", values="model_cov").round(3).to_string())
-    print("\n=== power-law slope gamma of log(CoV) vs log n, estimation range (n >= n_crit) ===")
+    print("\n=== power-law slope gamma of log(CoV) vs log n, window n >= n_width ===")
     gm, ge = [], []
     for d in durs:
         sub = df[df.duration_ms == d]
-        nc = sub["n_crit"].iloc[0]
+        nc = sub["n_width"].iloc[0]
         est = sub[sub.n >= np.ceil(nc)]
         gmod = np.polyfit(np.log(est.n), np.log(est.model_cov), 1)[0]
         ed = est.dropna(subset=["empirical_cov"])

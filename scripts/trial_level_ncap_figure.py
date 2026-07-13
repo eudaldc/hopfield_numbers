@@ -1,8 +1,9 @@
 """Small-range robustness figure (Poisson-free), replotted from cached CSVs.
 
-Reads ``ncap10_ncrit.csv`` (written by ``trial_level_ncap_fit.py``) and shows that
+Reads the legacy file ``ncap10_ncrit.csv`` (written by
+``trial_level_ncap_fit.py``) and shows that
 refitting the winning model on n <= 10 alone leaves the width exponent beta and the
-resolution limit n_crit essentially unchanged versus the full-range n <= 15 fit
+continuous width index n_width essentially unchanged versus the full-range n <= 15 fit
 (only the noise-dominated 40 ms flash shifts). Overwrites ``ncap10_comparison.png``
 in place, so the supplementary reference is unchanged. No re-fitting.
 
@@ -52,18 +53,20 @@ def main() -> None:
     ax_b.set_xticks(x, [f"{d}" for d in durs])
     ax_b.set_xlabel("Exposure (ms)")
     ax_b.set_ylabel(r"Width exponent $p$")
-    ax_b.legend(frameon=False, loc="upper right")
     panel_label(ax_b, "a")
 
-    ax_n.bar(x - w / 2, [full.loc[d, "n_crit_sigma1"] for d in durs], w, color=C_ATTR)
-    ax_n.bar(x + w / 2, [cap.loc[d, "n_crit_sigma1"] for d in durs], w,
+    ax_n.bar(x - w / 2, [full.loc[d, "n_width"] for d in durs], w, color=C_ATTR)
+    ax_n.bar(x + w / 2, [cap.loc[d, "n_width"] for d in durs], w,
              facecolor="none", edgecolor=C_ATTR, linewidth=1.6)
     ax_n.set_xticks(x, [f"{d}" for d in durs])
     ax_n.set_xlabel("Exposure (ms)")
-    ax_n.set_ylabel(r"Resolution limit $n_{\rm crit}$")
+    ax_n.set_ylabel(r"Width index $n_{\rm width}$")
     panel_label(ax_n, "b")
 
-    fig.tight_layout()
+    handles, labels = ax_b.get_legend_handles_labels()
+    fig.legend(handles, labels, frameon=False, loc="lower center", ncol=2,
+               bbox_to_anchor=(0.5, 0.01))
+    fig.tight_layout(rect=(0, 0.16, 1, 1))
     fig.savefig(OUT, dpi=300)
     fig.savefig(OUT.with_suffix(".pdf"))
     plt.close(fig)

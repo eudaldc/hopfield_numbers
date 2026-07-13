@@ -1,4 +1,4 @@
-duration_ms,c,n_crit_analytical,n_crit_dprime,n_crit_entropy,n_crit_pmax,n_crit_bc_behav,n_crit_bc_theory
+duration_ms,c,n_width_analytical,n_width_dprime,n_threshold_entropy,n_threshold_pmax,n_threshold_bc_behav,n_threshold_bc_theory
 40,0.0787898554008011,12.691989278480543,13.0,8.0,8.0,1.0,2.0
 80,0.0487455893614867,20.5146765707194,21.0,12.0,13.0,3.0,4.0
 160,0.0430871020581019,23.208801526069784,24.0,13.0,15.0,3.0,4.0

@@ -1,13 +1,13 @@
-"""Clean locus test: is the De Carli DD deficit resolution or sensory noise?
+"""Clean locus test: is the De Carli DD difference in well width or sensory noise?
 
 Strengthens the DD argument (SM5) against the reviewer's suggestion to drop it.
 Two restricted, single-mechanism models are fit to each subject's ACCURACY curve
 (n = 1..7) with an exhaustive **global** grid search over one free parameter and a
 **fixed common lapse** (no escape hatch):
 
-  * RESOLUTION-only : sensory noise off (s0 = floor); free well-width scale sigma_c
-                      per subject → per-subject n_crit (σ_n = 1). Accuracy decline
-                      is carried entirely by the discrete code merging.
+  * WIDTH-only      : sensory noise off (s0 = floor); free well-width scale sigma_c
+                      per subject → per-subject n_width (σ_n = 1). Accuracy decline
+                      is carried by broader, more overlapping fitted components.
   * NOISE-only      : well-width off (σ_c tiny → wells never merge in range); free
                       sensory noise s0 per subject → per-subject σ(n). Accuracy
                       decline is carried entirely by sensory noise.
@@ -15,8 +15,8 @@ Two restricted, single-mechanism models are fit to each subject's ACCURACY curve
 Shared shape params (beta, lambda0) and the common lapse come from a pooled fit.
 We then ask: (a) does the DD-vs-control group difference localise in each model,
 and (b) which single mechanism *fits the accuracy curves better* (paired SSE). If
-resolution both localises the group effect AND fits better, the "coarser discrete
-code in DD" account is supported over "noisier perception".
+the width-only model both localises the group effect and fits better, the fitted
+width-profile account is supported over "noisier perception".
 
     .venv/bin/python -m scripts.decarli_locus_clean
 """
@@ -40,7 +40,7 @@ if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
 import scripts.trial_level_model_comparison as T
-from scripts.decarli_gaussian_freebeta import DATA, NVALS, GROUPS, ncrit, evidence_sd
+from scripts.decarli_gaussian_freebeta import DATA, NVALS, GROUPS, n_width, evidence_sd
 
 OUT_DIR = _ROOT / "output" / "decarli_fit"
 S0_FLOOR = 1e-6            # noise "off"
@@ -111,7 +111,7 @@ def main() -> None:
                        "lambda0": common["lambda0"], "pow": common["pow"]}
             rows.append({
                 "group": grp, "subject": int(s),
-                "sigma_c_A": sc_grid[ia], "n_crit_A": ncrit(theta_a, 1.0),
+                "sigma_c_A": sc_grid[ia], "n_width_A": n_width(theta_a, 1.0),
                 "sse_A": float(sse_a[ia]),
                 "s0_B": s0_grid[ib],
                 "sigma_n5_B": evidence_sd({"s0": s0_grid[ib], "lambda0": common["lambda0"]}, 5),
@@ -126,8 +126,8 @@ def main() -> None:
         return np.median(dd), np.median(ct), mannwhitneyu(dd, ct, alternative="two-sided")[1]
 
     print("\n=== group localisation (global search, lapse fixed) ===")
-    md, mc, p = mw("n_crit_A")
-    print(f"  RESOLUTION  n_crit: DD {md:.2f} vs contr {mc:.2f}  MW p={p:.4f}")
+    md, mc, p = mw("n_width_A")
+    print(f"  WIDTH  n_width: DD {md:.2f} vs contr {mc:.2f}  MW p={p:.4f}")
     md, mc, p = mw("sigma_n5_B")
     print(f"  NOISE     σ(n=5):  DD {md:.4f} vs contr {mc:.4f}  MW p={p:.4f}")
 
@@ -135,8 +135,8 @@ def main() -> None:
     a, b = sub["sse_A"].to_numpy(), sub["sse_B"].to_numpy()
     wp = wilcoxon(a, b).pvalue
     n_res_better = int(np.sum(a < b))
-    print(f"  mean SSE: resolution {a.mean():.5f}  vs  noise {b.mean():.5f}")
-    print(f"  resolution fits better in {n_res_better}/{len(a)} subjects  "
+    print(f"  mean SSE: width {a.mean():.5f}  vs  noise {b.mean():.5f}")
+    print(f"  width fits better in {n_res_better}/{len(a)} subjects  "
           f"(Wilcoxon paired p={wp:.4g})")
 
     # figure
@@ -148,16 +148,16 @@ def main() -> None:
                       label=grp)
     lim = [0, max(sub["sse_A"].max(), sub["sse_B"].max()) * 1.05]
     ax[0].plot(lim, lim, "0.6", lw=1)
-    ax[0].set_xlabel("SSE — noise-only model"); ax[0].set_ylabel("SSE — resolution-only model")
-    ax[0].set_title("below diagonal = resolution fits better"); ax[0].legend(frameon=False, fontsize=8)
-    dd = sub[sub.group == "DD"]["n_crit_A"].to_numpy()
-    ct = sub[sub.group == "contr"]["n_crit_A"].to_numpy()
+    ax[0].set_xlabel("SSE — noise-only model"); ax[0].set_ylabel("SSE — width-only model")
+    ax[0].set_title("below diagonal = width fits better"); ax[0].legend(frameon=False, fontsize=8)
+    dd = sub[sub.group == "DD"]["n_width_A"].to_numpy()
+    ct = sub[sub.group == "contr"]["n_width_A"].to_numpy()
     parts = ax[1].violinplot([ct, dd], positions=[0, 1], showmedians=True, widths=0.8)
     for pc, c in zip(parts["bodies"], ["#2c7fb8", "#c0392b"]):
         pc.set_facecolor(c); pc.set_alpha(0.4)
     ax[1].set_xticks([0, 1]); ax[1].set_xticklabels(["control", "DD"])
-    ax[1].set_ylabel("n_crit (resolution-only, global fit)")
-    ax[1].set_title(f"n_crit  MW p={mw('n_crit_A')[2]:.3f}")
+    ax[1].set_ylabel("n_width (width-only, global fit)")
+    ax[1].set_title(f"n_width  MW p={mw('n_width_A')[2]:.3f}")
     fig.suptitle("De Carli DD deficit — clean locus test (accuracy-only)", y=1.02)
     fig.tight_layout()
     fig.savefig(OUT_DIR / "gaussian_freebeta_locus_clean.png", dpi=180)

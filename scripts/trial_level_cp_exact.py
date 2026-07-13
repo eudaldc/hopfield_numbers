@@ -8,7 +8,8 @@ https://github.com/samcheyette/info_theory_number:
   * Zipf(1/x^2) prior, info-bottleneck posterior ``Q(k | n)`` with
     ``KL(Q||P) = info_bound`` (vendored in ``scripts/cheyette_model.py``),
   * exposure enters through ``info_bound(t) = min(B, R*t)`` with ``t`` in seconds,
-  * three parameters ``(B, R, epsilon)`` shared across ALL five durations.
+  * the published joint form shares ``(B, R, epsilon)`` across all durations,
+  * a matched joint form shares ``(B, R)`` but fits epsilon per duration.
 
 To compare against the attractor winner we score C&P through the SAME trial-level
 response likelihood used everywhere else: its structured readout ``Q(k | n)`` over
@@ -19,10 +20,9 @@ for C&P than its own Zipf guess, so this is both the fair and the favourable
 choice; the literal Zipf-guess variant is reported alongside as a robustness
 check.
 
-Because C&P ties all five durations together with just ``(B, R)``, it is fit
-jointly across durations (3 parameters total) rather than per-duration. AIC is
-convention-free for the pooled total (``2*k_total - 2*logL_total`` equals the
-sum of per-duration AICs), so the ladder is directly comparable to
+Both C&P variants are fitted jointly across durations. The published form has
+three parameters total; the matched lapse form has seven. AIC is
+convention-free for the pooled total, so the ladder is directly comparable to
 ``output/trial_level_model_comparison/consolidated_summary.csv``.
 
 Run from the project root::
@@ -51,6 +51,7 @@ if str(ROOT) not in sys.path:
 from scripts import cheyette_model as cp
 from scripts.trial_level_model_comparison import (
     DURATIONS,
+    LAPSE_BOUNDS,
     N_SHOWN,
     N_SUPPORT_MAX,
     N_TRUE_MIN,
@@ -198,6 +199,82 @@ def fit_cp_exact(
     }
 
 
+def fit_cp_exact_duration_lapse(
+    cache: dict,
+    data_by_dur: dict,
+    r_max: int,
+    *,
+    seed: int = SEED,
+) -> dict:
+    """Fit shared ``(B, R)`` with a separate uniform lapse per duration.
+
+    The five lapse parameters are profiled with bounded scalar optimisation for
+    each candidate ``(B, R)``, leaving a two-dimensional outer optimisation.
+    """
+    bounds = [
+        (np.log(0.5), np.log(30.0)),
+        (np.log(1.0), np.log(1000.0)),
+    ]
+
+    def evaluate(params: np.ndarray) -> tuple[float, list[dict]]:
+        B, R = np.exp(params)
+        rows = []
+        total = 0.0
+        for d in DURATIONS:
+            info_bound = min(B, R * (d / 1000.0))
+            q_nk = cp.lookup_q_interp(cache, info_bound)
+            counts = data_by_dur[d].counts
+
+            def neg_lapse(lapse: float) -> float:
+                pf = apply_lapse(q_nk[:, :N_WELLS], lapse, r_max)
+                return -float(np.sum(counts * np.log(pf)))
+
+            lapse_fit = minimize_scalar(
+                neg_lapse, bounds=LAPSE_BOUNDS, method="bounded",
+                options={"xatol": 1e-9},
+            )
+            logl = -float(lapse_fit.fun)
+            total += logl
+            rows.append({
+                "duration_ms": int(d),
+                "info_bound_bits": float(info_bound),
+                "epsilon": float(lapse_fit.x),
+                "logL": logl,
+                "n_trials": int(data_by_dur[d].n_total),
+            })
+        return total, rows
+
+    def neg(params: np.ndarray) -> float:
+        return -evaluate(params)[0]
+
+    de = differential_evolution(
+        neg, bounds=bounds, maxiter=60, popsize=15, tol=1e-7,
+        mutation=(0.5, 1.0), recombination=0.9, seed=seed,
+        init="latinhypercube", polish=False, updating="deferred", workers=1,
+    )
+    pol = minimize(
+        neg, de.x, method="Nelder-Mead",
+        options={"maxiter": 800, "xatol": 1e-7, "fatol": 1e-6},
+    )
+    vec = pol.x if pol.fun <= de.fun else de.x
+    logl, per_dur = evaluate(vec)
+    B, R = np.exp(vec)
+    n_total = sum(row["n_trials"] for row in per_dur)
+    k = 2 + len(DURATIONS)
+    return {
+        "guess": "uniform_duration_lapse",
+        "B": float(B),
+        "R": float(R),
+        "epsilon": np.nan,
+        "logL_total": float(logl),
+        "k_params": k,
+        "n_total": int(n_total),
+        "AIC": float(2 * k - 2 * logl),
+        "BIC_pooled": float(k * np.log(n_total) - 2 * logl),
+        "per_duration": per_dur,
+    }
+
+
 # ── Shape ceiling: best per-duration info_bound, ignoring the rate law ────
 
 
@@ -254,7 +331,7 @@ def cp_shape_ceiling(cache: dict, data_by_dur: dict, r_max: int) -> dict:
 # ── Ladder assembly ──────────────────────────────────────────────────────
 
 
-def build_ladder(cp_fit: dict) -> pd.DataFrame:
+def build_ladder(cp_fit: dict, cp_matched_fit: dict | None = None) -> pd.DataFrame:
     """Assemble the response-channel AIC/BIC ladder with the exact C&P model.
 
     Reference models are read from the published consolidated summary; their
@@ -283,6 +360,15 @@ def build_ladder(cp_fit: dict) -> pd.DataFrame:
         "logL_total": cp_fit["logL_total"], "k_total": cp_fit["k_params"],
         "AIC": cp_fit["AIC"], "BIC_pooled": cp_fit["BIC_pooled"],
     })
+    if cp_matched_fit is not None:
+        rows.append({
+            "model_key": "cp_exact_uniform_duration_lapse",
+            "label": "C&P exact (duration-specific lapse)",
+            "logL_total": cp_matched_fit["logL_total"],
+            "k_total": cp_matched_fit["k_params"],
+            "AIC": cp_matched_fit["AIC"],
+            "BIC_pooled": cp_matched_fit["BIC_pooled"],
+        })
 
     df = pd.DataFrame(rows).sort_values("AIC").reset_index(drop=True)
     df["dAIC"] = df["AIC"] - df["AIC"].min()
@@ -373,7 +459,12 @@ def main(argv=None) -> None:
           f"eps={fit_u['epsilon']:.4f}  logL={fit_u['logL_total']:.1f}  "
           f"AIC={fit_u['AIC']:.1f}")
 
-    results = {"uniform": fit_u}
+    print("Fitting exact C&P with shared (B, R) and duration-specific lapses...")
+    fit_ud = fit_cp_exact_duration_lapse(cache, data_by_dur, r_max)
+    print(f"  B={fit_ud['B']:.3f} bits  R={fit_ud['R']:.2f} bits/s  "
+          f"logL={fit_ud['logL_total']:.1f}  AIC={fit_ud['AIC']:.1f}")
+
+    results = {"uniform": fit_u, "uniform_duration_lapse": fit_ud}
     if not args.skip_literal:
         print("Building C&P cache on the full support (1..%d) for the literal "
               "Zipf-guess variant..." % r_max)
@@ -411,7 +502,7 @@ def main(argv=None) -> None:
     shape_daic = ceiling["dAIC_ceiling_vs_winner"]
     ratelaw_daic = fit_u["AIC"] - ceiling["ceiling_AIC"]
 
-    ladder = build_ladder(fit_u)
+    ladder = build_ladder(fit_u, fit_ud)
     ladder.to_csv(OUT_DIR / "cp_exact_ladder.csv", index=False)
 
     winner_aic = ladder["AIC"].min()

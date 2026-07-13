@@ -1,26 +1,26 @@
-"""Supplementary: the winner trained AND with RT predicted only within n_crit.
+"""Sensitivity analysis fitted within the width-based window n <= n_width.
 
 The main-manuscript version (``trial_level_rt_figure.py``) trains the winner
 landscape on the full range n = 1..15 and predicts RT at every n. This supplement
-restricts the model to its own predicted domain of validity: for each duration it
+uses a lower-numerosity window defined from the fitted width profile:
 
   (1) **retrains** the winner landscape (super-linear Gaussian attractor, free
-      beta) on trials with n <= n_crit, and
+      beta) on trials with n <= n_width, and
   (2) **fits and predicts** the RT link (latent effort -> seconds) on those same
-      n <= n_crit trials,
+      n <= n_width trials.
 
-then reports everything within the domain. n_crit(duration) is the resolvability
-limit sigma_n = 1 (adjacent-well d' = 1) of the **main full-range fit**
+Here n_width(duration) is the continuous sigma_n = 1 index of the
+**main full-range fit**
 (``winner_theta.csv``), so the training window is fixed by the main model and is
 *not* circular. It matches the main-fit values 4.6 / 7.5 / 8.7 / 9.2 / 10.0
 (floor -> n <= 4 / 7 / 8 / 9 / 9) for 40 / 80 / 160 / 320 / 640 ms.
 
 Because the clean-up is a zero-parameter change (deterministic given theta), the
-static twin (``gaussian_freebeta_no_cleanup``) is refit on the same domain to
-report the clean-up ΔAIC *within the strict domain* (does the attractor still earn
-its keep once the approximate tail is removed?).
+static twin (``gaussian_freebeta_no_cleanup``) is refit in the same window to
+report the clean-up ΔAIC there. This use of n_width defines an analysis window,
+not a model-validity, exact-range, or topological boundary.
 
-**Caveat (flagged in the output).** At 40 ms n_crit ~ 4.6, so only n in {1,2,3,4}
+**Caveat (flagged in the output).** At 40 ms n_width ~ 4.6, so only n in {1,2,3,4}
 enter the landscape refit -- 4 numerosity levels for 4 landscape params, i.e. a
 near-saturated landscape. The row is kept but flagged ``landscape_saturated``; the
 width exponent beta there is not well identified.
@@ -70,7 +70,7 @@ def sigma_n(theta: dict, n: np.ndarray) -> np.ndarray:
     return np.power(theta["sigma_c"] / freq, theta["beta"])
 
 
-def ncrit_crossing(theta: dict, level: float = 1.0) -> float:
+def n_width_crossing(theta: dict, level: float = 1.0) -> float:
     """Smallest n where sigma_n(n) >= level (linear interpolation)."""
     ns = np.linspace(1.0, 40.0, 40000)
     s = sigma_n(theta, ns)
@@ -142,14 +142,14 @@ def fit_all(trial: pd.DataFrame, data_full: dict, wt_main: pd.DataFrame,
     land_rows: list[dict] = []
     fit_rows: list[dict] = []
     for d in T.DURATIONS:
-        # n_crit from the MAIN full-range fit fixes the (non-circular) training window
+        # n_width from the main full-range fit fixes the training window
         theta_main = {p: float(wt_main.loc[d, p]) for p in spec.param_names}
-        ncrit = ncrit_crossing(theta_main)
-        nmax = int(floor(ncrit))                         # last fully resolvable integer
-        n_levels = nmax                                  # n = 1..nmax
+        n_width = n_width_crossing(theta_main)
+        nmax = int(floor(n_width))
+        n_levels = nmax
         saturated = n_levels <= n_landscape_params
         data_dom = restrict_data(trial, d, nmax, r_max)
-        print(f"[{d} ms] n_crit={ncrit:.2f} -> n<={nmax} ({n_levels} levels, "
+        print(f"[{d} ms] n_width={n_width:.2f} -> n<={nmax} ({n_levels} levels, "
               f"{data_dom.n_total} trials){' [SATURATED]' if saturated else ''}",
               flush=True)
 
@@ -163,15 +163,15 @@ def fit_all(trial: pd.DataFrame, data_full: dict, wt_main: pd.DataFrame,
         print(f"    twin refit:   AIC={rf_twin['AIC']:.1f} "
               f"(clean-up dAIC={rf_twin['AIC'] - rf['AIC']:+.1f})", flush=True)
         theta_dom = rf["theta"]
-        ncrit_dom = ncrit_crossing(theta_dom)            # re-derived from domain fit
+        n_width_refit = n_width_crossing(theta_dom)
 
         land_rows.append({
             "duration_ms": int(d),
-            "n_crit_main": round(ncrit, 3), "n_domain_max": nmax,
-            "n_domain_levels": n_levels, "landscape_saturated": bool(saturated),
+            "n_width_main": round(n_width, 3), "n_width_window_max": nmax,
+            "n_width_window_levels": n_levels, "landscape_saturated": bool(saturated),
             **{p: theta_dom[p] for p in spec.param_names},
             "lapse": rf["lapse"], "resp_logL": rf["logL"], "resp_AIC": rf["AIC"],
-            "n_crit_domain_rederived": round(ncrit_dom, 3),
+            "n_width_refit": round(n_width_refit, 3),
             "twin_resp_AIC": rf_twin["AIC"],
             "cleanup_dAIC_domain": rf_twin["AIC"] - rf["AIC"],
         })
@@ -189,8 +189,8 @@ def fit_all(trial: pd.DataFrame, data_full: dict, wt_main: pd.DataFrame,
             print(f"    RT {metric:7s}: R2|dom={r2_dom:.3f}", flush=True)
             fit_rows.append({
                 "duration_ms": int(d), "metric": metric,
-                "n_crit": round(ncrit, 3), "n_domain_max": nmax,
-                "n_domain_levels": n_levels, "landscape_saturated": bool(saturated),
+                "n_width": round(n_width, 3), "n_width_window_max": nmax,
+                "n_width_window_levels": n_levels, "landscape_saturated": bool(saturated),
                 "R2_domain": r2_dom,
                 **{f"scale_{k}": v for k, v in rt["scale"].items()},
                 "sigma_rt": rt["sigma_rt"], "rt_logL": rt["logL"], "rt_AIC": rt["AIC"],
@@ -212,8 +212,8 @@ def render_figure(data_full: dict, land_df: pd.DataFrame, fit_df: pd.DataFrame) 
     for ci, d in enumerate(T.DURATIONS):
         lrow = land_df.loc[d]
         theta_dom = {p: float(lrow[p]) for p in spec.param_names}
-        ncrit = float(lrow["n_crit_main"])
-        nmax = int(lrow["n_domain_max"])
+        n_width = float(lrow["n_width_main"])
+        nmax = int(lrow["n_width_window_max"])
         saturated = bool(lrow["landscape_saturated"])
         grid = T.compute_grid(spec, theta_dom, quad_rt)
         in_dom = n <= nmax
@@ -229,9 +229,9 @@ def render_figure(data_full: dict, land_df: pd.DataFrame, fit_df: pd.DataFrame) 
             ax.plot(n[in_dom], pred[in_dom], "-", color=col, lw=1.8,
                     label=f"{lbl} (R²|dom={float(frow['R2_domain']):.2f})")
             ax.plot(n[~in_dom], pred[~in_dom], "--", color=col, lw=1.2, alpha=0.6)
-        ax.axvline(ncrit, color="k", ls=":", lw=1.0)
+        ax.axvline(n_width, color="k", ls=":", lw=1.0)
         y0, y1 = ax.get_ylim()
-        ax.text(ncrit + 0.2, y1 - 0.04 * (y1 - y0), f"n_crit≈{ncrit:.1f}",
+        ax.text(n_width + 0.2, y1 - 0.04 * (y1 - y0), f"n_width≈{n_width:.1f}",
                 fontsize=7, va="top", ha="left")
         flag = "  [saturated]" if saturated else ""
         ax.set_title(f"{d} ms{flag}", fontsize=9)
@@ -242,8 +242,8 @@ def render_figure(data_full: dict, land_df: pd.DataFrame, fit_df: pd.DataFrame) 
         ax.spines["top"].set_visible(False)
         ax.spines["right"].set_visible(False)
 
-    fig.suptitle("Supplement — winner retrained and RT predicted within n_crit "
-                 "(solid: n < n_crit;  dashed: extrapolation above)",
+    fig.suptitle("Sensitivity analysis in the n_width fitting window "
+                 "(solid: inside; dashed: outside)",
                  fontsize=10, y=1.0)
     fig.tight_layout()
     fig.savefig(OUT_FIG, dpi=190, bbox_inches="tight")
@@ -266,12 +266,12 @@ def main() -> None:
         land_df, fit_df = fit_all(trial, data_full, wt_main, r_max)
         land_df.to_csv(OUT_LANDSCAPE, index=False)
         fit_df.to_csv(OUT_FIT, index=False)
-        print("\n=== landscape retrained within n_crit(duration) ===")
-        print(land_df[["duration_ms", "n_crit_main", "n_domain_max", "n_domain_levels",
-                       "landscape_saturated", "beta", "n_crit_domain_rederived",
+        print("\n=== landscape retrained in the n_width(duration) window ===")
+        print(land_df[["duration_ms", "n_width_main", "n_width_window_max",
+                       "n_width_window_levels", "landscape_saturated", "beta", "n_width_refit",
                        "cleanup_dAIC_domain"]].round(3).to_string(index=False))
-        print("\n=== RT predicted within n_crit(duration), geometric-mean R^2 ===")
-        print(fit_df[["duration_ms", "metric", "n_crit", "n_domain_max",
+        print("\n=== RT predicted in the n_width(duration) window, geometric-mean R^2 ===")
+        print(fit_df[["duration_ms", "metric", "n_width", "n_width_window_max",
                       "landscape_saturated", "R2_domain"]].round(3).to_string(index=False))
 
     render_figure(data_full, land_df, fit_df)

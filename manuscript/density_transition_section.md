@@ -3,12 +3,11 @@
 The Poisson wells used for cleanup have variance $c\cdot n$ at well $n$, so
 the $d'$ between two adjacent attractors is
 $d'(n)=1/\sqrt{c\,n}$.
-Requiring $d'\ge 1$ (the conventional bound for discriminable categories)
-gives the closed-form prediction
-$n_{\text{crit}}=1/c$:
-the numerosity at which neighbouring integer wells become indistinguishable
-on a single trial.  With the $640$~ms fit ($c=0.0363$) this yields
-$n_{\text{crit}}\approx 27.5$, and across the five duration conditions the
+The continuous width-based index defined by $\sigma_n=1$ is
+$n_{\text{width}}=1/c$.
+It summarizes the fitted width law and is not a topological merger point.
+With the $640$~ms fit ($c=0.0363$) this yields
+$n_{\text{width}}\approx 27.5$, and across the five duration conditions the
 analytical prediction falls in the narrow band $21\le 1/c\le 28$.
 This is a parameter-free prediction of the model: $c$ was fitted against
 Piantadosi's exact-enumeration data ($n\le 15$) and then extrapolated
@@ -25,8 +24,8 @@ rules fire at $n=28,\,15,\,16$ respectively, giving a spread of $\times
 1.9$ that brackets the analytical $1/c=27.5$.  The entropy and
 mode-probability rules detect the transition slightly earlier than $d'$
 because they flag the point at which the posterior first supports
-multiple integers, whereas $d'=1$ corresponds to the stricter requirement
-that wells be fully resolved.  The Bhattacharyya rule with threshold
+multiple integers, whereas $d'=1$ is the chosen width-law reference.
+The Bhattacharyya rule with threshold
 $0.5$ fires much earlier ($n\approx 4$) and we report this as a
 conservatively low-power indicator: under the Gaussian approximation
 $\mathrm{BC}(n,n+1)>0.5$ is equivalent to $d'<\sqrt{8\ln 2}\approx 2.36$,

@@ -58,15 +58,15 @@ tests/         pytest suite
 | `scripts/trial_level_winner_joint.py` | Coupled joint (response + dynamics RT) for the winning model |
 | `scripts/trial_level_subitizing_diagnostic.py` | Head-to-head of well forms on the subitizing band (n≤4) |
 | `scripts/trial_level_consolidate.py` | Master ladder + headline figures consolidated around the winner |
-| `scripts/trial_level_ncrit_rederivation.py` | Re-derives n_crit (well width σ_n=1 ⇔ d′=1) for the winning landscape |
+| `scripts/trial_level_ncrit_rederivation.py` | Re-derives the continuous width index n_width (σ_n=1) for the winning landscape; the filename is retained for compatibility |
 | `scripts/trial_level_regime_change.py` | Isolates where the clean-up / discrete code stops contributing (exact→approximate) |
-| `scripts/trial_level_ncap_fit.py` | Small-range (n≤10) refit + n_crit re-derivation: is this a mechanistic small-number model that predicts the ANS transition? |
+| `scripts/trial_level_ncap_fit.py` | Small-range (n≤10) refit + n_width re-derivation |
 | `scripts/trial_level_fit_figure.py` | Winner two-stage fit vs data (main Fig. 2): mean guess / % exact / geometric-mean RT per duration (`winner_fit_summaries.png`) |
 | `scripts/trial_level_rt_figure.py` | Winner predicted RT (geometric mean) — entropy vs dynamics, R² vs published Fig. 2 (`winner_rt_fit.png`) |
-| `scripts/trial_level_rt_domain.py` | RT predicted within the model's domain (n < n_crit), extrapolated above (`rt_domain.png`) |
+| `scripts/trial_level_rt_domain.py` | RT sensitivity analysis fitted in the window n < n_width (`rt_domain.png`) |
 | `scripts/trial_level_pexact_decomposition.py` | Why P(exact) wiggles: smooth landscape vs discrete cleanup-basin read-out (`pexact_decomposition.png`) |
-| `scripts/decarli_gaussian_freebeta.py` | Winner model applied to De Carli (SM5): group accuracy+RT fit + derived n_crit/σ(n) |
-| `scripts/decarli_gaussian_freebeta_subjects.py` | Per-subject De Carli n_crit distributions, DD vs control |
+| `scripts/decarli_gaussian_freebeta.py` | Winner model applied to De Carli (SM5): group accuracy+RT fit + derived n_width/σ(n) |
+| `scripts/decarli_gaussian_freebeta_subjects.py` | Per-subject De Carli n_width distributions, DD vs control |
 | `scripts/decarli_locus.py` / `decarli_locus_clean.py` | Is the DD deficit resolution or sensory noise? (mirror fit + clean global test) |
 | `scripts/decarli_dd_summary_figure.py` | Consolidated DD-vs-control 4-panel argument (`decarli_dd_summary.png`) |
 | `scripts/density_transition.py` | Post-fit metrics and “transition to density” figure from duration fits |

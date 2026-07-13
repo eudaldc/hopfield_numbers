@@ -2,11 +2,11 @@
 to the De Carli exact-enumeration data (SM5), non-destructively.
 
 The manuscript's SM5 fits the *old* Poisson √n model to each group's accuracy + RT
-curves (n = 1..7) and compares DD vs control via derived quantities (n_crit = 1/c,
+curves (n = 1..7) and compares DD vs control via derived quantities (n_width = 1/c,
 σ(n)). Here we refit each group with the winning `gaussian_freebeta_attractor`
 landscape (reusing the validated `compute_grid` from the trial-level pipeline) and
-re-derive the quantities under the new model, where **n_crit is the resolvability
-limit σ_n = 1 ⇔ adjacent-well d′ = 1**, not 1/c.
+re-derive the quantities under the new model, where **n_width is the continuous
+width index defined by σ_n = 1**, not 1/c.
 
 Targets (per group, n = 1..7; n = 8 dropped as a guessing end-effect, as in the
 published fit): mean exact accuracy and median RT over the 32 subjects. Fit is a
@@ -105,7 +105,7 @@ def sigma_well(theta: dict, n: np.ndarray) -> np.ndarray:
     return theta["sigma_c"] * np.power(np.asarray(n, float), theta["pow"])
 
 
-def ncrit(theta: dict, level: float = 1.0) -> float:
+def n_width(theta: dict, level: float = 1.0) -> float:
     ns = np.linspace(1.0, 60.0, 60000)
     s = sigma_well(theta, ns)
     idx = np.where(s >= level)[0]
@@ -134,8 +134,8 @@ def main() -> None:
         rows.append({
             "group": grp,
             **{k: f[k] for k in PNAMES},
-            "n_crit_sigma1": ncrit(theta, 1.0),
-            "n_crit_sigma2": ncrit(theta, 2.0),
+            "n_width_sigma1": n_width(theta, 1.0),
+            "n_width_sigma2": n_width(theta, 2.0),
             "sigma_n1": evidence_sd(theta, 1), "sigma_n4": evidence_sd(theta, 4),
             "sigma_n7": evidence_sd(theta, 7),
             "well_sigma_n1": float(sigma_well(theta, np.array([1]))[0]),
@@ -145,7 +145,7 @@ def main() -> None:
         })
         print(f"[{grp}] pow={f['pow']:.2f} sigma_c={f['sigma_c']:.4f} "
               f"s0={f['s0']:.4g} lambda0={f['lambda0']:.2f} t0={f['t0']:.3f} "
-              f"lapse={f['lapse']:.3f} -> n_crit(σ=1)={ncrit(theta):.2f}", flush=True)
+              f"lapse={f['lapse']:.3f} -> n_width(σ=1)={n_width(theta):.2f}", flush=True)
 
     out = pd.DataFrame(rows)
     out.to_csv(OUT_DIR / "gaussian_freebeta_fitted.csv", index=False)
@@ -154,7 +154,7 @@ def main() -> None:
     dd, ct = out[out.group == "DD"].iloc[0], out[out.group == "contr"].iloc[0]
     comp = pd.DataFrame([
         {"quantity": q, "DD": dd[q], "contr": ct[q], "diff_DD_minus_contr": dd[q] - ct[q]}
-        for q in ("n_crit_sigma1", "n_crit_sigma2", "pow", "sigma_c",
+        for q in ("n_width_sigma1", "n_width_sigma2", "pow", "sigma_c",
                   "sigma_n1", "sigma_n4", "sigma_n7")
     ])
     comp.to_csv(OUT_DIR / "gaussian_freebeta_group_comparison.csv", index=False)
@@ -169,7 +169,7 @@ def main() -> None:
         axes[0].plot(NVALS, 100 * p_exact, "-", color=colors[grp], lw=1.8)
         axes[1].plot(NVALS, rt, "o", color=colors[grp], ms=6, label=f"{grp} data")
         axes[1].plot(NVALS, pred_rt, "-", color=colors[grp], lw=1.8)
-        nc = ncrit({k: f[k] for k in ("sigma_c", "s0", "lambda0", "pow")})
+        nc = n_width({k: f[k] for k in ("sigma_c", "s0", "lambda0", "pow")})
         axes[0].axvline(nc, color=colors[grp], ls=":", lw=1.0)
     axes[0].set_xlabel("numerosity"); axes[0].set_ylabel("% exact")
     axes[0].set_title("De Carli accuracy — winner model"); axes[0].legend(fontsize=8, frameon=False)

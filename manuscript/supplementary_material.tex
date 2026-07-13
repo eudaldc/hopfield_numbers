@@ -44,39 +44,42 @@
 
 \paragraph{Response likelihood.} For each model and duration the response probability of Eq.~(\ref{main-eq:marginal}) marginalises the readout over the sensory channel $y_0 \sim \mathcal{N}(n, \sigma(n))$. The integral is computed \emph{deterministically}, so the objective is free of Monte-Carlo noise. Gauss--Hermite quadrature is inappropriate here: for the attractor models the clean-up map $y_0 \mapsto x^*$ is near-discontinuous (evidence snaps to basins), and Gauss--Hermite carries a $1.7$--$4\%$ error even at $241$ nodes. We therefore use a uniform standard-normal grid with Gaussian weights for \emph{every} model, so the comparison is on identical footing. Against high-sample Monte-Carlo estimates, a grid of $801$ nodes matches the integral to $\le 2\times10^{-3}$ (mean $1.5\times10^{-4}$). The optimiser uses a cheaper grid ($201$ nodes); the reported log-likelihoods are recomputed at the fitted parameters on a fine grid ($1601$ nodes).
 
-\paragraph{Lapse channel.} Typed responses run up to $99$, and a few per cent of guesses fall outside the integer-well support ($3.9$--$6.1\%$ across durations). We never discard them: the final response probability is $p_{\mathrm{final}}(r \mid n) = (1-\ell)\,p(r \mid n) + \ell\,/\,R_{\max}$ with $R_{\max} = 99$, a uniform contamination that places positive mass everywhere. The lapse $\ell$ is fitted per duration under an identical convention across all models and is counted in AIC/BIC; it is stable across models (${\approx}0.06$--$0.08$).
+\paragraph{Lapse channel.} Typed responses run up to $99$, and a few per cent of guesses fall outside the integer-well support ($3.9$--$6.1\%$ across durations). We never discard them: the final response probability is $p_{\mathrm{final}}(r \mid n) = (1-\ell)\,p(r \mid n) + \ell\,/\,R_{\max}$ with $R_{\max} = 99$, a uniform contamination that places positive mass everywhere. The lapse is counted in every AIC and BIC. It is fitted separately at each duration in the attractor, static-readout, Weber/ANS, and separate C\&P fits. The published-form joint C\&P fit instead shares one lapse across durations; we therefore also fit a matched joint C\&P variant with duration-specific lapses.
 
-\paragraph{Response-time channel.} Response time is modelled as log-normal, $\log \mathrm{rt} \sim \mathcal{N}(\log(t_0 + m(n)), \sigma_{\mathrm{rt}})$, with the task-fixed base $t_0 = 1.30$~s. The metric $m(n)$ is the expected posterior entropy ($\kappa\,\mathbb{E}[H]$, available to every model), the expected convergence time ($\tau\,\mathbb{E}[T]$, attractor only), or their sum (the hybrid; Eq.~\ref{main-eq:rt}). The RT parameters are fitted to the response times with the landscape held fixed at its response-fit values, so the response-time channel is a cross-prediction of the fitted landscape.
+\paragraph{Response-time channel.} Response time is modelled as log-normal, $\log \mathrm{rt} \sim \mathcal{N}(\log(t_0 + m(n)), \sigma_{\mathrm{rt}})$, with the task-fixed base $t_0 = 1.30$~s. The metric $m(n)$ is the expected posterior entropy ($\kappa\,\mathbb{E}[H]$, available to every model), the expected convergence time ($\tau\,\mathbb{E}[T]$, attractor only), or their sum (the hybrid; Eq.~\ref{main-eq:rt}). The RT parameters are fitted to response times with the landscape held fixed at its response-fit values, providing a constrained cross-channel test of the fitted landscape.
 
 \paragraph{Optimisation.} The deterministic objective is minimised by \texttt{scipy} differential evolution~\citep{storn_differential_1997} followed by a Nelder--Mead polish, with fixed seeds. The attractor models require a larger optimiser budget than the smooth static readouts (a low-budget fit understates them); re-fitting at a higher budget with a different seed changes the reported log-likelihoods by less than one part in $10^3$, so the fits are converged and the model ordering is not an optimisation artefact.
 
 \section{Supplementary Material 2: Model comparison and constrained fits}
 \label{sm:comparison}
 
-Table~\ref{tab:ladder} gives the full trial-level response comparison with each duration fitted separately; Table~\ref{tab:joint} gives the complementary joint fit, one landscape shared across all durations. Every model is fitted under the identical convention (per-duration parameters plus a per-duration lapse, summed over the five durations). The power-law-width Gaussian attractor is the best account under both fits, and the ranking separates the contributions of its two ingredients: the clean-up dynamics and the width scaling.
+Table~\ref{tab:ladder} consolidates the joint and separate response-model fits and states the sharing configuration used for every row. In the joint power-law attractor and static fits, only the landscape parameters $(\sigma_c,p)$ are shared; in the constant-width ablations, $p=0$ is fixed and only $\sigma_c$ is shared. The sensory parameters $(s_0,\lambda_0)$ and lapse are duration-specific. The Weber/ANS model has no separable landscape, so its four parameters remain duration-specific in both comparisons. The separate analysis fits all free parameters independently at each duration.
 
-The normative benchmark is the bounded-optimal model of~\citet{cheyette_unified_2020}, reimplemented from their published code: a Zipf ($1/n^2$) prior read out through an information-bottleneck posterior whose per-duration information budget is $\min(B, R\,t)$ bits, with $t$ the exposure duration. We refit it under the same trial-level response likelihood as every other model. For the joint fit (Table~\ref{tab:joint}) it uses its published form, sharing its three parameters ($B$, $R$, and a lapse) across all durations; for the separate fit (Table~\ref{tab:ladder}) we grant it its most generous per-duration version, freeing the information budget at each duration. The model reproduces its published parameters when refit to their own simulated data ($B \approx 4.8$, $R \approx 41$), and our implementation matches their likelihood to machine precision.
+The normative benchmark is the bounded-optimal model of~\citet{cheyette_unified_2020}, reimplemented from their published code: a Zipf ($1/n^2$) prior read out through an information-bottleneck posterior whose information budget is $\min(B, R\,t)$ bits, with $t$ the exposure duration. Its published joint form shares $B$, $R$, and one lapse across durations ($k=3$). Because the other joint models use duration-specific lapses, the matched C\&P comparison shares only $B$ and $R$ and fits five lapses ($k=7$); this is the C\&P row used in main-text Fig.~\ref{main-fig:comparison}a. The separate C\&P analysis frees both the information budget and lapse at each duration ($k=10$), removing the $\min(B,Rt)$ rate-law constraint. Our implementation reproduces the published parameters on simulated data and matches the reference likelihood to machine precision.
 
-\begin{table}[t]
+\begin{table*}[t]
   \centering
-  \caption{\textbf{Trial-level response model comparison.} Categorical information criteria over the ${\sim}53{,}000$ individual responses, summed over the five exposure durations, relative to the best model. $k$ is the total free-parameter count (per-duration mechanism parameters plus lapse). ``Attractor'' includes the clean-up dynamics; ``readout'' is the matched static control at the same $k$. The attractor and its static twin use more parameters than the benchmarks (the Weber/ANS code has five fewer, the bounded-optimal C\&P readout fifteen fewer); at this sample size BIC charges ${\approx}9$ per parameter against AIC's $2$, yet the ranking and margins barely change, so the attractor's advantage is not a parameter-count artefact.}
+  \caption{\textbf{Trial-level response-model comparison under joint and separate fits.} $k$ is the total number of free parameters over all five durations. Information criteria use all $52{,}995$ responses and are reported relative to the power-law attractor within each analysis. The joint power-law models share $\sigma_c$ and $p$; the constant-width ablations fix $p=0$ and share only $\sigma_c$. In both cases, $s_0$, $\lambda_0$, and lapse are fitted per duration. Weber/ANS remains fully duration-specific. The joint C\&P model shares $B$ and $R$ but uses a duration-specific lapse ($k=7$). In the separate analysis, every free parameter is fitted per duration; C\&P has a free information budget and lapse at each duration. Joint-fit BIC uses the pooled sample size, whereas separate-fit BIC is summed over the five duration-specific fits.}
   \label{tab:ladder}
-  \setlength{\tabcolsep}{5pt}
-  \begin{tabular}{lccc}
+  \setlength{\tabcolsep}{8pt}
+  \begin{tabular}{lcccc}
   \hline
-  Model & $k$ & $\Delta$AIC & $\Delta$BIC \\
+  Model & $k$, joint fit & $\Delta$AIC / $\Delta$BIC & $k$, separate fits & $\Delta$AIC / $\Delta$BIC \\
   \hline
-  \textbf{Power-law attractor ($\sigma_n = \sigma_c\,n^{p}$)} & \textbf{25} & \textbf{0} & \textbf{0} \\
-  Power-law readout (static) & 25 & 1327 & 1327 \\
-  Weber/ANS ($\sigma_n \propto n$) & 20 & 4270 & 4266 \\
-  Normative (C\&P 2020) & 10 & 13243 & 13134 \\
+  \textbf{Power-law attractor} & \textbf{17} & \textbf{0 / 0} & \textbf{25} & \textbf{0 / 0} \\
+  Power-law readout (static) & 17 & 641 / 641 & 25 & 1327 / 1327 \\
+  Constant-width attractor ($p=0$) & 16 & 3405 / 3396 & 20 & 6636 / 6600 \\
+  Constant-width readout (static; $p=0$) & 16 & 3637 / 3628 & 20 & 6864 / 6827 \\
+  Weber/ANS & 20 & 757 / 783 & 20 & 4270 / 4233 \\
+  Normative (C\&P 2020) & 7 & 11372 / 11283 & 10 & 13243 / 13134 \\
   \hline
   \end{tabular}
-\end{table}
+  \label{sup-tab:model_comparison}
+\end{table*}
 
-Turning the clean-up dynamics on is a zero-parameter change (the dynamics are deterministic given the landscape), so the attractor and its static twin occupy the identical parameter space. This flips the fit by $\Delta\mathrm{AIC} = 1327$ in favour of clean-up with separate fits, and by $641$ under the shared landscape, so the dynamics do explanatory work without added flexibility. (Per duration, clean-up helps strongly at 40--160~ms and is roughly neutral at 320--640~ms, where the attractor has largely settled during the exposure itself; main-text Fig.~\ref{main-fig:comparison}b.)
+Turning the clean-up dynamics on is a zero-parameter change because the dynamics are deterministic given the landscape. The attractor improves AIC by $1326.7$ in the separate analysis and by $640.6$ in the joint analysis. Per duration, clean-up helps strongly at 40--160~ms and is roughly neutral at 320--640~ms (main-text Fig.~\ref{main-fig:comparison}b). Fixing $p=0$, and hence $\sigma_n=\sigma_c$, worsens AIC by $6636.4$ in the separate analysis and by $3405.3$ in the joint analysis. The matched constant-width static model performs worse still. Clean-up therefore remains beneficial under the ablation, but it cannot compensate for removing magnitude-dependent broadening.
 
-The width exponent $p$ is a free parameter of the model (Table~\ref{tab:params}). Its point estimates grow the wells from narrow and well-separated at small $n$ to wide and overlapping at large $n$, but the exponent and the scale $\sigma_c$ trade off strongly and are not identifiable singly (Supplementary Material~3), so we do not interpret the exponent on its own; the identifiable, behaviourally meaningful summary of the width law is the resolution limit $n_{\mathrm{crit}}$. What separates our account from the Weber/ANS magnitude code is therefore not a particular width exponent but the discrete pattern-completion architecture: at the identical trial-level convention the attractor beats the magnitude code by $\Delta\mathrm{AIC} = 4270$ (Table~\ref{tab:ladder}).
+The width exponent $p$ is a free parameter of the model (Table~\ref{tab:params}). Its point estimates grow the wells from narrow and well-separated at small $n$ to wide and overlapping at large $n$, but the exponent and the scale $\sigma_c$ trade off strongly and are not identifiable singly. We therefore summarize their joint effect with the continuous width-based index $n_{\mathrm{width}}$, defined by $\sigma_n=1$ (Supplementary Material~3). What separates our account from the Weber/ANS magnitude code is not a particular width exponent or this proxy, but the discrete pattern-completion architecture: at the identical trial-level convention the attractor beats the magnitude code by $\Delta\mathrm{AIC} = 4270$ (Table~\ref{tab:ladder}).
 
 \begin{table}[t]
   \centering
@@ -96,24 +99,7 @@ The width exponent $p$ is a free parameter of the model (Table~\ref{tab:params})
   \end{tabular}
 \end{table}
 
-The comparison in Table~\ref{tab:ladder} fits each duration separately. Because the landscape is a property of the number system rather than of the display, we also fit a single landscape ($\sigma_c$ and the width exponent $p$) shared across all five durations, leaving only the sensory channel and lapse free per duration (Table~\ref{tab:joint}; main-text Fig.~\ref{main-fig:comparison}a). The attractor remains the best account. With one shared landscape ($17$ parameters) it still beats the fully free per-duration Weber/ANS code ($20$ parameters) by $\Delta\mathrm{AIC} = 757$ ($\Delta\mathrm{BIC} = 783$) and the bounded-optimal model of~\citet{cheyette_unified_2020} ($3$ parameters) by $\Delta\mathrm{AIC} = 12{,}026$ ($\Delta\mathrm{BIC} = 11{,}901$), and the clean-up dynamics still improve the fit at equal parameters by $\Delta\mathrm{AIC} = 641$. Forcing the landscape to be duration-independent costs $\Delta\mathrm{AIC} = 3513$ relative to the separate fits ($\Delta\mathrm{BIC} = 3482$). The landscape therefore does change with exposure, mostly by sharpening: this is the resolution growth that drives $n_{\mathrm{crit}}$ (Supplementary Material~4). We read this as one mechanism whose resolution improves with viewing time, not a different mechanism per duration.
-
-\begin{table}[t]
-  \centering
-  \caption{\textbf{Joint fit: one landscape shared across the five durations.} Categorical information criteria over the ${\sim}53{,}000$ responses relative to the best model. The two well models share their landscape ($\sigma_c$ and the width exponent $p$) across durations, with the sensory channel and lapse free per duration ($k = 17$). The Weber/ANS benchmark has no landscape separable from its sensory noise, so it keeps its fully free per-duration fit ($k = 20$); the bounded-optimal C\&P model shares its three parameters ($B$, $R$, and a lapse) across all durations by construction ($k = 3$). The attractor's single landscape wins against both.}
-  \label{tab:joint}
-  \setlength{\tabcolsep}{5pt}
-  \begin{tabular}{lccc}
-  \hline
-  Model & $k$ & $\Delta$AIC & $\Delta$BIC \\
-  \hline
-  \textbf{Power-law attractor ($\sigma_n = \sigma_c\,n^{p}$)} & \textbf{17} & \textbf{0} & \textbf{0} \\
-  Power-law readout (static) & 17 & 641 & 641 \\
-  Weber/ANS ($\sigma_n \propto n$) & 20 & 757 & 783 \\
-  Normative (C\&P 2020) & 3 & 12026 & 11901 \\
-  \hline
-  \end{tabular}
-\end{table}
+The primary comparison shares one landscape across durations. The attractor still beats the fully duration-specific Weber/ANS fit by $\Delta\mathrm{AIC}=756.6$ ($\Delta\mathrm{BIC}=783.3$). It beats the matched C\&P fit by $\Delta\mathrm{AIC}=11{,}372.0$ ($\Delta\mathrm{BIC}=11{,}283.3$). Allowing C\&P a separate lapse at each duration improves its AIC by $653.7$ relative to its original shared-lapse form, but does not alter the model ordering. Forcing the attractor landscape to be duration-independent costs $\Delta\mathrm{AIC}=3513.2$ relative to the separate fits ($\Delta\mathrm{BIC}=3482.4$). The duration-specific fits therefore reveal an exposure-dependent gain in effective resolution, represented here by narrower fitted wells. A driven-attractor formulation would be required to derive this temporal change within a trial.
 
 \section{Supplementary Material 3: Parameter recovery}
 \label{sm:recovery}
@@ -122,7 +108,7 @@ To confirm that the fitted quantities are identifiable at the trial level, we ra
 
 \begin{table}[t]
   \centering
-  \caption{\textbf{Trial-level parameter recovery of the winning model.} Identity $R^2$ and Spearman $\rho$ between generating and recovered values across the $60$ synthetic datasets. Scale parameters are compared on the log scale. The interpreted quantities are the derived ones (lower block): $n_{\mathrm{crit}}$ is a heavy-tailed transform of the strongly traded-off $(\sigma_c, p)$, so its identity $R^2$ is uninformative and it is summarised by rank.}
+  \caption{\textbf{Trial-level parameter recovery of the winning model.} Identity $R^2$ and Spearman $\rho$ between generating and recovered values across the $100$ synthetic datasets. Scale parameters are compared on the log scale. The interpreted quantities are the derived ones (lower block): $n_{\mathrm{width}}$ is a heavy-tailed transform of the strongly traded-off $(\sigma_c, p)$, so its identity $R^2$ is uninformative and it is summarised by rank.}
   \label{tab:recovery}
   \setlength{\tabcolsep}{6pt}
   \begin{tabular}{lcc}
@@ -134,76 +120,101 @@ To confirm that the fitted quantities are identifiable at the trial level, we ra
   $s_0$ (sensory scale) & 0.82 & 0.94 \\
   $\lambda_0$ (sensory exponent) & 0.41 & 0.83 \\
   $\ell$ (lapse) & 0.96 & 0.98 \\[2pt]
-  $n_{\mathrm{crit}}$ (derived) & --- & 0.98 \\
+  $n_{\mathrm{width}}$ (derived) & --- & 0.98 \\
   $\sigma_3$ (well width at $n=3$) & 0.89 & 0.89 \\
   $\sigma(n=5)$ (sensory sd) & 0.99 & 1.00 \\
   \hline
   \end{tabular}
 \end{table}
 
-The individual landscape parameters, the scale $\sigma_c$ and the exponent $p$, trade off strongly (error correlation $\rho = -0.97$) and are not identifiable on their own, as do the two sensory parameters $s_0$ and $\lambda_0$ ($\rho = -0.98$): the data pin down where the exact code breaks, not the scale and slope independently. We therefore never interpret these parameters singly, only through the quantities the argument actually uses, which recover well: the combined sensory-noise profile $\sigma(n) = \sqrt{s_{00}^2 + s_0 n^{\lambda_0}}$ ($\sigma(n=5)$, $R^2 = 0.99$), the well width in the exact range ($\sigma_3$, $R^2 = 0.89$), the lapse ($R^2 = 0.96$), and the resolution limit $n_{\mathrm{crit}}$, which recovers in rank (Spearman $\rho = 0.98$, median error $0.04$ numerosities). Since $n_{\mathrm{crit}} = \sigma_c^{-1/p}$ is a heavy-tailed transform of the traded-off pair, a handful of ridge fits admit a low-exponent solution of near-equal likelihood that inflates the pointwise estimate; the quantity is robust as the ordinal measure the paper uses (it grows with exposure, and is shorter in dyscalculia).
+The landscape scale $\sigma_c$ and exponent $p$ trade off strongly (error correlation $\rho=-0.97$) and are not identifiable on their own, as do the two sensory parameters $s_0$ and $\lambda_0$ ($\rho=-0.98$). The data constrain the combined width profile rather than its scale and slope independently. We therefore interpret the combined sensory-noise profile $\sigma(n)=\sqrt{s_{00}^2+s_0 n^{\lambda_0}}$ ($\sigma(n=5)$, $R^2=0.99$), the fitted width $\sigma_3$ ($R^2=0.89$), the lapse ($R^2=0.96$), and the continuous index $n_{\mathrm{width}}$, which recovers in rank (Spearman $\rho=0.98$, median error $0.04$ numerosities). Since $n_{\mathrm{width}}=\sigma_c^{-1/p}$ is a heavy-tailed transform of the traded-off pair, a handful of ridge fits admit a low-exponent solution of near-equal likelihood that inflates the pointwise estimate. The index is robust for ordinal comparisons of the fitted width profile, but it is not an estimate of where attractors disappear.
 
 \begin{figure*}[t]
   \centering
   \includegraphics[width=\textwidth]{../output/trial_level_model_comparison/recovery_winner.pdf}
-  \caption{\textbf{Parameter recovery of the winning model.} Recovered versus generating values for the five fitted parameters and the derived $n_{\mathrm{crit}}$ and $\sigma_3$, coloured by exposure duration; dashed lines are identity. The $n_{\mathrm{crit}}$ panel is clipped to its meaningful range: the on-diagonal bulk recovers well, while a few ridge fits (low exponent, near-equal likelihood) fall off-scale. The bottom-right panel is the Spearman correlation matrix of recovery errors, showing the two strong trade-offs, $\sigma_c$--$p$ and $s_0$--$\lambda_0$.}
+  \caption{\textbf{Parameter recovery of the winning model.} Recovered versus generating values for the five fitted parameters and the derived $n_{\mathrm{width}}$ and $\sigma_3$, coloured by exposure duration; dashed lines are identity. The $n_{\mathrm{width}}$ panel is clipped to its meaningful range: the on-diagonal bulk recovers well, while a few ridge fits (low exponent, near-equal likelihood) fall off-scale. The bottom-right panel is the Spearman correlation matrix of recovery errors, showing the two strong trade-offs, $\sigma_c$--$p$ and $s_0$--$\lambda_0$.}
   \label{fig:recovery}
 \end{figure*}
 
-\section{Supplementary Material 4: The resolution limit \texorpdfstring{$n_{\mathrm{crit}}$}{n\_crit}}
-\label{sm:ncrit}
+\section{Supplementary Material 4: Width-based and topological resolution limits}
+\label{sm:nwidth}
 
-The critical numerosity is defined by adjacent-well discriminability $d' = 1$, i.e.\ $\sigma_n = 1$ (well standard deviation equal to unit spacing)~\citep{macmillan_detection_2004}. Solving $\sigma_n = \sigma_c\,n^{p} = 1$ for the fitted parameters, i.e.\ $n_{\mathrm{crit}} = \sigma_c^{-1/p}$, gives $n_{\mathrm{crit}} \approx 3.5,\,6.7,\,8.3,\,9.1,\,9.8$ for 40--640~ms. The crossing lies inside the fitted range at every duration and grows monotonically with exposure (main-text Fig.~\ref{main-fig:comparison}e).
+We report two resolution indices with different meanings. The continuous width-based index is defined by $\sigma_n=1$, where the fitted Gaussian-component width equals the unit spacing between integers. Solving $\sigma_n=\sigma_c n^p=1$ gives $n_{\mathrm{width}}=\sigma_c^{-1/p}$. This definition is equivalent to the heuristic $d'=1$~\citep{macmillan_detection_2004}. It summarizes the fitted width law and does not test whether an integer remains a local attractor.
 
-Because the crossing falls inside the fitted window, the estimate could in principle be shaped by the large-$n$ tail rather than by the small-number range itself. It is not: refitting on $n \le 10$ alone returns nearly the same width exponent and $n_{\mathrm{crit}}$ as the full-range fit at every duration (e.g.\ $p = 1.67$ vs.\ $1.50$ at 80~ms, $1.78$ vs.\ $1.99$ at 320~ms; $n_{\mathrm{crit}}$ within $0.4$ throughout; Fig.~\ref{fig:ncap}). Within $n \le 10$ the attractor still comes out ahead of its static twin ($\Delta\mathrm{AIC} = 271$) and of the Weber/ANS code ($1900$). The exact code is thus a property of the small-number range, not an artefact of fitting the tail.
+The topological index is computed from the fitted total potential, $V(x)=-\log\sum_n\exp(g_n(x))$, over all 19 wells used by the response model. For each fit, we evaluated $\partial V/\partial x$ on a dense grid over $x\in[1,19]$, bracketed every sign change, and refined each root with Brent's method. The sign of $\partial^2V/\partial x^2$ classified each stationary point as a local minimum or maximum. We assigned each minimum injectively to its nearest integer. For adjacent assigned minima, the barrier height was $V(x_{\max})-\max\{V(x_{\min,L}),V(x_{\min,R})\}$, where $x_{\max}$ is the intervening maximum. We then defined $n_{\mathrm{topo}}$ as the largest consecutive integer from one that retained its own minimum and a positive barrier from the preceding basin.
+
+\begin{table}[t]
+  \centering
+  \caption{\textbf{Width-based and topological resolution indices.} The primary joint fit shares one landscape across durations; the remaining rows are the secondary duration-specific fits. $n_{\mathrm{width}}$ is the continuous index defined by $\sigma_n=1$, whereas $n_{\mathrm{topo}}$ is the last consecutive integer retaining its own basin.}
+  \label{tab:topological-limit}
+  \setlength{\tabcolsep}{8pt}
+  \begin{tabular}{lcc}
+  \hline
+  Fit & $n_{\mathrm{width}}$ ($\sigma_n=1$) & $n_{\mathrm{topo}}$ \\
+  \hline
+  Joint & 8.32 & 6 \\
+  40\,ms & 3.48 & 2 \\
+  80\,ms & 6.71 & 4 \\
+  160\,ms & 8.32 & 6 \\
+  320\,ms & 9.05 & 7 \\
+  640\,ms & 9.77 & 7 \\
+  \hline
+  \end{tabular}
+\end{table}
+
+The two indices differed in every fit (Table~\ref{tab:topological-limit}; main-text Fig.~\ref{main-fig:comparison}e). The duration-specific $n_{\mathrm{width}}$ values increased monotonically from 3.48 to 9.77, whereas $n_{\mathrm{topo}}$ increased from 2 to 7 and then remained at 7 between 320 and 640~ms. The joint landscape gave $n_{\mathrm{width}}=8.32$ and $n_{\mathrm{topo}}=6$. Their numerical difference is expected because $n_{\mathrm{width}}$ summarizes component width, whereas $n_{\mathrm{topo}}$ tests basin structure directly.
+
+We repeated the complete stationary-point analysis with 5,000, 20,000, and 80,000 grid points before root refinement. All six fits retained identical stationary-point classifications, integer assignments, and $n_{\mathrm{topo}}$ values at every resolution. The largest displacement of any refined root was $2.4\times10^{-14}$ units of the number line. The reported topological limits are therefore insensitive to grid resolution.
+
+Because $n_{\mathrm{width}}$ falls inside the fitted window, it could in principle be shaped by the large-$n$ tail rather than by the small-number range itself. It is not: refitting on $n \le 10$ alone returns nearly the same width exponent and $n_{\mathrm{width}}$ as the full-range fit at every duration (e.g.\ $p = 1.67$ vs.\ $1.50$ at 80~ms, $1.78$ vs.\ $1.99$ at 320~ms; $n_{\mathrm{width}}$ within $0.4$ throughout; Fig.~\ref{fig:ncap}). Within $n \le 10$ the attractor still comes out ahead of its static twin ($\Delta\mathrm{AIC} = 271$) and of the Weber/ANS code ($1900$). This refit establishes that the width-based index is not an artefact of fitting the large-number tail; it is separate from the grid-resolution check of $n_{\mathrm{topo}}$ above.
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=\columnwidth]{../output/trial_level_model_comparison/ncap10_comparison.pdf}
-  \caption{\textbf{Small-range refit.} The fitted width exponent $p$ (\textbf{a}) and the resolution limit $n_{\mathrm{crit}}$ (\textbf{b}), from the full-range fit ($n \le 15$, filled) and from a refit on the small range ($n \le 10$, open). Both are essentially unchanged at every duration. The discrete, exact behaviour is intrinsic to the small-number range.}
+  \caption{\textbf{Small-range refit.} The fitted width exponent $p$ (\textbf{a}) and the continuous width-based index $n_{\mathrm{width}}$ (\textbf{b}), from the full-range fit ($n \le 15$, filled) and from a refit on the small range ($n \le 10$, open). Both are essentially unchanged at every duration.}
   \label{fig:ncap}
 \end{figure}
 
-The response-time channel points to the same boundary. Within the exact range ($n < n_{\mathrm{crit}}$) the model tracks the geometric-mean response time closely; above it the monotone deliberation-time prediction keeps rising while the empirical RT plateaus, because participants have left the exact regime and are guessing approximately (Fig.~\ref{fig:rtdomain}). The onset of the empirical RT plateau thus coincides with $n_{\mathrm{crit}}$, even though the latter is derived from the accuracy channel alone. We therefore fit the latent-to-seconds RT link on all $n$ and report the within-domain agreement; truncating the fit to $n < n_{\mathrm{crit}}$ is counter-productive, since at short durations the cut falls just before saturation and the truncated fit overshoots.
+The response-time channel provides a descriptive comparison around $n_{\mathrm{width}}$. The model tracks the geometric-mean response time over the lower-numerosity values, while its monotone deliberation-time prediction keeps rising where the empirical RT plateaus (Fig.~\ref{fig:rtdomain}). We show solid segments for $n<n_{\mathrm{width}}$ and dashed segments above it to visualize this mismatch, not to define a model-validity or exact-range boundary. The latent-to-seconds RT link is fitted on all $n$.
 
 \begin{figure*}[t]
   \centering
   \includegraphics[width=\textwidth]{../output/trial_level_model_comparison/rt_domain.pdf}
-  \caption{\textbf{Response time within and beyond the exact range.} Predicted geometric-mean RT (solid, $n < n_{\mathrm{crit}}$; dashed, extrapolated above) against the data. Within the exact range the model tracks RT; above $n_{\mathrm{crit}}$ it over-predicts, the signature of the switch to approximate responding. The RT plateau onset coincides with the independently derived $n_{\mathrm{crit}}$.}
+  \caption{\textbf{Response time around the width-based index.} Predicted geometric-mean RT against the data, shown solid for $n<n_{\mathrm{width}}$ and dashed above it. This segmentation visualizes the location of the continuous width proxy; it does not define an exact-range or model-validity boundary.}
   \label{fig:rtdomain}
 \end{figure*}
 
-The resolution limit also leaves a visible mark in exact accuracy. The landscape is smooth by construction (the width law and the sensory-noise profile are smooth, monotone functions of $n$), yet the predicted proportion of exact responses shows a small shoulder at the resolution limit, visible in the main-text fit (main-text Fig.~\ref{main-fig:fit}b). This is not extra fitted flexibility but the discrete clean-up basins on the fixed integer lattice: around $n_{\mathrm{crit}}$ the last wells that still resolve snap noisy evidence back onto the exact answer and prop exact accuracy up at the edge of the exact range. The shoulder vanishes when the clean-up is switched off at identical parameters (Fig.~\ref{fig:pexact}). The shoulder thus tracks $n_{\mathrm{crit}}$ across durations and is a signature of the mechanism.
+The predicted proportion of exact responses shows a small shoulder near $n_{\mathrm{width}}$, even though the fitted width law and sensory-noise profile vary smoothly with $n$ (main-text Fig.~\ref{main-fig:fit}b). The shoulder vanishes when clean-up is switched off at identical parameters (Fig.~\ref{fig:pexact}), so it reflects the dynamics on the integer lattice. Its numerical alignment with $n_{\mathrm{width}}$ does not make the width proxy the point where basins disappear; that question is measured by $n_{\mathrm{topo}}$.
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=\columnwidth]{../output/trial_level_model_comparison/pexact_decomposition.pdf}
-  \caption{\textbf{The exact-accuracy shoulder is a clean-up signature.} Predicted proportion of exact responses at 80~ms (\textbf{a}) and 640~ms (\textbf{b}) with the clean-up dynamics on (solid) and off (dashed), at identical parameters; dotted verticals mark $n_{\mathrm{crit}}$. The shoulder sits at $n_{\mathrm{crit}}$ and disappears without clean-up: it reflects the discrete basins on the integer lattice, not extra parameters.}
+  \caption{\textbf{The exact-accuracy shoulder is a clean-up signature.} Predicted proportion of exact responses at 80~ms (\textbf{a}) and 640~ms (\textbf{b}) with clean-up on (solid) and off (dashed), at identical parameters; dotted verticals mark $n_{\mathrm{width}}$. The shoulder occurs near this width-based proxy and disappears without clean-up.}
   \label{fig:pexact}
 \end{figure}
 
-Last, we asked whether the fitted model also reproduces the effective Weber fraction. We computed the coefficient of variation (CoV) of the fitted response distribution, $(1-\ell)\,p(r \mid n) + \ell/R_{\max}$, per numerosity and exposure (Fig.~\ref{fig:weber}). The CoV is elevated at the smallest numerosities (where the ratio $\mathrm{sd}/\mathrm{mean}$ is inflated by the small denominator, in model and data alike) and settles to a roughly constant plateau across the estimation range ($n \ge n_{\mathrm{crit}}$). A power-law fit $w_{\mathrm{eff}} \propto n^{\gamma}$ over the estimation range gives a pooled exponent $\gamma = -0.18$ for the model, matching the $-0.16$ measured in the data: the model reproduces the empirical effective Weber fraction and its mild slope. The same landscape thus reproduces the numerosity variability, and its slope, across the whole range.
+Last, we asked whether the fitted model also reproduces the effective Weber fraction. We computed the coefficient of variation (CoV) of the fitted response distribution, $(1-\ell)\,p(r \mid n) + \ell/R_{\max}$, per numerosity and exposure (Fig.~\ref{fig:weber}). The CoV is elevated at the smallest numerosities, where the small denominator inflates $\mathrm{sd}/\mathrm{mean}$ in both model and data. It settles to a roughly constant plateau at larger numerosities. For continuity with the original analysis, we fit $w_{\mathrm{eff}}\propto n^\gamma$ over the pre-specified window $n\ge n_{\mathrm{width}}$. This gives a pooled exponent $\gamma=-0.18$ for the model, matching the $-0.16$ measured in the data. Here $n_{\mathrm{width}}$ defines an analysis window, not the onset of an estimation regime.
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=\columnwidth]{../output/trial_level_model_comparison/weber_fraction.pdf}
-  \caption{\textbf{The effective Weber fraction.} Coefficient of variation of the response distribution $w_{\mathrm{eff}}(n)$ per numerosity, for each exposure duration; solid lines are the model (the fitted response distribution, lapse included, restricted to in-support and renormalised), dots the data (in-support responses), and dotted verticals mark $n_{\mathrm{crit}}$. The model tracks the data across the whole range; across the estimation range ($n \ge n_{\mathrm{crit}}$) the CoV settles to a roughly constant plateau, approximately scalar variability (Weber's law). The 40~ms flash is noise-dominated and has no exact range.}
+  \caption{\textbf{The effective Weber fraction.} Coefficient of variation of the response distribution $w_{\mathrm{eff}}(n)$ per numerosity and exposure duration. Solid lines are the model (lapse included, restricted to in-support responses and renormalised), dots are the data, and dotted verticals mark $n_{\mathrm{width}}$. The lines approach a roughly constant plateau at larger numerosities. The verticals identify the width-based analysis cutoff, not a topological or exact-range boundary.}
   \label{fig:weber}
 \end{figure}
 
 \section{Supplementary Material 5: Exploratory reanalysis of developmental dyscalculia}
 \label{sm:dyscalculia}
 
-As an exploratory extension we applied the winning model to the exact-enumeration data of~\citet{decarli_impaired_2020}: accuracy and response time per subject and numerosity for $32$ children with developmental dyscalculia (DD) and $32$ age-matched controls, using numerosities $n = 1$--$7$ (dropping $n = 8$ exactly as the original authors do, for the guessing end-effect they report). The dot arrays were shown for a fixed exposure of $500$~ms, so all quantities in this section, including $n_{\mathrm{crit}}$, refer to that exposure. The model fits both groups well (Fig.~\ref{fig:decarli}a,b) and again reproduces the widening well profile of the main dataset. The fitted $n_{\mathrm{crit}}(\sigma_n = 1) \approx 8$ falls slightly below the adult values of $9.1$--$9.8$ at $320$--$640$~ms (Supplementary Material~4), as one would expect for children. Although these fits on 64 subjects can only give us very preliminary intuitions, we can make two tentative observations.
+As an exploratory extension we applied the winning model to the exact-enumeration data of~\citet{decarli_impaired_2020}: accuracy and response time per subject and numerosity for $32$ children with developmental dyscalculia (DD) and $32$ age-matched controls, using numerosities $n = 1$--$7$ (dropping $n = 8$ exactly as the original authors do, for the guessing end-effect they report). The dot arrays were shown for a fixed exposure of $500$~ms, so all quantities in this section, including $n_{\mathrm{width}}$, refer to that exposure. The model fits both groups well (Fig.~\ref{fig:decarli}a,b) and again reproduces the widening well profile of the main dataset. The fitted $n_{\mathrm{width}}\approx8$ falls slightly below the adult values of $9.1$--$9.8$ at $320$--$640$~ms (Supplementary Material~4). This is a comparison of fitted width profiles, not of topological basin counts.
 
-First, the decline of accuracy with numerosity is better explained by a loss of resolution than by sensory noise. With an exhaustive per-subject grid search and a fixed common lapse and exponent, we fitted two single-mechanism variants of the model to each child's accuracy curve: a resolution-only variant, in which sensory noise is switched off and the decline is carried entirely by the merging of wells, and a noise-only variant, in which the wells never merge and the decline is carried entirely by sensory noise. The resolution-only variant fits better in $64/64$ subjects (mean SSE $0.010$ vs.\ $0.097$, Wilcoxon $p = 3.5\times10^{-12}$; Fig.~\ref{fig:decarli}c). The decline of exact enumeration in this dataset therefore behaves as a loss of discrete resolution, which supports the attractor framework on independent data and constrains where a group difference can arise.
+First, the decline of accuracy with numerosity is better explained by changing the fitted well-width profile than by sensory noise. With an exhaustive per-subject grid search and a fixed common lapse and exponent, we fitted two single-mechanism variants to each child's accuracy curve. In the width-only variant, sensory noise is switched off and the decline is carried by broader, more overlapping wells. In the noise-only variant, the width profile is fixed and sensory noise carries the decline. The width-only variant fits better in $64/64$ subjects (mean SSE $0.010$ vs.\ $0.097$, Wilcoxon $p=3.5\times10^{-12}$; Fig.~\ref{fig:decarli}c). This comparison localizes the fitted difference to the width profile; it does not establish where attractors disappear.
 
-Second, the group difference falls on that same resolution parameter. Per subject, the resolution limit is shorter in DD ($n_{\mathrm{crit}} = 8.1$ vs.\ $8.8$ for controls; Mann--Whitney $p = 0.018$, $r_{\mathrm{rb}} = -0.35$ with the RT channel included; $p = 0.044$, $r_{\mathrm{rb}} = -0.29$ in the accuracy-only fits of Fig.~\ref{fig:decarli}d), whereas the mirror analysis that frees sensory noise instead shows only a weak trend ($p = 0.05$) and fits worse. In rank terms the $n_{\mathrm{crit}}$ difference is comparable to the raw accuracy deficit at $n = 4$--$6$ ($r_{\mathrm{rb}} = -0.33$): the shift of ${\approx}0.8$ numerosities looks small only because of the scale it is expressed on.
+Second, the group difference falls on the same width parameter. Per subject, $n_{\mathrm{width}}$ is lower in DD (8.1 vs.\ 8.8 for controls; Mann--Whitney $p=0.018$, $r_{\mathrm{rb}}=-0.35$ with the RT channel included; $p=0.044$, $r_{\mathrm{rb}}=-0.29$ in the accuracy-only fits of Fig.~\ref{fig:decarli}d), whereas the mirror analysis that frees sensory noise instead shows only a weak trend ($p=0.05$) and fits worse. In rank terms, the $n_{\mathrm{width}}$ difference is comparable to the raw accuracy deficit at $n=4$--$6$ ($r_{\mathrm{rb}}=-0.33$). This result concerns the continuous width proxy and does not imply a group difference in $n_{\mathrm{topo}}$.
 
 \begin{figure}[t]
   \centering
   \includegraphics[width=\columnwidth]{../output/decarli_fit/decarli_dd_summary.pdf}
-  \caption{\textbf{Developmental dyscalculia as a shorter exact number code.} (a)~Exact accuracy per numerosity (points, group mean $\pm$ SEM; lines, the group-level model fit). (b)~Median response time, same conventions. (c)~Per-subject accuracy SSE of the two single-mechanism fits: the resolution-only model fits better than the noise-only model in $64/64$ subjects (all points below the diagonal). (d)~Per-subject resolution limit $n_{\mathrm{crit}}$ ($\sigma_n = 1$) from the resolution-only accuracy fits, at the task's $500$~ms exposure. Boxes, median and interquartile range; whiskers, $1.5\times$ IQR; points, individual subjects; the bracket gives the Mann--Whitney $p$ and the rank-biserial correlation $r_{\mathrm{rb}}$ (negative: DD resolve to fewer numerosities) for this accuracy-only analysis.}
+  \caption{\textbf{Developmental dyscalculia and the fitted width profile.} (a)~Exact accuracy per numerosity (points, group mean $\pm$ SEM; lines, the group-level model fit). (b)~Median response time, same conventions. (c)~Per-subject accuracy SSE of the two single-mechanism fits: the width-only model fits better than the noise-only model in $64/64$ subjects (all points below the diagonal). (d)~Per-subject $n_{\mathrm{width}}$, defined by $\sigma_n=1$, from the width-only accuracy fits at the task's $500$~ms exposure. Boxes show the median and interquartile range; whiskers show $1.5\times$ IQR; points are individual subjects. The bracket gives the Mann--Whitney $p$ and rank-biserial correlation $r_{\mathrm{rb}}$ for this accuracy-only analysis.}
   \label{fig:decarli}
 \end{figure}
 

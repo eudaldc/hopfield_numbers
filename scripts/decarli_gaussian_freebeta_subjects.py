@@ -1,16 +1,16 @@
-"""Per-subject De Carli fit with the winner model → individual n_crit distributions.
+"""Per-subject De Carli fit with the winner model → individual n_width distributions.
 
 The group-level fit (`decarli_gaussian_freebeta.py`) hides between-subject spread. We
 DO have individual data (32 subjects/group, accuracy + RT per numerosity), so here we
-estimate an n_crit *per subject* and compare the DD vs control distributions properly.
+estimate an n_width *per subject* and compare the DD vs control distributions.
 
 Identifiability: a subject's accuracy curve is only ~8 coarse points, too thin for a
 full 5-parameter landscape fit. So we hold the shared **mechanism** — the width
 exponent β and the (floor-level) sensory-noise profile s0, λ0 — at values fitted on
 the *pooled* data, and let each subject have their own well-width scale σ_c (plus
-their own RT baseline/scale and lapse). n_crit(σ_n = 1) is then driven by the
-subject's σ_c: where their discrete code stops being resolvable. Groups are compared
-with a Mann–Whitney U test on the per-subject n_crit (and σ_c).
+their own RT baseline/scale and lapse). n_width(σ_n = 1) is then driven by the
+subject's σ_c and summarizes the fitted width profile. Groups are compared
+with a Mann–Whitney U test on the per-subject n_width (and σ_c).
 
 Writes gaussian_freebeta_subjects.csv + gaussian_freebeta_subjects.png under
 output/decarli_fit/. Non-destructive.
@@ -18,7 +18,7 @@ output/decarli_fit/. Non-destructive.
 SUPERSEDED for the reported group test. `fit_subject` below runs a single-start
 Nelder-Mead from the pooled x0 with no restarts, and it stalls in a local minimum for
 10 of the 64 subjects (DD 1, 7, 8, 25, 28; contr 34, 49, 51, 52, 61). It therefore
-reports n_crit DD 8.12 vs contr 8.99, Mann-Whitney p = 0.005, r_rb = -0.41. Refitting
+reports n_width DD 8.12 vs contr 8.99, Mann-Whitney p = 0.005, r_rb = -0.41. Refitting
 the *same model and objective* at the global optimum gives 8.14 vs 8.85, p = 0.018,
 r_rb = -0.35, which is the number quoted in SM5. Use `scripts/decarli_locus_beta.py`
 (model A: exhaustive grid over sigma_c + exact profiling of lapse, t0, rt_scale), which
@@ -47,7 +47,7 @@ if str(_ROOT) not in sys.path:
 
 import scripts.trial_level_model_comparison as T
 from scripts.decarli_gaussian_freebeta import (
-    SPEC, DATA, OUT_DIR, NVALS, GROUPS, ncrit, sigma_well, evidence_sd,
+    SPEC, DATA, OUT_DIR, NVALS, GROUPS, n_width, sigma_well, evidence_sd,
 )
 
 # pooled mechanism params [sigma_c, s0, lambda0, beta, lapse, t0, rt_scale]
@@ -115,7 +115,7 @@ def fit_subject(acc, rt, common: dict, quad, x0) -> dict:
     theta = {"sigma_c": v[0], "s0": common["s0"], "lambda0": common["lambda0"],
              "pow": common["pow"]}
     return {"sigma_c": v[0], "lapse": v[1], "t0": v[2], "rt_scale": v[3],
-            "n_crit_sigma1": ncrit(theta, 1.0), "neg_ll": float(pol.fun)}
+            "n_width_sigma1": n_width(theta, 1.0), "neg_ll": float(pol.fun)}
 
 
 def main() -> None:
@@ -144,11 +144,11 @@ def main() -> None:
     sub = pd.DataFrame(rows)
     sub.to_csv(OUT_DIR / "gaussian_freebeta_subjects.csv", index=False)
 
-    dd = sub[sub.group == "DD"]["n_crit_sigma1"].to_numpy()
-    ct = sub[sub.group == "contr"]["n_crit_sigma1"].to_numpy()
+    dd = sub[sub.group == "DD"]["n_width_sigma1"].to_numpy()
+    ct = sub[sub.group == "contr"]["n_width_sigma1"].to_numpy()
     dd, ct = dd[np.isfinite(dd)], ct[np.isfinite(ct)]
     U, p = mannwhitneyu(dd, ct, alternative="two-sided")
-    print("\n=== per-subject n_crit(σ=1): DD vs control ===")
+    print("\n=== per-subject n_width(σ=1): DD vs control ===")
     print(f"  DD:      median {np.median(dd):.2f}  IQR [{np.percentile(dd,25):.2f}, "
           f"{np.percentile(dd,75):.2f}]  (n={dd.size})")
     print(f"  contr:   median {np.median(ct):.2f}  IQR [{np.percentile(ct,25):.2f}, "
@@ -171,8 +171,8 @@ def main() -> None:
         ax.scatter(np.full(arr.size, i) + np.random.default_rng(0).normal(0, 0.04, arr.size),
                    arr, s=14, color=c, alpha=0.7, zorder=3)
     ax.set_xticks([0, 1]); ax.set_xticklabels(["control", "DD"])
-    ax.set_ylabel("per-subject n_crit (σ_n = 1)")
-    ax.set_title(f"De Carli individual n_crit (winner model)\nMann-Whitney p={p:.3f}")
+    ax.set_ylabel("Per-subject n_width (σ_n = 1)")
+    ax.set_title(f"De Carli individual n_width (winner model)\nMann-Whitney p={p:.3f}")
     fig.tight_layout()
     fig.savefig(OUT_DIR / "gaussian_freebeta_subjects.png", dpi=180)
     plt.close(fig)

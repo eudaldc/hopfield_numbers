@@ -1,17 +1,11 @@
-"""Exact -> approximate regime change: where does the discrete attractor stop
-contributing, and does it coincide with sigma_n = 1 (~8-10)?
+"""Clean-up contribution across numerosity and its relation to n_width.
 
-Hypothesis (reframed n_crit): the d'=1 / sigma_n = 1 crossing is not a
-"transition to density/texture" but the point where the discrete integer wells
-stop being resolvable, so beyond it responses are driven purely by approximate
-magnitude. Operationalisation: at the *fitted winner landscape* (same theta,
-same lapse), the clean-up's per-numerosity contribution to the response
-likelihood = LL(clean-up on) - LL(clean-up off). If this benefit is positive at
-small n and vanishes around sigma_n = 1, the discrete code is active only below
-that boundary -- exact-then-approximate, located empirically.
+The sigma_n=1 crossing defines the continuous width proxy n_width, not a
+topological or exact-range boundary. This analysis asks whether the clean-up's
+per-numerosity contribution to the response likelihood, LL(clean-up on) minus
+LL(clean-up off), changes in the same numerical region at the fitted landscape.
 
-Also compares, per n, the winner against a pure approximate (Weber) read-out:
-above the boundary the discrete attractor should lose its advantage.
+It also compares the winner against a Weber readout at each numerosity.
 
     .venv/bin/python -m scripts.trial_level_regime_change
 """

@@ -1,15 +1,14 @@
 """Transition-to-density (SM4) recomputed with the WINNER model.
 
-The published SM4 (`density_transition.py`) derives the breakdown of exact counting
-from the *old Poisson √n* landscape, giving a single "transition to density" around
-n_crit ~ 13–29 (d' = 1, i.e. 1/c). Under the reframing, the winner (super-linear
-Gaussian attractor) predicts **two** boundaries:
+The earlier SM4 (`density_transition.py`) summarized the old Poisson width law
+with n_width ~ 13–29 (sigma_n = 1, i.e. 1/c). This diagnostic computes three
+width-profile crossings for the super-linear Gaussian attractor:
 
-  * exact → approximate  at  σ_n = 1  (adjacent-well d' = 1)   → n ~ 8–10
-  * approximate → density at  σ_n ≈ 2–3 (wells overlap by 2–3) → n ~ 14–18
+  * n_width at sigma_n = 1
+  * additional descriptive crossings at sigma_n = 2 and sigma_n = 3
 
 Here we recompute, from the winner's Piantadosi fit (`winner_theta.csv`), the
-resolution boundaries analytically **and** the simulation-based criteria (posterior
+width crossings analytically **and** the simulation-based criteria (posterior
 entropy > log 3, mode probability < 0.5, MAP-discriminability d' < 1) over n = 1..50,
 plus the effective Weber fraction w_eff(n) = std(n̂)/n and whether it is Weber-flat
 (ANS-like) or 1/√n in the approximate regime (the "Reynvoet/Weber" check). We reuse
@@ -124,17 +123,17 @@ def main() -> None:
         pooled = np.sqrt(0.5 * (std_nhat[:-1] ** 2 + std_nhat[1:] ** 2)) + 1e-9
         dprime = (e_nhat[1:] - e_nhat[:-1]) / pooled                # length n-1
 
-        # analytical resolution boundaries
+        # analytical width-profile crossings
         n_sig1 = cross_level(theta["sigma_c"], theta["beta"], 1.0)
         n_sig2 = cross_level(theta["sigma_c"], theta["beta"], 2.0)
         n_sig3 = cross_level(theta["sigma_c"], theta["beta"], 3.0)
         crit_rows.append({
             "duration_ms": d, "beta": theta["beta"], "sigma_c": theta["sigma_c"],
-            "n_exact_approx_sigma1": n_sig1,
-            "n_density_sigma2": n_sig2, "n_density_sigma3": n_sig3,
-            "n_crit_entropy_log3": cross_metric(NVALS, entropy, np.log(3.0), True),
-            "n_crit_pmax_0.5": cross_metric(NVALS, p_max, 0.5, False),
-            "n_crit_dprime_1": cross_metric(NVALS[:-1], dprime, 1.0, False),
+            "n_width_sigma1": n_sig1,
+            "n_width_sigma2": n_sig2, "n_width_sigma3": n_sig3,
+            "n_threshold_entropy_log3": cross_metric(NVALS, entropy, np.log(3.0), True),
+            "n_threshold_pmax_0.5": cross_metric(NVALS, p_max, 0.5, False),
+            "n_threshold_dprime_1": cross_metric(NVALS[:-1], dprime, 1.0, False),
         })
         wb = weber_shape(NVALS, w_eff)
         weber_rows.append({"duration_ms": d, **wb})
@@ -150,7 +149,7 @@ def main() -> None:
 
     make_fig(crit, pd.DataFrame(metric_frames), pd.DataFrame(weber_rows))
 
-    print("=== WINNER model — transition boundaries per duration ===")
+    print("=== Winner model: width crossings and response thresholds per duration ===")
     print(crit.round(2).to_string(index=False))
     print("\n=== Weber shape of w_eff(n) over n=10-40 (delta_aic>0 → 1/√n beats constant) ===")
     print(pd.DataFrame(weber_rows).round(3)[["duration_ms", "w_const", "a_sqrt", "delta_aic"]]
@@ -160,22 +159,23 @@ def main() -> None:
     if old.exists():
         o = pd.read_csv(old)
         print("\n=== OLD Poisson SM4 (critical_n_summary.csv) for reference ===")
-        print(o[["duration_ms", "n_crit_dprime", "n_crit_entropy", "n_crit_pmax"]].to_string(index=False))
+        print(o[["duration_ms", "n_width_dprime", "n_threshold_entropy",
+                 "n_threshold_pmax"]].to_string(index=False))
     print(f"\nSaved gaussian_freebeta_{{critical_n,metrics,weber}}.csv + figure in {OUT_DIR}")
 
 
 def make_fig(crit, metrics, weber) -> None:
     fig, ax = plt.subplots(1, 2, figsize=(12, 4.6))
-    # (1) two-boundary structure vs duration
+    # (1) width-profile crossings vs duration
     a = ax[0]
     a.axhspan(*ANOBILE, color="0.9", label="Anobile density (30–60)")
     a.axhline(DURGIN, color="0.6", ls=":", lw=1, label="Durgin ~20")
-    a.plot(crit.duration_ms, crit.n_exact_approx_sigma1, "o-", color="#c0392b",
-           label="exact→approx (σ=1)")
-    a.plot(crit.duration_ms, crit.n_density_sigma2, "s--", color="#e08e0b",
-           label="density (σ=2)")
-    a.plot(crit.duration_ms, crit.n_density_sigma3, "^--", color="#8e44ad",
-           label="density (σ=3)")
+    a.plot(crit.duration_ms, crit.n_width_sigma1, "o-", color="#c0392b",
+           label="n_width (σ=1)")
+    a.plot(crit.duration_ms, crit.n_width_sigma2, "s--", color="#e08e0b",
+           label="width crossing (σ=2)")
+    a.plot(crit.duration_ms, crit.n_width_sigma3, "^--", color="#8e44ad",
+           label="width crossing (σ=3)")
     a.set_xscale("log"); a.set_xticks(T.DURATIONS)
     a.set_xticklabels([str(x) for x in T.DURATIONS])
     a.set_xlabel("exposure (ms)"); a.set_ylabel("numerosity n")

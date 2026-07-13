@@ -74,7 +74,7 @@ DPRIME_THRESHOLD = 1.0
 # Empirical density-transition ranges reported in the literature.
 # Anobile, Cicchini & Burr (2014, Psychological Science) isolate a density
 # regime at ~0.25 dots/deg^2 in central vision with 9 deg-radius stimuli
-# (area ~ pi*9^2 = 254 deg^2), giving n_crit ~ 60.  Earlier reports (Ross
+# (area ~ pi*9^2 = 254 deg^2), giving n_width ~ 60. Earlier reports (Ross
 # & Burr, 2012; Anobile et al. 2015) place the breakpoint around 20-40
 # depending on stimulus size.  Durgin (1995, 2008) argues for ~20.
 ANOBILE_N_RANGE = (30.0, 60.0)
@@ -283,22 +283,22 @@ def critical_n_from_metrics(metrics: pd.DataFrame, c: float) -> dict:
     n = metrics["n"].values
     return {
         "c": c,
-        "n_crit_analytical": 1.0 / c,
-        "n_crit_dprime": first_n_where(
+        "n_width_analytical": 1.0 / c,
+        "n_width_dprime": first_n_where(
             metrics["d_prime"].values, n, metrics["d_prime"].values < DPRIME_THRESHOLD
         ),
-        "n_crit_entropy": first_n_where(
+        "n_threshold_entropy": first_n_where(
             metrics["H_mean"].values, n, metrics["H_mean"].values > ENTROPY_THRESHOLD
         ),
-        "n_crit_pmax": first_n_where(
+        "n_threshold_pmax": first_n_where(
             metrics["p_max"].values, n, metrics["p_max"].values < PMAX_THRESHOLD
         ),
-        "n_crit_bc_behav": first_n_where(
+        "n_threshold_bc_behav": first_n_where(
             metrics["BC_adjacent"].values,
             n,
             metrics["BC_adjacent"].values > BC_THRESHOLD,
         ),
-        "n_crit_bc_theory": first_n_where(
+        "n_threshold_bc_theory": first_n_where(
             metrics["BC_theory"].values,
             n,
             metrics["BC_theory"].values > BC_THRESHOLD,
@@ -425,14 +425,14 @@ def make_figure(
     ax.axhline(DPRIME_THRESHOLD, color="#d62728", ls=":", lw=1, alpha=0.4)
     ax.axhline(PMAX_THRESHOLD, color="#2ca02c", ls=":", lw=1, alpha=0.4)
 
-    _vline_threshold(ax, crit_ref["n_crit_analytical"], "0.2", "-",
-                     rf"$1/c = {crit_ref['n_crit_analytical']:.1f}$")
-    _vline_threshold(ax, crit_ref["n_crit_dprime"], "#d62728", "--",
-                     rf"$d'<1: n={crit_ref['n_crit_dprime']:.0f}$")
-    _vline_threshold(ax, crit_ref["n_crit_entropy"], "#1f77b4", "--",
-                     rf"$H>\log 3: n={crit_ref['n_crit_entropy']:.0f}$")
-    _vline_threshold(ax, crit_ref["n_crit_pmax"], "#2ca02c", "--",
-                     rf"$p_{{\max}}<0.5: n={crit_ref['n_crit_pmax']:.0f}$")
+    _vline_threshold(ax, crit_ref["n_width_analytical"], "0.2", "-",
+                     rf"$1/c = {crit_ref['n_width_analytical']:.1f}$")
+    _vline_threshold(ax, crit_ref["n_width_dprime"], "#d62728", "--",
+                     rf"$d'<1: n={crit_ref['n_width_dprime']:.0f}$")
+    _vline_threshold(ax, crit_ref["n_threshold_entropy"], "#1f77b4", "--",
+                     rf"$H>\log 3: n={crit_ref['n_threshold_entropy']:.0f}$")
+    _vline_threshold(ax, crit_ref["n_threshold_pmax"], "#2ca02c", "--",
+                     rf"$p_{{\max}}<0.5: n={crit_ref['n_threshold_pmax']:.0f}$")
 
     ax.set_xlabel("true numerosity n")
     ax.set_ylabel("metric value")
@@ -467,7 +467,7 @@ def make_figure(
             lw=1.6, alpha=0.85,
             label="Anobile 2014 (approx.)")
 
-    _vline_threshold(ax, crit_ref["n_crit_analytical"], "0.3", "-",
+    _vline_threshold(ax, crit_ref["n_width_analytical"], "0.3", "-",
                      rf"$1/c$")
 
     ax.set_xlabel("true numerosity n")
@@ -479,14 +479,14 @@ def make_figure(
     ax.set_ylim(0.02, 10)
     ax.legend(fontsize=7.5, loc="lower left", framealpha=0.9)
 
-    # ── Panel C: n_crit vs duration ──────────────────────────────────
+    # ── Panel C: threshold indices vs duration ───────────────────────
     ax = axes[1, 0]
     durs = crit_per_dur["duration_ms"].values
     offsets = {
-        "n_crit_analytical": (-0.18, "o", "1/c  (analytical)"),
-        "n_crit_dprime":     (-0.06, "s", "d' < 1"),
-        "n_crit_entropy":    ( 0.06, "D", "H > log 3"),
-        "n_crit_pmax":       ( 0.18, "^", "p_max < 0.5"),
+        "n_width_analytical":   (-0.18, "o", "1/c  (analytical)"),
+        "n_width_dprime":       (-0.06, "s", "d' < 1"),
+        "n_threshold_entropy":  ( 0.06, "D", "H > log 3"),
+        "n_threshold_pmax":     ( 0.18, "^", "p_max < 0.5"),
     }
     for key, (dx, marker, label) in offsets.items():
         y = crit_per_dur[key].values
@@ -494,13 +494,13 @@ def make_figure(
             np.arange(len(durs)) + dx, y,
             marker=marker, ls="-", ms=8, lw=1.4,
             color={
-                "n_crit_analytical": "k",
-                "n_crit_dprime": "#d62728",
-                "n_crit_entropy": "#1f77b4",
-                "n_crit_pmax": "#2ca02c",
+                "n_width_analytical": "k",
+                "n_width_dprime": "#d62728",
+                "n_threshold_entropy": "#1f77b4",
+                "n_threshold_pmax": "#2ca02c",
             }[key],
             label=label,
-            markerfacecolor="white" if key == "n_crit_analytical" else None,
+            markerfacecolor="white" if key == "n_width_analytical" else None,
         )
 
     ax.axhspan(ANOBILE_N_RANGE[0], ANOBILE_N_RANGE[1],
@@ -513,7 +513,7 @@ def make_figure(
     ax.set_xticks(range(len(durs)))
     ax.set_xticklabels([f"{d} ms" for d in durs])
     ax.set_xlabel("exposure duration")
-    ax.set_ylabel(r"critical numerosity  $n_{\mathrm{crit}}$")
+    ax.set_ylabel("Threshold numerosity")
     ax.set_title("C. Transition across durations", fontweight="bold", loc="left")
     ax.legend(fontsize=8, loc="upper right", ncol=1)
 
@@ -564,7 +564,7 @@ def main() -> None:
 
     # Per-duration critical n values (criterion a uses closed form; b/c/d
     # need a simulation sweep per duration so we run them at reduced M).
-    print("Computing n_crit for each exposure duration ...", flush=True)
+    print("Computing width and response thresholds for each exposure duration ...", flush=True)
     crit_rows: list[dict] = []
     all_metrics: dict[int, pd.DataFrame] = {}
     sim_ref: dict | None = None
@@ -588,10 +588,10 @@ def main() -> None:
         all_metrics[dur] = metrics
         print(
             f"  {dur:>4d} ms:  c={c:.4f}  1/c={1.0/c:5.1f}  "
-            f"d'<1 @ n={crit['n_crit_dprime']:5.1f}  "
-            f"H>log3 @ n={crit['n_crit_entropy']:5.1f}  "
-            f"p_max<.5 @ n={crit['n_crit_pmax']:5.1f}  "
-            f"BC_behav>.5 @ n={crit['n_crit_bc_behav']:5.1f}",
+            f"d'<1 @ n={crit['n_width_dprime']:5.1f}  "
+            f"H>log3 @ n={crit['n_threshold_entropy']:5.1f}  "
+            f"p_max<.5 @ n={crit['n_threshold_pmax']:5.1f}  "
+            f"BC_behav>.5 @ n={crit['n_threshold_bc_behav']:5.1f}",
             flush=True,
         )
         if dur == REFERENCE_DURATION:
@@ -600,8 +600,9 @@ def main() -> None:
             crit_ref = crit
 
     crit_df = pd.DataFrame(crit_rows)[[
-        "duration_ms", "c", "n_crit_analytical", "n_crit_dprime",
-        "n_crit_entropy", "n_crit_pmax", "n_crit_bc_behav", "n_crit_bc_theory",
+        "duration_ms", "c", "n_width_analytical", "n_width_dprime",
+        "n_threshold_entropy", "n_threshold_pmax", "n_threshold_bc_behav",
+        "n_threshold_bc_theory",
     ]]
     _print_critical_table(crit_df)
     crit_csv = OUT_DIR / "critical_n_summary.csv"
@@ -615,7 +616,7 @@ def main() -> None:
     print(f"Saved {metrics_csv}")
 
     # Convergence check
-    keys = ["n_crit_dprime", "n_crit_entropy", "n_crit_pmax"]
+    keys = ["n_width_dprime", "n_threshold_entropy", "n_threshold_pmax"]
     valid_ref = [crit_ref[k] for k in keys if np.isfinite(crit_ref[k])]
     if valid_ref:
         lo, hi = min(valid_ref), max(valid_ref)
@@ -625,9 +626,9 @@ def main() -> None:
             f"[{lo:.1f}, {hi:.1f}]  max/min = {ratio:.2f}"
         )
         print(
-            f"  analytical 1/c = {crit_ref['n_crit_analytical']:.2f};  "
-            f"BC_behav>.5 at n={crit_ref['n_crit_bc_behav']:.1f};  "
-            f"BC_theory>.5 at n={crit_ref['n_crit_bc_theory']:.1f}"
+            f"  analytical 1/c = {crit_ref['n_width_analytical']:.2f};  "
+            f"BC_behav>.5 at n={crit_ref['n_threshold_bc_behav']:.1f};  "
+            f"BC_theory>.5 at n={crit_ref['n_threshold_bc_theory']:.1f}"
         )
 
     # Reynvoet 10-40 validation

@@ -219,8 +219,11 @@ def _gaussian_well_sigma(family: str, theta: dict) -> np.ndarray:
                                so the width exponent can move toward linear.
     * ``gaussian_pow``      -- pure power-law widths sigma_n = sigma_c * n^p,
                                which reaches Weber's linear width at p = 1.
+    * ``gaussian_const``    -- constant widths sigma_n = sigma_c (p fixed at 0).
     """
     sigma_c = float(theta["sigma_c"])
+    if family == "gaussian_const":
+        return np.full_like(WELLS, max(1e-6, sigma_c))
     if family == "gaussian_pow":
         return np.maximum(1e-6, sigma_c * np.power(WELLS, float(theta["pow"])))
     beta = GAUSS_BETA if family == "gaussian" else float(theta["beta"])
@@ -317,7 +320,8 @@ class ModelSpec:
     @property
     def has_dynamics(self) -> bool:
         return self.cleanup and self.family in (
-            "poisson", "gaussian", "poisson_pow", "gaussian_freebeta", "gaussian_pow"
+            "poisson", "gaussian", "poisson_pow", "gaussian_freebeta",
+            "gaussian_pow", "gaussian_const"
         )
 
 
@@ -410,6 +414,22 @@ MODEL_SPECS: tuple[ModelSpec, ...] = (
         param_names=("sigma_c", "s0", "lambda0", "pow"),
         bounds=((1e-4, 1.0), (1e-6, 0.1), (0.1, 4.0), (0.1, 4.0)),
     ),
+    ModelSpec(
+        key="gaussian_const_attractor",
+        label="Constant-width wells + clean-up (p = 0)",
+        family="gaussian_const",
+        cleanup=True,
+        param_names=("sigma_c", "s0", "lambda0"),
+        bounds=((1e-4, 1.0), (1e-6, 0.1), (0.1, 4.0)),
+    ),
+    ModelSpec(
+        key="gaussian_const_readout",
+        label="Constant-width wells, static (p = 0)",
+        family="gaussian_const",
+        cleanup=False,
+        param_names=("sigma_c", "s0", "lambda0"),
+        bounds=((1e-4, 1.0), (1e-6, 0.1), (0.1, 4.0)),
+    ),
 )
 
 MODEL_BY_KEY: dict[str, ModelSpec] = {m.key: m for m in MODEL_SPECS}
@@ -453,7 +473,7 @@ def compute_grid(
     sqrt2 = np.sqrt(2.0)
 
     if spec.family in ("poisson", "poisson_pow", "gaussian",
-                       "gaussian_freebeta", "gaussian_pow"):
+                       "gaussian_freebeta", "gaussian_pow", "gaussian_const"):
         sd = evidence_sd(n_values, theta["s0"], theta["lambda0"])
         y = n_values[:, None] + sqrt2 * sd[:, None] * quad.t[None, :]   # (n, K)
         y_flat = y.reshape(-1)

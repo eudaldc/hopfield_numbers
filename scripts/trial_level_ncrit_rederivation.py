@@ -1,17 +1,14 @@
-"""Re-derive the transition thresholds for the super-linear-width attractor.
+"""Re-derive width-profile crossings for the super-linear-width attractor.
 
-Manuscript criterion (unchanged): adjacent integer wells stop being reliably
-distinguishable when adjacent-well discriminability d' = spacing / sigma_n = 1,
-i.e. sigma_n = 1 (well sd = unit spacing). For Poisson wells sigma_n = sqrt(c n)
-this gives n_crit = 1/c. For the super-linear wells we solve sigma_n = 1 for n:
+The continuous width index is defined by sigma_n = 1, where the fitted component
+width equals unit integer spacing. For Poisson wells sigma_n = sqrt(c n), this
+gives n_width = 1/c. For the super-linear wells we solve sigma_n = 1 for n:
 
   * power-law      sigma_n = c n^p          -> n* = (1/c)^(1/p)
   * Benford free-b sigma_n = (c/freq_n)^b   -> solve (c/freq_n)^b = 1 numerically
 
-Because the super-linear width reaches 1 at *small* n, this d'=1 crossing now
-predicts the SUBITIZING limit; we also report the larger n where sigma_n reaches
-2 and 3 (coarser overlap) as candidate estimation->density thresholds, and the
-Poisson 1/c value for reference.
+We also report where sigma_n reaches 2 and 3 as additional descriptions of the
+fitted width law. None of these crossings identifies a topological merger.
 
     .venv/bin/python -m scripts.trial_level_ncrit_rederivation
 """
@@ -72,13 +69,13 @@ def main() -> None:
         for d in T.DURATIONS:
             theta = {"sigma_c": float(df.loc[d, "sigma_c"])}
             theta[pcols[1]] = float(df.loc[d, pcols[1]])
-            n_sub = crossing(form, theta, 1.0)     # sigma=1  (subitizing limit)
-            n_sig2 = crossing(form, theta, 2.0)    # sigma=2  (candidate density)
+            n_width = crossing(form, theta, 1.0)
+            n_sig2 = crossing(form, theta, 2.0)
             n_sig3 = crossing(form, theta, 3.0)
             rows.append({
                 "form": form, "duration_ms": d,
                 "sigma_c": theta["sigma_c"], "exponent": theta[pcols[1]],
-                "n_subitizing(sigma=1)": n_sub,
+                "n_width(sigma=1)": n_width,
                 "n_sigma=2": n_sig2, "n_sigma=3": n_sig3,
                 "poisson_1_over_c_ref": 1.0 / theta["sigma_c"],
             })
@@ -88,14 +85,13 @@ def main() -> None:
     for form in out.form.unique():
         print(f"\n=== {form} ===")
         sub = out[out.form == form][
-            ["duration_ms", "sigma_c", "exponent", "n_subitizing(sigma=1)",
+            ["duration_ms", "sigma_c", "exponent", "n_width(sigma=1)",
              "n_sigma=2", "n_sigma=3", "poisson_1_over_c_ref"]]
         print(sub.round(2).to_string(index=False))
     print(f"\nSaved {OUT}")
-    print("\nReading: sigma=1 crossing = adjacent-well d'=1 = subitizing limit "
-          "(should land ~3-5); sigma=2,3 = coarser overlap (candidate "
-          "estimation->density); poisson_1_over_c_ref = the OLD n_crit for "
-          "comparison.")
+    print("\nReading: sigma=1 gives n_width; sigma=2 and sigma=3 are additional "
+          "width-profile crossings; poisson_1_over_c_ref is the corresponding "
+          "Poisson-width reference.")
 
 
 if __name__ == "__main__":

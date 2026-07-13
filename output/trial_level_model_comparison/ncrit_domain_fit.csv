@@ -1,4 +1,4 @@
-duration_ms,metric,n_crit,n_domain_max,n_domain_levels,landscape_saturated,R2_domain,scale_alpha,scale_beta,sigma_rt,rt_logL,rt_AIC,scale_rt_scale
+duration_ms,metric,n_width,n_width_window_max,n_width_window_levels,landscape_saturated,R2_domain,scale_alpha,scale_beta,sigma_rt,rt_logL,rt_AIC,scale_rt_scale
 40,hybrid,4.601,4,4,True,0.7000215832355673,0.008750856505068525,0.010846572336519575,0.47667841576925174,-3661.2506389443643,7328.5012778887285,
 40,entropy,4.601,4,4,True,0.2226792986867675,,,0.47793480299335783,-3668.7104213546627,7341.420842709325,0.5464920735628576
 80,hybrid,7.495,7,7,False,0.560105832396847,0.009332959746041624,0.30478321375897105,0.46618685628579304,-6254.643004725256,12515.286009450512,

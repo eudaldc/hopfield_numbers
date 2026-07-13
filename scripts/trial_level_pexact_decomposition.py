@@ -1,12 +1,12 @@
 """The exact-accuracy shoulder is a clean-up signature.
 
-The predicted proportion of exact responses P(r = n) shows a small shoulder just
-below n_crit, visible in the main-text co-fit figure. The landscape itself is
+The predicted proportion of exact responses P(r = n) shows a small shoulder near
+the continuous width proxy n_width, visible in the main-text co-fit figure. The landscape itself is
 smooth by construction (the width law and the sensory-noise profile are smooth,
-monotone functions of n), so the shoulder must come from the read-out: the last
-wells that still resolve snap noisy evidence back onto the exact answer. Toggling
-the clean-up off at identical parameters removes the shoulder, proving it is the
-discrete integer basins, not extra fitted degrees of freedom.
+monotone functions of n). Toggling clean-up off at identical parameters removes
+the shoulder, showing that it comes from the dynamics on the integer lattice
+rather than extra fitted degrees of freedom. The alignment with n_width does not
+identify a topological merger.
 
 Outputs `pexact_decomposition.png`/`.pdf` (one panel per duration: 80 and 640 ms).
 
@@ -30,7 +30,7 @@ if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
 import scripts.trial_level_model_comparison as T
-from scripts.trial_level_weber_fraction import ncrit
+from scripts.trial_level_weber_fraction import n_width
 from figures.plot_style import C_ATTR, C_STATIC, apply_style, panel_label
 
 WIN = T.MODEL_BY_KEY[T.WINNER_KEY]
@@ -53,7 +53,7 @@ def main() -> None:
 
         ax.plot(n, pexact_on, "o-", color=C_ATTR, ms=5, label="Clean-up on")
         ax.plot(n, pexact_off, "s--", color=C_STATIC, ms=4, label="Clean-up off")
-        ax.axvline(ncrit(theta), color="0.25", ls=":", lw=1.0)
+        ax.axvline(n_width(theta), color="0.25", ls=":", lw=1.0)
         ax.set_xlabel("Number shown  $n$")
         ax.text(0.97, 0.55, f"{d} ms", transform=ax.transAxes, ha="right",
                 va="bottom", color="0.4")
