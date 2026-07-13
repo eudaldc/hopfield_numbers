@@ -29,13 +29,8 @@ import scripts.trial_level_model_comparison as T
 OUT = T.OUT_DIR / "rt_joint.csv"
 METRICS = ("hybrid", "steps", "entropy")
 
-WINNER = T.ModelSpec(
-    key="gaussian_freebeta_attractor",
-    label="Benford wells, free beta + clean-up",
-    family="gaussian_freebeta", cleanup=True,
-    param_names=("sigma_c", "s0", "lambda0", "beta"),
-    bounds=((0.001, 0.5), (1e-6, 0.1), (0.1, 4.0), (0.1, 6.0)),
-)
+# Winning landscape: power-law-width Gaussian attractor (module WINNER_KEY).
+WINNER = T.MODEL_BY_KEY[T.WINNER_KEY]
 
 
 def main() -> None:
@@ -43,7 +38,7 @@ def main() -> None:
     trial = T.load_trials()
     r_max = int(trial["n_guess"].max())
     data = T.build_duration_data(trial, r_max)
-    theta_df = pd.read_csv(T.OUT_DIR / "winner_theta.csv").set_index("duration_ms")
+    theta_df = pd.read_csv(T.OUT_DIR / "pow_theta.csv").set_index("duration_ms")
     durs = list(T.DURATIONS)
 
     # Per-duration landscape quantities on the winner's fitted theta.

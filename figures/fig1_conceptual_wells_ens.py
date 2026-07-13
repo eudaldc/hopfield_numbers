@@ -42,7 +42,7 @@ if str(ROOT) not in sys.path:
 
 from figures.plot_style import C_STATIC, PALETTE, apply_style, panel_label  # noqa: E402
 
-THETA_CSV = ROOT / "output" / "trial_level_model_comparison" / "winner_theta.csv"
+THETA_CSV = ROOT / "output" / "trial_level_model_comparison" / "pow_theta.csv"
 OUT_STEM = ROOT / "figures" / "conceptual_attractor_wells_ens"
 
 # ── Project house style ───────────────────────────────────────────────
@@ -56,19 +56,17 @@ SHOW_DURATION = 160
 
 theta = pd.read_csv(THETA_CSV).set_index("duration_ms")
 SIGMA_C = float(theta.loc[SHOW_DURATION, "sigma_c"])
-BETA = float(theta.loc[SHOW_DURATION, "beta"])
+POW = float(theta.loc[SHOW_DURATION, "pow"])
 
 
 def widths(wells: np.ndarray) -> np.ndarray:
-    freq = np.log10(1.0 + 1.0 / wells)
-    return (SIGMA_C / freq) ** BETA
+    # power-law wells: sigma_n = sigma_c * n^p
+    return SIGMA_C * np.asarray(wells, float) ** POW
 
 
 def ncrit() -> float:
-    ns = np.linspace(1.0, 40.0, 40000)
-    s = widths(ns)
-    i = int(np.argmax(s >= 1.0))
-    return float(ns[i - 1] + (1.0 - s[i - 1]) * (ns[i] - ns[i - 1]) / (s[i] - s[i - 1]))
+    # sigma_n = sigma_c * n^p = 1  ->  n_crit = sigma_c^(-1/p)
+    return float(SIGMA_C ** (-1.0 / POW))
 
 
 NCRIT_SHOW = ncrit()
@@ -78,8 +76,11 @@ sigma_a = widths(wells_a)
 wells_b = np.arange(1, N_LATTICE_ILLUS + 1, dtype=float)
 sigma_b = widths(wells_b)
 
-benford_freq = np.log10(1.0 + 1.0 / wells_a)
-benford_freq_norm = benford_freq / benford_freq.max()
+# Number frequency declines as a power of magnitude (Dehaene & Mehler 1992): this
+# is the motivation for wider wells at larger n. Shown illustratively as ~1/n
+# (the width law itself is parameterised directly as n^p, not through f_n).
+num_freq = 1.0 / wells_a
+num_freq_norm = num_freq / num_freq.max()
 integers_display = wells_a[:N_DISPLAY].astype(int)
 
 X_PAD = 0.55
@@ -181,22 +182,24 @@ H_single = entropy_of(mu_star)               # single-trial insets
 
 # Hybrid RT channel: RT = t0 + alpha * E[T] + beta_H * E[H]  (fitted, 160 ms)
 rt_theta = pd.read_csv(ROOT / "output" / "trial_level_model_comparison" /
-                       "joint_refit_theta.csv")
-rt_row = rt_theta[(rt_theta.model_key == "gaussian_freebeta_attractor") &
+                       "pow_winner_rt.csv")
+rt_row = rt_theta[(rt_theta.model_key == "gaussian_pow_attractor") &
+                  (rt_theta.metric == "hybrid") &
                   (rt_theta.duration_ms == SHOW_DURATION)].iloc[0]
 RT_T0 = 1.30
-RT_ALPHA = float(rt_row["rt0"])
-RT_BETA = float(rt_row["rt1"])
+RT_ALPHA = float(rt_row["alpha"])
+RT_BETA = float(rt_row["beta"])
 RT_at_int = RT_T0 + RT_ALPHA * ET_at_int + RT_BETA * H_at_int
 
 # viridis is the paper's one continuous scale (fig. 2c durations, SM recovery);
-# here it encodes the number frequency f_n that sets each well's width/depth
+# here it encodes number frequency (higher for small n), which motivates the
+# narrow-to-wide well profile
 cmap_wells = mpl.colormaps["viridis"]
 norm_c = Normalize(vmin=-0.10, vmax=1.15)
 
 
 def well_color(i: int) -> tuple:
-    return cmap_wells(norm_c(benford_freq_norm[i]))
+    return cmap_wells(norm_c(num_freq_norm[i]))
 
 
 # ── Figure layout ────────────────────────────────────────────────────
@@ -240,7 +243,7 @@ ax_land.text(
 )
 
 ax_land.set_xlim(*XLIM)
-ax_land.set_ylim(-4.6, 0.55)
+ax_land.set_ylim(-4.95, 0.55)   # extra room below so the annotation box clears the frequency line
 ax_land.set_xlabel("Evidence axis  $x$")
 ax_land.set_ylabel("Energy")
 panel_label(ax_land, "a")
@@ -248,17 +251,18 @@ ax_land.set_xticks(integers_display)
 ax_land.set_xticklabels([str(n) for n in integers_display])
 ax_land.set_yticks([])
 
-# Secondary y-axis: number frequency (drives the well widths)
-FREQ_COLOR = PALETTE[1]   # deep-palette orange — the external frequency prior f_n
+# Secondary y-axis: number frequency, which declines with magnitude and motivates
+# the narrow-to-wide well profile
+FREQ_COLOR = PALETTE[1]   # deep-palette orange — the number-frequency decline
 ax_fq = ax_land.twinx()
 ax_fq.plot(
-    integers_display, benford_freq[:N_DISPLAY], "-o",
+    integers_display, num_freq[:N_DISPLAY], "-o",
     color=FREQ_COLOR, ms=5, lw=1.8, alpha=0.85,
     markeredgecolor="white", markeredgewidth=0.8, zorder=7,
 )
 ax_fq.set_ylabel("Number frequency", color=FREQ_COLOR, labelpad=10)
 ax_fq.tick_params(axis="y", colors=FREQ_COLOR)
-ax_fq.set_ylim(0, benford_freq[0] * 1.15)
+ax_fq.set_ylim(-num_freq[0] * 0.08, num_freq[0] * 1.15)   # bottom pad matched to ax_land's
 ax_fq.spines["right"].set_visible(True)
 ax_fq.spines["right"].set_color(FREQ_COLOR)
 ax_fq.spines["right"].set_alpha(0.5)
@@ -279,12 +283,12 @@ H_max = float(np.max(H_pre_i))
 # Insets: example posteriors after clean-up (sharp / moderate / broad)
 INSET_HALF = 3
 INSET_PAD = 0.8
-inset_ns = [2, 6, 12]
+inset_ns = [2, 6, 11]
 inset_labels = ["sharp", "moderate", "broad"]   # kept for per-inset scaling/axis logic; not shown in titles
 inset_bounds = [
     [0.028, 0.392, 0.15, 0.36],   # sharp (y0=2): centred above n=2, lowered 0.3h
     [0.325, 0.52, 0.15, 0.36],   # moderate (y0=6): axis trimmed to 5-9, box shifted so n=6 sits above n=6
-    [0.690, 0.70, 0.15, 0.24],   # broad (y0=12): raised above the E[H] curve; title moved to its right
+    [0.624, 0.70, 0.15, 0.24],   # broad (y0=11): centred above n=11, raised above the E[H] curve; title to its right
 ]
 post_at = posterior_of(mu_star)
 global_max_p = 0.0
@@ -322,10 +326,10 @@ for n_pos, lbl, bounds in zip(inset_ns, inset_labels, inset_bounds):
         ins.set_xlim(5 - 0.5, ns_show[-1] + INSET_PAD)
         ins.set_xticks(ticks)
         ins.set_xticklabels([str(n) for n in ticks], fontsize=8.5 * FONT_SCALE)
-    else:  # broad: label the even numbers so that 12 (the presented value) is shown
+    else:  # broad: label the odd numbers so that 11 (the presented value) is shown
         ins.set_xlim(ns_show[0] - INSET_PAD, ns_show[-1] + INSET_PAD)
         ins.set_xticks(ns_show)
-        ins.set_xticklabels([str(n) if n % 2 == 0 else "" for n in ns_show],
+        ins.set_xticklabels([str(n) if n % 2 == 1 else "" for n in ns_show],
                             fontsize=8.5 * FONT_SCALE)
     ins.set_yticks([])
     title_txt = f"$y_0\\!=\\!{n_pos}$\n$H = {H_single[n_pos - 1]:.2f}$"
@@ -375,7 +379,7 @@ for lbl, (x0, y0, w, h) in zip(inset_labels, inset_bounds):
 
 ax_ent.set_xlim(*XLIM)
 ax_ent.set_ylim(-0.03, H_max * 1.75)
-ax_ent.set_ylabel("Readout entropy")
+ax_ent.set_ylabel("Entropy")
 panel_label(ax_ent, "b")
 ax_ent.set_xticks(integers_display)
 ax_ent.set_xticklabels([str(n) for n in integers_display])
@@ -405,7 +409,7 @@ ax_rt.text(0.90, 0.20, r"$\mathrm{RT} = t_0 + \alpha\,E[T] + \beta_H\,E[H]$",
            fontsize=10 * FONT_SCALE, color="0.15")
 ax_rt.text(1.7, RT_at_int[0] + 0.22, "Fast, exact", fontsize=9.5 * FONT_SCALE,
            color=PALETTE[2], fontweight="bold", ha="left")
-ax_rt.text(14.9, RT_line.max() - 0.30, "Slow, approximate",
+ax_rt.text(14.9, RT_line.max() - 0.42, "Slow, approximate",
            fontsize=9.5 * FONT_SCALE, color=PALETTE[3], fontweight="bold", ha="right")
 
 ax_rt.set_xlim(*XLIM)

@@ -37,7 +37,7 @@ if str(_ROOT) not in sys.path:
 import scripts.trial_level_model_comparison as T
 from figures.plot_style import apply_style
 
-WIN = T.MODEL_BY_KEY["gaussian_freebeta_attractor"]
+WIN = T.MODEL_BY_KEY[T.WINNER_KEY]
 OUT_CSV = T.OUT_DIR / "weber_fraction.csv"
 OUT_FIG = T.OUT_DIR / "weber_fraction.png"
 
@@ -51,10 +51,8 @@ def cov_over(support: np.ndarray, p_row: np.ndarray) -> float:
 
 
 def ncrit(theta: dict) -> float:
-    ns = np.linspace(1.0, 40.0, 40000)
-    s = np.power(theta["sigma_c"] / np.log10(1.0 + 1.0 / ns), theta["beta"])
-    i = int(np.argmax(s >= 1.0))
-    return float(ns[i - 1] + (1.0 - s[i - 1]) * (ns[i] - ns[i - 1]) / (s[i] - s[i - 1]))
+    # power-law wells: sigma_n = sigma_c * n^p = 1  ->  n_crit = sigma_c^(-1/p)
+    return float(theta["sigma_c"] ** (-1.0 / theta["pow"]))
 
 
 def empirical_cov(trial: pd.DataFrame, d: int) -> np.ndarray:
@@ -71,7 +69,7 @@ def empirical_cov(trial: pd.DataFrame, d: int) -> np.ndarray:
 def main() -> None:
     apply_style(1.4)
     quad = T.make_quadrature(1601, kind="grid")
-    wt = pd.read_csv(T.OUT_DIR / "winner_theta.csv").set_index("duration_ms")
+    wt = pd.read_csv(T.OUT_DIR / "pow_theta.csv").set_index("duration_ms")
     trial = T.load_trials()
     r_max = int(trial["n_guess"].max())          # 99, as in the headline fit
     wells = T.WELLS                              # integer support 1..N_SUPPORT_MAX

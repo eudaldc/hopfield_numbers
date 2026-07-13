@@ -38,16 +38,16 @@ if str(_ROOT) not in sys.path:
 
 import scripts.trial_level_model_comparison as T
 
-SPEC = T.MODEL_BY_KEY["gaussian_freebeta_attractor"]
+SPEC = T.MODEL_BY_KEY[T.WINNER_KEY]           # gaussian_pow_attractor
 DATA = _ROOT / "data" / "decarli_exact_enumeration.csv"
 OUT_DIR = _ROOT / "output" / "decarli_fit"
 NVALS = np.arange(1, 8)                       # n = 1..7 (drop n=8 end-effect)
 GROUPS = ("DD", "contr")
 
-# [sigma_c, s0, lambda0, beta, lapse, t0, rt_scale]
-BOUNDS = [(0.001, 0.5), (1e-6, 0.1), (0.1, 4.0), (0.1, 6.0),
+# [sigma_c, s0, lambda0, pow, lapse, t0, rt_scale]
+BOUNDS = [(0.001, 0.5), (1e-6, 0.1), (0.1, 4.0), (0.1, 4.0),
           (1e-4, 0.5), (0.05, 1.0), (0.0, 5.0)]
-PNAMES = ("sigma_c", "s0", "lambda0", "beta", "lapse", "t0", "rt_scale")
+PNAMES = ("sigma_c", "s0", "lambda0", "pow", "lapse", "t0", "rt_scale")
 
 
 def group_targets(df: pd.DataFrame, group: str) -> tuple[np.ndarray, np.ndarray]:
@@ -61,7 +61,7 @@ def group_targets(df: pd.DataFrame, group: str) -> tuple[np.ndarray, np.ndarray]
 
 
 def predict(vec: np.ndarray, quad: T.Quadrature) -> tuple[np.ndarray, np.ndarray]:
-    theta = dict(zip(("sigma_c", "s0", "lambda0", "beta"), vec[:4]))
+    theta = dict(zip(("sigma_c", "s0", "lambda0", "pow"), vec[:4]))
     lapse, t0, rt_scale = vec[4], vec[5], vec[6]
     grid = T.compute_grid(SPEC, theta, quad, n_values=NVALS.astype(float))
     p_exact = np.array([grid["p_resp"][i, int(n) - 1] for i, n in enumerate(NVALS)])
@@ -101,8 +101,8 @@ def fit_group(acc: np.ndarray, rt: np.ndarray, quad: T.Quadrature,
 
 
 def sigma_well(theta: dict, n: np.ndarray) -> np.ndarray:
-    freq = np.log10(1.0 + 1.0 / np.asarray(n, float))
-    return np.power(theta["sigma_c"] / freq, theta["beta"])
+    # power-law wells: sigma_n = sigma_c * n^p
+    return theta["sigma_c"] * np.power(np.asarray(n, float), theta["pow"])
 
 
 def ncrit(theta: dict, level: float = 1.0) -> float:
@@ -130,7 +130,7 @@ def main() -> None:
         acc, rt = group_targets(df, grp)
         f = fit_group(acc, rt, quad, seed=17 + gi)
         fits[grp] = (f, acc, rt)
-        theta = {k: f[k] for k in ("sigma_c", "s0", "lambda0", "beta")}
+        theta = {k: f[k] for k in ("sigma_c", "s0", "lambda0", "pow")}
         rows.append({
             "group": grp,
             **{k: f[k] for k in PNAMES},
@@ -143,7 +143,7 @@ def main() -> None:
             "well_sigma_n7": float(sigma_well(theta, np.array([7]))[0]),
             "neg_ll": f["neg_ll"],
         })
-        print(f"[{grp}] beta={f['beta']:.2f} sigma_c={f['sigma_c']:.4f} "
+        print(f"[{grp}] pow={f['pow']:.2f} sigma_c={f['sigma_c']:.4f} "
               f"s0={f['s0']:.4g} lambda0={f['lambda0']:.2f} t0={f['t0']:.3f} "
               f"lapse={f['lapse']:.3f} -> n_crit(σ=1)={ncrit(theta):.2f}", flush=True)
 
@@ -154,7 +154,7 @@ def main() -> None:
     dd, ct = out[out.group == "DD"].iloc[0], out[out.group == "contr"].iloc[0]
     comp = pd.DataFrame([
         {"quantity": q, "DD": dd[q], "contr": ct[q], "diff_DD_minus_contr": dd[q] - ct[q]}
-        for q in ("n_crit_sigma1", "n_crit_sigma2", "beta", "sigma_c",
+        for q in ("n_crit_sigma1", "n_crit_sigma2", "pow", "sigma_c",
                   "sigma_n1", "sigma_n4", "sigma_n7")
     ])
     comp.to_csv(OUT_DIR / "gaussian_freebeta_group_comparison.csv", index=False)
@@ -169,7 +169,7 @@ def main() -> None:
         axes[0].plot(NVALS, 100 * p_exact, "-", color=colors[grp], lw=1.8)
         axes[1].plot(NVALS, rt, "o", color=colors[grp], ms=6, label=f"{grp} data")
         axes[1].plot(NVALS, pred_rt, "-", color=colors[grp], lw=1.8)
-        nc = ncrit({k: f[k] for k in ("sigma_c", "s0", "lambda0", "beta")})
+        nc = ncrit({k: f[k] for k in ("sigma_c", "s0", "lambda0", "pow")})
         axes[0].axvline(nc, color=colors[grp], ls=":", lw=1.0)
     axes[0].set_xlabel("numerosity"); axes[0].set_ylabel("% exact")
     axes[0].set_title("De Carli accuracy — winner model"); axes[0].legend(fontsize=8, frameon=False)

@@ -19,9 +19,11 @@ per-duration blocks are separate fits, each colour-scaled on its own range.
   d — RT channel, separate fits per duration on the winning landscape: the
       hybrid convergence-time + entropy link wins at every exposure. Response to
       the "RT is grafted on" point.
-  e — The fitted width law sigma_n per exposure duration, the sigma_n = 1
-      resolvability line, and the emerging n_crit — the model predicts its own
-      limit, which grows with exposure.
+  e — The fitted width law sigma_n: the joint fit's single shared landscape
+      (black dashed, the primary analysis; it lies on the 160 ms curve) over
+      the per-duration fits, the sigma_n = 1 resolvability line, and the
+      emerging n_crit — the model predicts its own limit, common at ~8.3 in
+      the joint fit and growing with exposure in the separate fits.
 
     .venv/bin/python figures/fig3_comparison_ncrit.py
 """
@@ -44,6 +46,7 @@ if str(ROOT) not in sys.path:
 from figures.plot_style import apply_style, panel_label  # noqa: E402
 
 OUT_DIR = ROOT / "output" / "trial_level_model_comparison"
+CP_DIR = ROOT / "output" / "cp_exact"
 OUT_STEM = ROOT / "figures" / "fig3_comparison_ncrit"
 
 FONT_SCALE = 2.1
@@ -59,24 +62,37 @@ DUR_LABELS = ["40 ms", "80", "160", "320", "640"]
 #    range, so the per-duration structure is not washed out. ────────────────
 resp = pd.read_csv(OUT_DIR / "response_per_duration_aic.csv")
 piv_a = resp.pivot_table(index="model_key", columns="duration_ms", values="resp_AIC")
-piv_a = piv_a - piv_a.min(axis=0)                       # dAIC vs best in each column
+# Exact Cheyette & Piantadosi (2020) model. Its per-duration form (separate-fit
+# panel/table) is the free-budget ceiling: the information budget and lapse fitted
+# at each duration (k = 2/duration); its shared form (joint panel/table) ties
+# (B, R, eps) across all durations (k = 3). Both are read from output/cp_exact/.
+cp_ceil = pd.read_csv(CP_DIR / "cp_exact_ceiling.csv").set_index("duration_ms")
+piv_a.loc["cp_exact"] = [4.0 - 2.0 * float(cp_ceil.loc[d, "ceiling_logL"])
+                         for d in piv_a.columns]
 ladder = pd.read_csv(OUT_DIR / "shared_landscape_ladder.csv").set_index("model_key")
+cp_fit = pd.read_csv(CP_DIR / "cp_exact_fits.csv").set_index("variant")
 
+# The winning model is now the power-law-width attractor; the Benford family is
+# dropped from the comparison. dAIC is relative to the best *displayed* model.
 ROWS_A = [
-    ("Frequency wells + clean-up", "gaussian_freebeta_attractor"),
-    ("Frequency wells, static", "gaussian_benford_free_beta"),
     ("Power-law wells + clean-up", "gaussian_pow_attractor"),
     ("Power-law wells, static", "gaussian_pow_readout"),
     ("Weber/ANS", "weber_ans"),
-    ("Normative (log-prior)", "cp_log_prior_proxy"),
+    ("Normative (C&P)", "cp_exact"),
 ]
+piv_a = piv_a.loc[[k for _, k in ROWS_A]]
+piv_a = piv_a - piv_a.min(axis=0)                       # dAIC vs best displayed in each column
+pow_joint_ref = float(ladder.loc["gaussian_pow_attractor", "joint_AIC"])
+cp_joint_dAIC = float(cp_fit.loc["uniform", "AIC"]) - pow_joint_ref
 dur_a = [[float(piv_a.loc[k, d]) for d in DUR_KEYS] for _, k in ROWS_A]
-joint_a = [[float(ladder.loc[k, "joint_dAIC"])] for _, k in ROWS_A]
+joint_a = [[cp_joint_dAIC if k == "cp_exact"
+            else float(ladder.loc[k, "joint_AIC"]) - pow_joint_ref]
+           for _, k in ROWS_A]
 
 # ── RT channel: per-duration dAIC on the winning landscape, and the joint fit
 #    (one RT mapping shared across all five durations). ─────────────────────
-rt = pd.read_csv(OUT_DIR / "rt_exploration.csv")
-rt = rt[rt.model_key == "gaussian_freebeta_attractor"]
+rt = pd.read_csv(OUT_DIR / "pow_winner_rt.csv")
+rt = rt[rt.model_key == "gaussian_pow_attractor"]
 piv_b = rt.pivot_table(index="metric", columns="duration_ms", values="AIC")
 piv_b = piv_b.loc[["hybrid", "steps", "entropy"]]
 piv_b = piv_b - piv_b.min(axis=0)
@@ -85,7 +101,7 @@ rtj = pd.read_csv(OUT_DIR / "rt_joint.csv").set_index("metric")
 ROWS_B = [
     ("Convergence time + entropy", "hybrid"),
     ("Convergence time", "steps"),
-    ("Readout entropy", "entropy"),
+    ("Entropy", "entropy"),
 ]
 dur_b = [[float(piv_b.loc[k, d]) for d in DUR_KEYS] for _, k in ROWS_B]
 joint_b = [[float(rtj.loc[k, "dAIC"])] for _, k in ROWS_B]
@@ -129,21 +145,18 @@ def draw_heat(ax, rows_vals, col_labels, row_labels, framed=False):
                                ec="0.4", lw=2.2, zorder=4))
 
 
-# ── Panel c data: width law per duration ──────────────────────────────
-theta = pd.read_csv(OUT_DIR / "winner_theta.csv").set_index("duration_ms")
+# ── Panel e data: width law per duration (power-law wells sigma_n = c n^p) ──
+theta = pd.read_csv(OUT_DIR / "pow_theta.csv").set_index("duration_ms")
 DURATIONS = list(theta.index)
 
 
 def sigma_of_n(d: int, n: np.ndarray) -> np.ndarray:
-    f = np.log10(1.0 + 1.0 / np.asarray(n, float))
-    return (float(theta.loc[d, "sigma_c"]) / f) ** float(theta.loc[d, "beta"])
+    return float(theta.loc[d, "sigma_c"]) * np.asarray(n, float) ** float(theta.loc[d, "pow"])
 
 
 def ncrit(d: int) -> float:
-    ns = np.linspace(1.0, 40.0, 40000)
-    s = sigma_of_n(d, ns)
-    i = int(np.argmax(s >= 1.0))
-    return float(ns[i - 1] + (1.0 - s[i - 1]) * (ns[i] - ns[i - 1]) / (s[i] - s[i - 1]))
+    # sigma_n = sigma_c * n^p = 1  ->  n_crit = sigma_c^(-1/p)
+    return float(theta.loc[d, "sigma_c"]) ** (-1.0 / float(theta.loc[d, "pow"]))
 
 
 # ── Figure ────────────────────────────────────────────────────────────
@@ -206,6 +219,17 @@ for d in DURATIONS:
     ax_e.plot(ncrit(d), 1.0, "o", ms=12, color=dur_colors[d], zorder=5,
               markeredgecolor="white", markeredgewidth=1.5)
 
+# joint fit: the single landscape shared across the five durations (primary
+# analysis). It coincides with the 160 ms landscape, so it is drawn dashed on
+# top: the 160 ms line shows through the gaps. Its n_crit dot sits behind the
+# 160 ms dot as a larger black ring.
+sc_j = float(ladder.loc["gaussian_pow_attractor", "shared_sigma_c"])
+p_j = float(ladder.loc["gaussian_pow_attractor", "shared_pow"])
+ax_e.plot(n_cont, sc_j * n_cont ** p_j, lw=3.6, color="black",
+          ls=(0, (5, 2.4)), zorder=4, label="Joint fit")
+ax_e.plot(sc_j ** (-1.0 / p_j), 1.0, "o", ms=17, color="black", zorder=4.5,
+          markeredgecolor="white", markeredgewidth=1.5)
+
 ax_e.text(1.45, 3.6, "Approximate regime",
           fontsize=9.5 * FONT_SCALE, ha="left", va="center", color="0.30")
 ax_e.text(5.2, 0.028, "Exact regime",
@@ -219,8 +243,10 @@ ax_e.set_xticks(np.arange(1, 16))
 ax_e.set_xlabel("Number line  $n$")
 ax_e.set_ylabel(r"Well width  $\sigma_n$")
 panel_label(ax_e, "e", x=-0.075)
-ax_e.legend(loc="lower right", ncols=2, framealpha=0.9, edgecolor="0.75",
-            title="Exposure", title_fontsize=8.5 * FONT_SCALE)
+handles, labels = ax_e.get_legend_handles_labels()
+order = [len(handles) - 1] + list(range(len(handles) - 1))  # joint fit first
+ax_e.legend([handles[i] for i in order], [labels[i] for i in order],
+            loc="lower right", ncols=2, framealpha=0.9, edgecolor="0.75")
 
 fig.savefig(f"{OUT_STEM}.png")
 fig.savefig(f"{OUT_STEM}.pdf")

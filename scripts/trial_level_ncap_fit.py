@@ -45,14 +45,13 @@ if str(_ROOT) not in sys.path:
 import scripts.trial_level_model_comparison as T
 
 NCAP = 10               # small-range cap (upper edge of the hypothesised transition)
-WINNER = "gaussian_freebeta_attractor"
+WINNER = T.WINNER_KEY
 # Models compared *within* the small range (all fit + scored on the same n<=NCAP
-# counts, so their AICs are mutually comparable). Covers well shape (Gaussian vs
-# Poisson), clean-up (attractor vs static twin), and pure approximate (Weber/ANS).
+# counts, so their AICs are mutually comparable). Covers clean-up (attractor vs
+# static twin) and pure approximate (Weber/ANS).
 MODELS = (
-    "gaussian_freebeta_attractor",      # winner: symmetric super-linear + clean-up
-    "gaussian_freebeta_no_cleanup",     # its static twin (isolates clean-up)
-    "hopfield_poisson",                 # the published skewed-Poisson attractor
+    "gaussian_pow_attractor",           # winner: power-law super-linear + clean-up
+    "gaussian_pow_readout",             # its static twin (isolates clean-up)
     "weber_ans",                        # pure approximate read-out
 )
 
@@ -70,9 +69,8 @@ def cap_trials(trial: pd.DataFrame, ncap: int) -> pd.DataFrame:
 
 
 def sigma_n(theta: dict, n: np.ndarray) -> np.ndarray:
-    """Gaussian-Benford well width sigma_n = (sigma_c / freq_n)^beta."""
-    freq = np.log10(1.0 + 1.0 / np.asarray(n, dtype=float))
-    return np.power(theta["sigma_c"] / freq, theta["beta"])
+    """Power-law well width sigma_n = sigma_c * n^p."""
+    return theta["sigma_c"] * np.power(np.asarray(n, dtype=float), theta["pow"])
 
 
 def ncrit_crossing(theta: dict, level: float = 1.0) -> float:
@@ -180,7 +178,7 @@ def main() -> None:
             ncrit_rows.append({
                 "duration_ms": int(d), "regime": regime,
                 "sigma_c": theta["sigma_c"], "s0": theta["s0"],
-                "lambda0": theta["lambda0"], "beta": theta["beta"],
+                "lambda0": theta["lambda0"], "pow": theta["pow"],
                 "n_crit_sigma1": ncrit_crossing(theta, 1.0),
                 "n_crit_sigma2": ncrit_crossing(theta, 2.0),
                 "n_pct_exact_50": pct_exact_crossing(pct_exact, 50.0),
@@ -198,7 +196,7 @@ def main() -> None:
           .round({"AIC_total": 1, "dAIC": 1, "akaike_weight": 3}).to_string(index=False))
     print("\n=== (A/C) winner landscape + n_crit: capped vs full ===")
     show = ncrit.pivot_table(index="duration_ms", columns="regime",
-                             values=["beta", "n_crit_sigma1", "n_pct_exact_50"])
+                             values=["pow", "n_crit_sigma1", "n_pct_exact_50"])
     print(show.round(2).to_string())
     print(f"\nSaved {OUT_FIT.name}, {OUT_SUMMARY.name}, {OUT_NCRIT.name}")
 

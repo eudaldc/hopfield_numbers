@@ -44,14 +44,14 @@ def main() -> None:
 
     # same model, two fitting ranges -> one hue, filled (full) vs open (capped),
     # matching the caption and the paper-wide role colors (C_ATTR = the winner)
-    ax_b.bar(x - w / 2, [full.loc[d, "beta"] for d in durs], w,
+    ax_b.bar(x - w / 2, [full.loc[d, "pow"] for d in durs], w,
              color=C_ATTR, label=r"full range ($n \leq 15$)")
-    ax_b.bar(x + w / 2, [cap.loc[d, "beta"] for d in durs], w,
+    ax_b.bar(x + w / 2, [cap.loc[d, "pow"] for d in durs], w,
              facecolor="none", edgecolor=C_ATTR, linewidth=1.6,
              label=r"small range ($n \leq 10$)")
     ax_b.set_xticks(x, [f"{d}" for d in durs])
     ax_b.set_xlabel("Exposure (ms)")
-    ax_b.set_ylabel(r"Width exponent $\beta$")
+    ax_b.set_ylabel(r"Width exponent $p$")
     ax_b.legend(frameon=False, loc="upper right")
     panel_label(ax_b, "a")
 

@@ -15,6 +15,15 @@ with a Mann–Whitney U test on the per-subject n_crit (and σ_c).
 Writes gaussian_freebeta_subjects.csv + gaussian_freebeta_subjects.png under
 output/decarli_fit/. Non-destructive.
 
+SUPERSEDED for the reported group test. `fit_subject` below runs a single-start
+Nelder-Mead from the pooled x0 with no restarts, and it stalls in a local minimum for
+10 of the 64 subjects (DD 1, 7, 8, 25, 28; contr 34, 49, 51, 52, 61). It therefore
+reports n_crit DD 8.12 vs contr 8.99, Mann-Whitney p = 0.005, r_rb = -0.41. Refitting
+the *same model and objective* at the global optimum gives 8.14 vs 8.85, p = 0.018,
+r_rb = -0.35, which is the number quoted in SM5. Use `scripts/decarli_locus_beta.py`
+(model A: exhaustive grid over sigma_c + exact profiling of lapse, t0, rt_scale), which
+fits better in 55/64 subjects and reproduces this script wherever the NM did converge.
+
     .venv/bin/python -m scripts.decarli_gaussian_freebeta_subjects
 """
 
@@ -58,7 +67,7 @@ def subj_targets(g: pd.DataFrame) -> tuple[np.ndarray, np.ndarray]:
 
 
 def predict_full(vec7: np.ndarray, quad: T.Quadrature) -> tuple[np.ndarray, np.ndarray]:
-    theta = dict(zip(("sigma_c", "s0", "lambda0", "beta"), vec7[:4]))
+    theta = dict(zip(("sigma_c", "s0", "lambda0", "pow"), vec7[:4]))
     lapse, t0, rt_scale = vec7[4], vec7[5], vec7[6]
     grid = T.compute_grid(SPEC, theta, quad, n_values=NVALS.astype(float))
     p = np.array([grid["p_resp"][i, int(n) - 1] for i, n in enumerate(NVALS)])
@@ -95,16 +104,16 @@ def pooled_fit(df: pd.DataFrame, quad: T.Quadrature) -> np.ndarray:
 
 
 def fit_subject(acc, rt, common: dict, quad, x0) -> dict:
-    """Fit sigma_c, lapse, t0, rt_scale with beta, s0, lambda0 held at common."""
+    """Fit sigma_c, lapse, t0, rt_scale with pow, s0, lambda0 held at common."""
     def negll(v):
-        full = np.array([v[0], common["s0"], common["lambda0"], common["beta"],
+        full = np.array([v[0], common["s0"], common["lambda0"], common["pow"],
                          v[1], v[2], v[3]])
         return negll_full(full, acc, rt, quad)
     pol = minimize(negll, x0, method="Nelder-Mead", bounds=SUBJ_BOUNDS,
                    options={"maxiter": 600, "xatol": 1e-6, "fatol": 1e-7})
     v = pol.x
     theta = {"sigma_c": v[0], "s0": common["s0"], "lambda0": common["lambda0"],
-             "beta": common["beta"]}
+             "pow": common["pow"]}
     return {"sigma_c": v[0], "lapse": v[1], "t0": v[2], "rt_scale": v[3],
             "n_crit_sigma1": ncrit(theta, 1.0), "neg_ll": float(pol.fun)}
 
@@ -115,9 +124,9 @@ def main() -> None:
     df = pd.read_csv(DATA)
 
     pooled = pooled_fit(df, quad)
-    common = {"s0": pooled[1], "lambda0": pooled[2], "beta": pooled[3]}
+    common = {"s0": pooled[1], "lambda0": pooled[2], "pow": pooled[3]}
     x0 = np.array([pooled[0], pooled[4], pooled[5], pooled[6]])
-    print(f"Pooled mechanism: beta={common['beta']:.2f} s0={common['s0']:.4g} "
+    print(f"Pooled mechanism: pow={common['pow']:.2f} s0={common['s0']:.4g} "
           f"lambda0={common['lambda0']:.2f} (sigma_c per subject)", flush=True)
 
     rows = []

@@ -41,35 +41,26 @@ OUT_CSV = T.OUT_DIR / "recovery_winner.csv"
 OUT_SUMMARY = T.OUT_DIR / "recovery_winner_summary.csv"
 OUT_PNG = T.OUT_DIR / "recovery_winner.png"
 
-N_REPS = 50
-N_WORKERS = 20
-PARAMS = ("sigma_c", "s0", "lambda0", "beta", "lapse")
+N_REPS = 12
+N_WORKERS = 22
+PARAMS = ("sigma_c", "s0", "lambda0", "pow", "lapse")
 # quantities reported on log scale (scale parameters spanning decades)
 LOG_SCALE = ("sigma_c", "s0", "lapse", "sigma3")
 # multiplicative (log-uniform) jitter half-width per parameter
-JITTER = {"sigma_c": 0.35, "s0": 0.50, "lambda0": 0.20, "beta": 0.25, "lapse": 0.40}
+JITTER = {"sigma_c": 0.35, "s0": 0.50, "lambda0": 0.20, "pow": 0.25, "lapse": 0.40}
 DERIVED = ("ncrit", "sigma3", "sensory_sd5")
 
 _W: dict = {}
 
 
-def _sigma_n(sigma_c: float, beta: float, n: np.ndarray) -> np.ndarray:
-    freq = np.log10(1.0 + 1.0 / np.asarray(n, float))
-    return np.power(sigma_c / freq, beta)
+def _sigma_n(sigma_c: float, p: float, n: np.ndarray) -> np.ndarray:
+    # power-law wells: sigma_n = sigma_c * n^p
+    return sigma_c * np.power(np.asarray(n, float), p)
 
 
-def ncrit_sigma1(sigma_c: float, beta: float) -> float:
-    """Smallest continuous n >= 1 where sigma_n = 1 (adjacent-well d' = 1)."""
-    ns = np.linspace(1.0, 60.0, 60000)
-    s = _sigma_n(sigma_c, beta, ns)
-    above = np.where(s >= 1.0)[0]
-    if above.size == 0:
-        return float("nan")
-    i = int(above[0])
-    if i == 0:
-        return 1.0
-    x0, x1, y0, y1 = ns[i - 1], ns[i], s[i - 1], s[i]
-    return float(x0 + (1.0 - y0) * (x1 - x0) / (y1 - y0))
+def ncrit_sigma1(sigma_c: float, p: float) -> float:
+    """Continuous n where sigma_n = sigma_c n^p = 1, i.e. n_crit = sigma_c^(-1/p)."""
+    return float(sigma_c ** (-1.0 / p)) if p > 0 else float("nan")
 
 
 def _init_worker(fit_nodes: int, maxiter: int, popsize: int) -> None:
@@ -79,7 +70,7 @@ def _init_worker(fit_nodes: int, maxiter: int, popsize: int) -> None:
     _W["data"] = T.build_duration_data(trial, r_max)
     _W["quad_fit"] = T.make_quadrature(fit_nodes, kind="grid")
     _W["quad_gen"] = T.make_quadrature(1601, kind="grid")
-    _W["theta"] = pd.read_csv(T.OUT_DIR / "winner_theta.csv").set_index("duration_ms")
+    _W["theta"] = pd.read_csv(T.OUT_DIR / "pow_theta.csv").set_index("duration_ms")
     spec = T.MODEL_BY_KEY[T.WINNER_KEY]
     _W["bounds"] = dict(zip(spec.param_names, spec.bounds)) | {"lapse": T.LAPSE_BOUNDS}
     _W["maxiter"] = maxiter
@@ -115,10 +106,10 @@ def _one(task: tuple[int, int]) -> dict:
     row: dict = {"duration_ms": d, "rep": rep}
     row |= {f"gen_{p}": gen[p] for p in PARAMS}
     row |= {f"rec_{p}": rec[p] for p in PARAMS}
-    row["gen_ncrit"] = ncrit_sigma1(gen["sigma_c"], gen["beta"])
-    row["rec_ncrit"] = ncrit_sigma1(rec["sigma_c"], rec["beta"])
-    row["gen_sigma3"] = float(_sigma_n(gen["sigma_c"], gen["beta"], np.array([3.0]))[0])
-    row["rec_sigma3"] = float(_sigma_n(rec["sigma_c"], rec["beta"], np.array([3.0]))[0])
+    row["gen_ncrit"] = ncrit_sigma1(gen["sigma_c"], gen["pow"])
+    row["rec_ncrit"] = ncrit_sigma1(rec["sigma_c"], rec["pow"])
+    row["gen_sigma3"] = float(_sigma_n(gen["sigma_c"], gen["pow"], np.array([3.0]))[0])
+    row["rec_sigma3"] = float(_sigma_n(rec["sigma_c"], rec["pow"], np.array([3.0]))[0])
     row["gen_sensory_sd5"] = float(T.evidence_sd(np.array([5.0]), gen["s0"], gen["lambda0"])[0])
     row["rec_sensory_sd5"] = float(T.evidence_sd(np.array([5.0]), rec["s0"], rec["lambda0"])[0])
     row["rec_logL"] = float(rf["logL"])
@@ -173,7 +164,7 @@ def make_figure(df: pd.DataFrame, corr: pd.DataFrame) -> None:
     apply_style(1.5)   # rendered at \textwidth (figure*), 16 in canvas
     quantities = list(PARAMS) + ["ncrit", "sigma3"]
     labels = {"sigma_c": r"$\sigma_c$ (log$_{10}$)", "s0": r"$s_0$ (log$_{10}$)",
-              "lambda0": r"$\lambda_0$", "beta": r"$\beta$",
+              "lambda0": r"$\lambda_0$", "pow": r"$p$",
               "lapse": "lapse (log$_{10}$)", "ncrit": r"$n_{\rm crit}$ ($\sigma_n=1$)",
               "sigma3": r"$\sigma_3$ (log$_{10}$)"}
     letters = "abcdefgh"
@@ -186,9 +177,19 @@ def make_figure(df: pd.DataFrame, corr: pd.DataFrame) -> None:
         for d in durs:
             m = (df["duration_ms"] == d).to_numpy()
             ax.scatter(g[m], r[m], s=16, alpha=0.75, color=colors[d], label=f"{d} ms")
-        lo = np.nanmin([g.min(), r.min()])
-        hi = np.nanmax([g.max(), r.max()])
+        if q == "ncrit":
+            # n_crit = sigma_c^(-1/p) is a heavy-tailed transform of the traded-off
+            # (sigma_c, p): a few ridge fits blow up. Clip to the meaningful range so
+            # the on-diagonal bulk is visible; the handful of off-scale fits are the
+            # ridge cases described in the text.
+            lo, hi = 1.0, 16.0
+        else:
+            lo = np.nanmin([g.min(), r.min()])
+            hi = np.nanmax([g.max(), r.max()])
         ax.plot([lo, hi], [lo, hi], "--", color="0.4", lw=1)
+        if q == "ncrit":
+            ax.set_xlim(lo, hi)
+            ax.set_ylim(lo, hi)
         ax.set_xlabel(f"generating {labels[q]}")
         ax.set_ylabel(f"recovered {labels[q]}")
         panel_label(ax, letters[k])
@@ -196,7 +197,7 @@ def make_figure(df: pd.DataFrame, corr: pd.DataFrame) -> None:
     # aspect="auto" + slim colorbar: the matrix fills the same axes box as the
     # scatter panels instead of shrinking to a small square
     im = ax.imshow(corr.to_numpy(), vmin=-1, vmax=1, cmap="RdBu_r", aspect="auto")
-    ticks = [r"$\sigma_c$", r"$s_0$", r"$\lambda_0$", r"$\beta$", "lapse"]
+    ticks = [r"$\sigma_c$", r"$s_0$", r"$\lambda_0$", r"$p$", "lapse"]
     ax.set_xticks(range(len(PARAMS)), ticks)
     ax.set_yticks(range(len(PARAMS)), ticks)
     panel_label(ax, letters[len(quantities)])
@@ -245,7 +246,7 @@ def main(argv=None) -> None:
         for i, row in enumerate(pool.imap_unordered(_one, tasks), 1):
             rows.append(row)
             print(f"  [{i}/{len(tasks)}] dur={row['duration_ms']}ms rep={row['rep']} "
-                  f"gen_beta={row['gen_beta']:.2f} rec_beta={row['rec_beta']:.2f} "
+                  f"gen_pow={row['gen_pow']:.2f} rec_pow={row['rec_pow']:.2f} "
                   f"gen_ncrit={row['gen_ncrit']:.1f} rec_ncrit={row['rec_ncrit']:.1f} "
                   f"({(time.time() - t0) / 60:.1f} min)", flush=True)
     df = pd.DataFrame(rows).sort_values(["duration_ms", "rep"])

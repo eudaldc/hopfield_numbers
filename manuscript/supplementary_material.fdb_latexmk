@@ -1,19 +1,19 @@
 # Fdb version 4
-["bibtex supplementary_material"] 1783422950.81366 "supplementary_material.aux" "supplementary_material.bbl" "supplementary_material" 1783437881.45138 0
+["bibtex supplementary_material"] 1783661235.347 "supplementary_material.aux" "supplementary_material.bbl" "supplementary_material" 1783661235.79352 0
   "./SageH.bst" 1775669046.47233 30763 e9cf3bda853a6eedae2781a529a11a19 ""
-  "./references.bib" 1783418495.73632 94582 42e1b4f5db556b8c5f47505b82a94ca3 ""
-  "supplementary_material.aux" 1783437881.39162 14286 db6443b52ac079582e79ccdd0c676ecc "pdflatex"
+  "./references.bib" 1783507340.51509 109418 5c13309dcd4d9be6a830b8672a47deb9 ""
+  "supplementary_material.aux" 1783661235.71255 15551 d29ba98cc1a6b72f60871093418c79e9 "pdflatex"
   (generated)
   "supplementary_material.bbl"
   "supplementary_material.blg"
   (rewritten before read)
-["pdflatex"] 1783437881.14894 "supplementary_material.tex" "supplementary_material.pdf" "supplementary_material" 1783437881.45153 0
-  "../output/decarli_fit/decarli_dd_summary.pdf" 1783417556.7148 31746 28fc64a2d3e3059eed1144580da21244 ""
-  "../output/trial_level_model_comparison/ncap10_comparison.pdf" 1783358223.54444 20000 aaaaf9f64c20cdbbf908b6cf028bc3a2 ""
-  "../output/trial_level_model_comparison/pexact_decomposition.pdf" 1783417214.43306 19492 7aeb93912091291502a8f12e957c7600 ""
-  "../output/trial_level_model_comparison/recovery_winner.pdf" 1783359523.3913 68692 f8a83243bdfe7e3246cdda830682d3a1 ""
-  "../output/trial_level_model_comparison/rt_domain.pdf" 1783360371.90901 21418 0e9c2bafb32d14798486b8bc845b5f32 ""
-  "../output/trial_level_model_comparison/weber_fraction.pdf" 1783361363.95222 18776 192b2449aef6b0e857bed98e8cfa3e83 ""
+["pdflatex"] 1783661235.36417 "supplementary_material.tex" "supplementary_material.pdf" "supplementary_material" 1783661235.79375 0
+  "../output/decarli_fit/decarli_dd_summary.pdf" 1783572508.83557 31838 b8a32c1161f8747f94d865995d1a499e ""
+  "../output/trial_level_model_comparison/ncap10_comparison.pdf" 1783533916.81555 20021 a2022323af0a8993e190765f1d63fe59 ""
+  "../output/trial_level_model_comparison/pexact_decomposition.pdf" 1783528208.13636 19483 a83eb1a61454b6dda3b0396f56e4754f ""
+  "../output/trial_level_model_comparison/recovery_winner.pdf" 1783551786.17327 46784 a5d9122955e7791680d2964c83468295 ""
+  "../output/trial_level_model_comparison/rt_domain.pdf" 1783528324.38362 22102 c68f2acdbf0897209f9952ad7556520c ""
+  "../output/trial_level_model_comparison/weber_fraction.pdf" 1783572506.9057 18756 47b708d969a9a02ce3aabf1f553cfdaa ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/courier/pcrr7t.tfm" 1136768653 960 379cc0019370a9e0208a0a3f949f847a ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/courier/pcrr8r.tfm" 1136768653 1292 bd42be2f344128bff6d35d98474adfe3 ""
@@ -169,13 +169,13 @@
   "/home/eudald/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1783413055 350349 1b8175931eaf295295318c82f7243e5b ""
   "/home/eudald/.TinyTeX/texmf-var/web2c/pdftex/pdflatex.fmt" 1783413194 2250895 39947f911b05e4587ca272e3002a957d ""
   "/home/eudald/.TinyTeX/texmf.cnf" 1764231884.31392 673 00b2d43d146d9f37d3c51b45f06b782c ""
-  "main.aux" 1783424034.98963 13337 d8dd401681c1e007e63ce47e82bcb39c ""
-  "main.tex" 1783437059.46039 32218 63b73f28bde1d81b56d8a6668859c4ac ""
+  "main.aux" 1783574481.66258 14844 8f1a0a077c38717c02af6670ffde3d48 ""
+  "main.tex" 1783574475.12959 35016 3fbcb4299b5be24f5f6b5a33994c6d3a ""
   "sagej.cls" 1775628020.28977 15958 5fa98adc3dbacfa813e0251e7c0042fe ""
-  "supplementary_material.aux" 1783437881.39162 14286 db6443b52ac079582e79ccdd0c676ecc "pdflatex"
-  "supplementary_material.bbl" 1783422950.81986 2056 f64f161a798081a56f9b55b7f0fbc7e5 "bibtex supplementary_material"
-  "supplementary_material.out" 1783437881.39257 1715 24c7f1862ad40ca174f32954bdcccb52 "pdflatex"
-  "supplementary_material.tex" 1783437870.38482 26739 5123b5f68eff47df7834dc489c5f6955 ""
+  "supplementary_material.aux" 1783661235.71255 15551 d29ba98cc1a6b72f60871093418c79e9 "pdflatex"
+  "supplementary_material.bbl" 1783661235.35956 2056 f64f161a798081a56f9b55b7f0fbc7e5 "bibtex supplementary_material"
+  "supplementary_material.out" 1783661235.71355 1715 24c7f1862ad40ca174f32954bdcccb52 "pdflatex"
+  "supplementary_material.tex" 1783661216.8186 26608 b56ca640aab9de86e638b22eba56344b ""
   (generated)
   "supplementary_material.aux"
   "supplementary_material.log"

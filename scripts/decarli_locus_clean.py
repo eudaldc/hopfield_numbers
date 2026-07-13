@@ -48,9 +48,9 @@ SIGMAC_OFF = 0.003        # well-width "off" (σ_well << 1 across n=1..7)
 NG = 200                  # grid resolution for the exhaustive 1-D search
 
 
-def acc_curve(sigma_c, s0, lambda0, beta, lapse, quad) -> np.ndarray:
-    theta = {"sigma_c": sigma_c, "s0": s0, "lambda0": lambda0, "beta": beta}
-    grid = T.compute_grid(SPEC := T.MODEL_BY_KEY["gaussian_freebeta_attractor"],
+def acc_curve(sigma_c, s0, lambda0, pow_, lapse, quad) -> np.ndarray:
+    theta = {"sigma_c": sigma_c, "s0": s0, "lambda0": lambda0, "pow": pow_}
+    grid = T.compute_grid(SPEC := T.MODEL_BY_KEY[T.WINNER_KEY],
                           theta, quad, n_values=NVALS.astype(float))
     p = np.array([grid["p_resp"][i, int(n) - 1] for i, n in enumerate(NVALS)])
     return (1.0 - lapse) * p + lapse / T.N_WELLS
@@ -62,9 +62,9 @@ def subj_acc(df, grp, s) -> np.ndarray:
 
 
 def pooled_common(df, quad) -> dict:
-    """Pooled accuracy fit → shared beta, lambda0, lapse (+ reference sigma_c, s0)."""
+    """Pooled accuracy fit → shared pow, lambda0, lapse (+ reference sigma_c, s0)."""
     obs = np.array([float(df[df.Numerosity == n].Accuracy.mean()) for n in NVALS])
-    bounds = [(0.001, 0.5), (1e-6, 0.1), (0.1, 4.0), (0.1, 6.0), (1e-4, 0.5)]
+    bounds = [(0.001, 0.5), (1e-6, 0.1), (0.1, 4.0), (0.1, 4.0), (1e-4, 0.5)]
 
     def neg(v):
         try:
@@ -79,7 +79,7 @@ def pooled_common(df, quad) -> dict:
     pol = minimize(neg, de.x, method="Nelder-Mead", bounds=bounds,
                    options={"maxiter": 600, "xatol": 1e-7, "fatol": 1e-9})
     v = pol.x if pol.fun <= de.fun else de.x
-    return {"sigma_c": v[0], "s0": v[1], "lambda0": v[2], "beta": v[3], "lapse": v[4]}
+    return {"sigma_c": v[0], "s0": v[1], "lambda0": v[2], "pow": v[3], "lapse": v[4]}
 
 
 def main() -> None:
@@ -87,16 +87,16 @@ def main() -> None:
     quad = T.make_quadrature(301, kind="grid")
     df = pd.read_csv(DATA)
     common = pooled_common(df, quad)
-    print(f"Pooled common: beta={common['beta']:.2f} lambda0={common['lambda0']:.2f} "
+    print(f"Pooled common: pow={common['pow']:.2f} lambda0={common['lambda0']:.2f} "
           f"lapse={common['lapse']:.3f}", flush=True)
 
     # Precompute predicted accuracy curves along each 1-D grid (landscape common
     # except the one varying param + common lapse), then match each subject by SSE.
     sc_grid = np.geomspace(0.005, 0.5, NG)                  # resolution model
-    a_curves = np.array([acc_curve(sc, S0_FLOOR, common["lambda0"], common["beta"],
+    a_curves = np.array([acc_curve(sc, S0_FLOOR, common["lambda0"], common["pow"],
                                    common["lapse"], quad) for sc in sc_grid])
     s0_grid = np.geomspace(1e-4, 0.5, NG)                   # noise model
-    b_curves = np.array([acc_curve(SIGMAC_OFF, s0, common["lambda0"], common["beta"],
+    b_curves = np.array([acc_curve(SIGMAC_OFF, s0, common["lambda0"], common["pow"],
                                    common["lapse"], quad) for s0 in s0_grid])
 
     rows = []
@@ -108,7 +108,7 @@ def main() -> None:
             sse_b = np.mean((b_curves - obs[None, :]) ** 2, axis=1)
             ib = int(np.argmin(sse_b))
             theta_a = {"sigma_c": sc_grid[ia], "s0": S0_FLOOR,
-                       "lambda0": common["lambda0"], "beta": common["beta"]}
+                       "lambda0": common["lambda0"], "pow": common["pow"]}
             rows.append({
                 "group": grp, "subject": int(s),
                 "sigma_c_A": sc_grid[ia], "n_crit_A": ncrit(theta_a, 1.0),

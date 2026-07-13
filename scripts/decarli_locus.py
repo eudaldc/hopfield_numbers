@@ -47,10 +47,10 @@ def rank_biserial(a: np.ndarray, b: np.ndarray) -> float:
 
 
 def fit_noise_subject(acc, rt, common, quad, x0) -> dict:
-    """Free s0 (noise); hold sigma_c, beta, lambda0 at common values."""
+    """Free s0 (noise); hold sigma_c, pow, lambda0 at common values."""
     def negll(v):
         full = np.array([common["sigma_c"], v[0], common["lambda0"],
-                         common["beta"], v[1], v[2], v[3]])
+                         common["pow"], v[1], v[2], v[3]])
         return negll_full(full, acc, rt, quad)
     pol = minimize(negll, x0, method="Nelder-Mead", bounds=MIRROR_BOUNDS,
                    options={"maxiter": 600, "xatol": 1e-6, "fatol": 1e-7})
@@ -65,9 +65,9 @@ def main() -> None:
     df = pd.read_csv(DATA)
     pooled = pooled_fit(df, quad)
     common = {"sigma_c": pooled[0], "s0": pooled[1], "lambda0": pooled[2],
-              "beta": pooled[3]}
+              "pow": pooled[3]}
     x0 = np.array([pooled[1], pooled[4], pooled[5], pooled[6]])
-    print(f"Common well width: sigma_c={common['sigma_c']:.4f} beta={common['beta']:.2f} "
+    print(f"Common well width: sigma_c={common['sigma_c']:.4f} pow={common['pow']:.2f} "
           f"(s0 per subject; lambda0={common['lambda0']:.2f})", flush=True)
 
     rows = []

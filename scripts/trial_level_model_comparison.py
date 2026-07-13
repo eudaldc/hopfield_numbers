@@ -392,12 +392,30 @@ MODEL_SPECS: tuple[ModelSpec, ...] = (
         param_names=("sigma_c", "s0", "lambda0", "beta"),
         bounds=((0.001, 0.5), (1e-6, 0.1), (0.1, 4.0), (0.1, 6.0)),
     ),
+    # ── Winner of the trial-level comparison: power-law-width Gaussian
+    #    attractor (sigma_n = sigma_c * n^p, free exponent) + its static twin.
+    ModelSpec(
+        key="gaussian_pow_attractor",
+        label="Power-law wells + clean-up (sigma_n = c n^p)",
+        family="gaussian_pow",
+        cleanup=True,
+        param_names=("sigma_c", "s0", "lambda0", "pow"),
+        bounds=((1e-4, 1.0), (1e-6, 0.1), (0.1, 4.0), (0.1, 4.0)),
+    ),
+    ModelSpec(
+        key="gaussian_pow_readout",
+        label="Power-law wells, static",
+        family="gaussian_pow",
+        cleanup=False,
+        param_names=("sigma_c", "s0", "lambda0", "pow"),
+        bounds=((1e-4, 1.0), (1e-6, 0.1), (0.1, 4.0), (0.1, 4.0)),
+    ),
 )
 
 MODEL_BY_KEY: dict[str, ModelSpec] = {m.key: m for m in MODEL_SPECS}
 
 # The winning model of the trial-level comparison (response + dynamics RT).
-WINNER_KEY = "gaussian_freebeta_attractor"
+WINNER_KEY = "gaussian_pow_attractor"
 
 # The clean 2x2 (well family x clean-up) used for the cleanup/well-family split.
 GRID_2X2: tuple[str, ...] = (

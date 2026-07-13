@@ -9,3 +9,10 @@ discriminability
 Hopfield
 numerosities
 Hopfield
+intraparietal
+nonsymbolic
+parietally
+acalculias
+amodal
+softmax
+distinguishability

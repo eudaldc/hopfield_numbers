@@ -33,13 +33,13 @@ import scripts.trial_level_model_comparison as T
 from scripts.trial_level_weber_fraction import ncrit
 from figures.plot_style import C_ATTR, C_STATIC, apply_style, panel_label
 
-WIN = T.MODEL_BY_KEY["gaussian_freebeta_attractor"]
+WIN = T.MODEL_BY_KEY[T.WINNER_KEY]
 OUT_FIG = T.OUT_DIR / "pexact_decomposition.png"
 
 
 def main() -> None:
     apply_style(2.0)   # rendered at \columnwidth, 12 in canvas
-    th = pd.read_csv(T.OUT_DIR / "winner_theta.csv").set_index("duration_ms")
+    th = pd.read_csv(T.OUT_DIR / "pow_theta.csv").set_index("duration_ms")
     quad = T.make_quadrature(1601, kind="grid")
     n = T.N_SHOWN.astype(float)
 

@@ -41,15 +41,15 @@ import scripts.trial_level_model_comparison as T
 from scripts.trial_level_model_comparison import DurationData
 from figures.plot_style import C_ATTR, apply_style
 
-WINNER = "gaussian_freebeta_attractor"
+WINNER = T.WINNER_KEY
 METRICS = ("hybrid", "entropy")
 OUT_CSV = T.OUT_DIR / "rt_domain.csv"
 OUT_FIG = T.OUT_DIR / "rt_domain.png"
 
 
 def sigma_n(theta: dict, n: np.ndarray) -> np.ndarray:
-    freq = np.log10(1.0 + 1.0 / np.asarray(n, float))
-    return np.power(theta["sigma_c"] / freq, theta["beta"])
+    # power-law wells: sigma_n = sigma_c * n^p
+    return theta["sigma_c"] * np.power(np.asarray(n, float), theta["pow"])
 
 
 def ncrit_crossing(theta: dict, level: float = 1.0) -> float:
@@ -94,7 +94,7 @@ def main() -> None:
     trial = T.load_trials()
     r_max = int(trial["n_guess"].max())
     data_full = T.build_duration_data(trial, r_max)
-    wt = pd.read_csv(T.OUT_DIR / "winner_theta.csv").set_index("duration_ms")
+    wt = pd.read_csv(T.OUT_DIR / "pow_theta.csv").set_index("duration_ms")
     n = T.N_SHOWN.astype(float)
 
     rows = []
