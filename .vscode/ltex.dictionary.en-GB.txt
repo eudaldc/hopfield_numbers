@@ -8,7 +8,6 @@ discriminable
 discriminability
 Hopfield
 numerosities
-Hopfield
 intraparietal
 nonsymbolic
 parietally
@@ -17,3 +16,8 @@ amodal
 softmax
 distinguishability
 denoising
+Denoising
+dyscalculic
+judgements
+unlabelled
+behavior

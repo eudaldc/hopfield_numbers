@@ -1,0 +1,6 @@
+quantity,value,note
+model,online-driven attractor,same landscape/readout/lapse/sensory-channel as the power-law attractor; evidence drives the attractor online during exposure via a soft tether (strength beta); nests the completed-estimate model as beta->inf
+beta_range_best,500-5000,flat log-likelihood plateau (beta weakly identified)
+dlogL_shared_grid,"-3.9,+5.7,-3.0","at beta=500,5000,50000 (m=8192); within MC noise ~+-7"
+dlogL_perdur_grid,"+6.8,+3.4,-34.7","at beta=500,5000,50000 (m=8192); last is early-clip artefact"
+dAIC_vs_winner,2,"nests M0 so dlogL>=0 at the true optimum; online gain within Monte-Carlo error, so dAIC ~ +2 (the extra, weakly-identified dynamical parameter). Reported conservatively as +2 in Fig 2 panels a,b."

@@ -115,7 +115,7 @@ def fit_subject(acc, rt, common: dict, quad, x0) -> dict:
     theta = {"sigma_c": v[0], "s0": common["s0"], "lambda0": common["lambda0"],
              "pow": common["pow"]}
     return {"sigma_c": v[0], "lapse": v[1], "t0": v[2], "rt_scale": v[3],
-            "n_width_sigma1": n_width(theta, 1.0), "neg_ll": float(pol.fun)}
+            "n_width": n_width(theta, 1.0), "neg_ll": float(pol.fun)}
 
 
 def main() -> None:
@@ -144,8 +144,8 @@ def main() -> None:
     sub = pd.DataFrame(rows)
     sub.to_csv(OUT_DIR / "gaussian_freebeta_subjects.csv", index=False)
 
-    dd = sub[sub.group == "DD"]["n_width_sigma1"].to_numpy()
-    ct = sub[sub.group == "contr"]["n_width_sigma1"].to_numpy()
+    dd = sub[sub.group == "DD"]["n_width"].to_numpy()
+    ct = sub[sub.group == "contr"]["n_width"].to_numpy()
     dd, ct = dd[np.isfinite(dd)], ct[np.isfinite(ct)]
     U, p = mannwhitneyu(dd, ct, alternative="two-sided")
     print("\n=== per-subject n_width(σ=1): DD vs control ===")

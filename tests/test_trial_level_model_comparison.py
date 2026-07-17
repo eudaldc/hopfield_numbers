@@ -107,6 +107,13 @@ def test_winner_is_registered_with_dynamics() -> None:
     assert spec.has_dynamics  # so steps/hybrid RT metrics apply
 
 
+def test_shared_winner_theta_has_one_landscape() -> None:
+    theta = T.load_shared_theta()
+    assert tuple(theta.index) == T.DURATIONS
+    assert theta["sigma_c"].nunique() == 1
+    assert theta["pow"].nunique() == 1
+
+
 def test_lapse_keeps_all_probabilities_positive() -> None:
     grid = T.compute_grid(T.MODEL_BY_KEY["hopfield_poisson"], THETA_POISSON, QUAD)
     r_max = 99

@@ -56,7 +56,7 @@ def main() -> None:
     trial = trial.assign(fold=CV.make_folds(trial))
 
     # warm starts
-    pow_theta = pd.read_csv(ROOT / "output/trial_level_model_comparison/pow_theta.csv")
+    pow_theta = pd.read_csv(ROOT / "legacy/trial_level_per_duration/output/pow_theta.csv")
     warm_perdur = {int(r.duration_ms): np.array([r.sigma_c, r.s0, r.lambda0,
                                                  r["pow"], r.lapse])
                    for _, r in pow_theta.iterrows()}

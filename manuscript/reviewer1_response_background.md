@@ -31,7 +31,7 @@ We have made this explicit in the Methods (the descent moves the state toward a 
 
 The reviewer is correct that modern Hopfield networks are celebrated in machine learning for storing *many high-dimensional* patterns with near-exponential capacity, and that we do not have that: we have on the order of fifteen scalar patterns on a line. We do **not** claim the capacity result, and we have removed any wording that could imply we do (the word "Hopfield" is no longer in the title).
 
-What we use is a different property of the same formalism: associative retrieval over a pattern set that is **metrically ordered**. Generic modern Hopfield networks store arbitrary, roughly orthogonal patterns; ours store the integers in their natural order, with widths that grow with magnitude. This ordering is not incidental — it is the source of the paper's central result. Because neighbouring patterns overlap, the softmax competition among them is sharp for small, well-separated numbers and broad for large, overlapping ones. We summarize the width law with `n_width` and determine the last consecutive independent basin with `n_topo`. A high-dimensional, orthogonal-pattern Hopfield network has no such structure and makes no such prediction. So the associative retrieval earns its place through the ordered-pattern regime, which is exactly the regime a magnitude line lives in, rather than through the capacity regime the reviewer rightly notes we do not occupy.
+What we use is a different property of the same formalism: associative retrieval over a pattern set that is **metrically ordered**. Generic modern Hopfield networks store arbitrary, roughly orthogonal patterns; ours store the integers in their natural order, with widths that grow with magnitude. This ordering is not incidental — it is the source of the paper's central result. Because neighbouring patterns overlap, the softmax competition among them is sharp for small, well-separated numbers and broad for large, overlapping ones. We summarize the fitted width law with `n_width`. A high-dimensional, orthogonal-pattern Hopfield network has no such structure and makes no such prediction. So the associative retrieval earns its place through the ordered-pattern regime, which is exactly the regime a magnitude line lives in, rather than through the capacity regime the reviewer rightly notes we do not occupy.
 
 ### 3. "The dynamics buy very little" — this was a consequence of the summary-curve analysis, which we have replaced
 
@@ -45,7 +45,7 @@ The associative retrieval is therefore not decorative in the operational sense e
 ### Summary of the position
 
 - The model is, exactly and not by analogy, a modern Hopfield network: the energy is the log-sum-exp over the stored integers and the clean-up is the softmax-weighted retrieval update.
-- We concede the reviewer's dimensionality point and claim none of the high-dimensional capacity results; what we use is associative retrieval over an **ordered** pattern space, whose fitted width law and basin topology are summarized by `n_width` and `n_topo`.
+- We concede the reviewer's dimensionality point and claim none of the high-dimensional capacity results; what we use is associative retrieval over an **ordered** pattern space, whose fitted width law is summarized by `n_width`.
 - The claim that the dynamics buy little came from the summary-curve analysis the reviewer asked us to replace; at the trial level the dynamics improve the fit by ΔAIC ≈ 1256 at equal parameters and additionally carry the response times.
 
 We have kept "Hopfield" out of the title and stated the mechanism where it belongs (Methods and Discussion), so the manuscript makes the mechanistic claim precisely without leaning on the capacity analogy.
@@ -68,7 +68,7 @@ We agree with much of this comment, and the revision restates the contribution �
 
 ### 1. The "three regimes" half is resolved: the density claim has been removed entirely
 
-The revised manuscript no longer claims a density regime. The density section and the comparison with Anobile et al. (2014) are gone (the reviewer's minor comment on that comparison being partly numerological contributed to this decision). The revision reports two quantities with different meanings. `n_width` is the continuous width-law proxy defined by σ_n=1; it is not a merger or exact-range boundary. `n_topo` is the last consecutive integer retaining an independent basin. The response-time plateau occurs in a similar numerical region to `n_width`, but this alignment is descriptive. The paper no longer claims anything about density.
+The revised manuscript no longer claims a density regime. The density section and the comparison with Anobile et al. (2014) are gone (the reviewer's minor comment on that comparison being partly numerological contributed to this decision). The revision reports the continuous width-law proxy `n_width`, defined by σ_n=1; it is not a merger or exact-range boundary. The response-time plateau occurs in a similar numerical region to `n_width`, but this alignment is descriptive. The paper no longer claims anything about density.
 
 ### 2. What we concede on subitizing
 
@@ -76,7 +76,7 @@ The reviewer is right that the model has no spatial component, no object represe
 
 ### 3. But "cannot capture even in principle" reads the model at the wrong level
 
-The model is a model of the **central number representation and its readout**, not of the visual front end or attention allocation. All four properties the reviewer lists live upstream of that stage, in the evidence channel σ(n) that we deliberately keep neutral (see also our response to point 5). Any manipulation that degrades input quality maps onto larger effective sensory noise. The exposure-duration manipulation shows that the fitted width profile and basin topology can change separately: `n_width` rises from 4.6 to 10, while `n_topo` is computed directly from the potential. Coupling the wells to an image-computable front end (Stoianov & Zorzi, 2012; Testolin et al., 2020) is the stated route to making configurational effects expressible.
+The model is a model of the **central number representation and its readout**, not of the visual front end or attention allocation. All four properties the reviewer lists live upstream of that stage, in the evidence channel σ(n) that we deliberately keep neutral (see also our response to point 5). Any manipulation that degrades input quality maps onto larger effective sensory noise. The exposure-duration manipulation shows that the fitted width profile changes systematically, with `n_width` rising from 4.6 to 10. Coupling the wells to an image-computable front end (Stoianov & Zorzi, 2012; Testolin et al., 2020) is the stated route to making configurational effects expressible.
 
 We would also note, respectfully, that the reviewer's property list is internally in tension: **preattentive processing** and **attentional-load sensitivity** cannot both be well-documented properties of subitizing, since the second contradicts the first. The classical view held subitizing to be preattentive (Trick & Pylyshyn, 1994), but the dual-task and attentional-manipulation literature has since shown that subitizing depends on attention — if anything more strongly than estimation does (Burr, Turatto & Anobile, 2010; Vetter, Butterworth & Bahrami, 2008; Olivers & Watson, 2008). The property that survives this literature, graded attentional dependence, is precisely the one a noise-channel account accommodates naturally, and it fits a resolvable-well mechanism better than it fits a dedicated preattentive individuation module.
 
@@ -84,7 +84,7 @@ We would also note, respectfully, that the reviewer's property list is internall
 
 If the model's account of small-number exactness amounted to "the wells at 1–3 are narrow and well separated, so retrieval is reliable," we would agree that this redescribes the data. The revised, trial-level analysis shows that the well structure does more than redescribe:
 
-- It derives `n_width`, a continuous width-based index that grows with exposure, and `n_topo`, the last consecutive integer retaining an independent basin.
+- It derives `n_width`, a continuous width-based index that grows with exposure.
 - The empirical RT plateau occurs in a similar numerical region to `n_width`, although the proxy does not define that behavioural boundary.
 - The clean-up dynamics are a zero-parameter component that improves the trial-level response fit by ΔAIC ≈ 1256 over the identical static landscape, and the convergence time of those dynamics carries the response-time channel (see point 3 response).
 - The **same landscape** reproduces the empirical Weber fraction across the estimation range, so the approximate regime is not a separate stipulation.
@@ -98,14 +98,14 @@ The reviewer is right that the empirical transition is sharper than the model's.
 
 ### 6. The restatement — what the revised paper now claims
 
-The reviewer asks that the contribution be restated as "a model of the estimation regime with a falsifiable density-regime prediction, and an open question about subitizing." We have restated the contribution in two ways. First, the density prediction is gone (point 1 above). Second, the model distinguishes the continuous width-law proxy `n_width` from the topological index `n_topo`. Beyond `n_topo`, at least one consecutive integer lacks an independent basin; the readout then becomes progressively coarser. What remains open is the process-level phenomenology of subitizing: attention, configuration, and the residual sharpness at n=2–4.
+The reviewer asks that the contribution be restated as "a model of the estimation regime with a falsifiable density-regime prediction, and an open question about subitizing." We have restated the contribution in two ways. First, the density prediction is gone (point 1 above). Second, the model describes a progressive loss of exactness as the fitted wells broaden and overlap. What remains open is the process-level phenomenology of subitizing: attention, configuration, and the residual sharpness at n=2–4.
 
 ### Summary of the position
 
-- The density regime is out of the paper; `n_width` summarizes the fitted width law and `n_topo` identifies the last consecutive independent basin.
+- The density regime is out of the paper; `n_width` summarizes the fitted width law.
 - We concede the literal point: no spatial, object, or attentional machinery, by construction; configurational and load effects are not expressible in the model's input format.
 - Those properties live upstream, in the deliberately neutral evidence channel; the model accommodates them as input-quality effects (and the load literature — graded shrinkage of the exact range — matches that account), with an image-computable front end as the stated extension.
-- The "description not mechanism" charge is answered by the trial-level results: derived and mobile boundary, RT plateau coincidence, equal-parameter clean-up gain, Weber-fraction match, and the dyscalculia localisation.
+- The "description not mechanism" charge is answered by the trial-level results: a derived width profile that changes with exposure, RT plateau coincidence, equal-parameter clean-up gain, Weber-fraction match, and the dyscalculia localisation.
 - The under-predicted sharpness at n = 2–4 is conceded, quantified, and attributed in the Discussion to a possible parallel individuation process for the smallest sets.
 
 ---

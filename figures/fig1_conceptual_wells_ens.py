@@ -13,7 +13,8 @@ parameters:
       with high ridges between the narrow small-n wells, where a flat readout
       pushes mass onto the broad distant wells) and AFTER clean-up (black: the
       attractor resolves those ambiguous positions, quantising the line into
-      basins; the residual entropy staircase is what drives RT). For this
+      basins; the residual entropy staircase characterises readout ambiguity).
+      For this
       illustration the lattice is extended to n = 30 so that the finite-lattice
       truncation does not bend the curve down near n = 15 (fits use n <= 19
       with the contamination channel absorbing larger responses).
@@ -42,8 +43,8 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from figures.plot_style import C_STATIC, PALETTE, apply_style, panel_label  # noqa: E402
+import scripts.trial_level_model_comparison as T  # noqa: E402
 
-THETA_CSV = ROOT / "output" / "trial_level_model_comparison" / "pow_theta.csv"
 OUT_STEM = ROOT / "figures" / "conceptual_attractor_wells_ens"
 
 # ── Project house style ───────────────────────────────────────────────
@@ -55,7 +56,7 @@ N_LATTICE_MODEL = 19    # panel a: the fitted model's lattice (stimuli 1..15 + p
 N_LATTICE_ILLUS = 30    # panel b: extended lattice, avoids edge truncation in H
 SHOW_DURATION = 160
 
-theta = pd.read_csv(THETA_CSV).set_index("duration_ms")
+theta = T.load_shared_theta()
 SIGMA_C = float(theta.loc[SHOW_DURATION, "sigma_c"])
 POW = float(theta.loc[SHOW_DURATION, "pow"])
 
@@ -104,10 +105,10 @@ def entropy_of(xv: np.ndarray) -> np.ndarray:
     return -np.sum(p * np.log(p + 1e-12), axis=1)
 
 
-def cleanup(y0: np.ndarray, eta: float = 1.0, max_steps: int = 100,
+def cleanup(y0: np.ndarray, eta: float = 1.0, max_steps: int = 120,
             tol: float = 1e-4) -> tuple[np.ndarray, np.ndarray]:
     """Clamped gradient descent on the winner landscape, with the same step
-    clamp, tolerance, oscillation guard and 100-step budget as the fitted
+    clamp, tolerance, oscillation guard and 120-step budget as the fitted
     module (T._cleanup) — the figure shows what the model actually does.
     Returns (x_star, n_steps)."""
     xv = y0.copy()
@@ -134,10 +135,9 @@ def cleanup(y0: np.ndarray, eta: float = 1.0, max_steps: int = 100,
     return xv, n_steps
 
 
-# Behaviourally relevant curves: EXPECTED entropy over the sensory channel
-# y0 ~ N(nu, sd(nu)) (160 ms fitted sensory parameters) — the deterministic
-# basin map alone would be a step function (basin boundaries are razor-sharp),
-# but what drives behaviour/RT is E[H], averaged over the sensory noise.
+# Expected entropy over the sensory channel y0 ~ N(nu, sd(nu)) at the fitted
+# 160 ms sensory parameters. The deterministic basin map alone would be a step
+# function, whereas sensory averaging gives the smooth ambiguity curve shown.
 S00 = 0.05
 S0_D = float(theta.loc[SHOW_DURATION, "s0"])
 LAMBDA0_D = float(theta.loc[SHOW_DURATION, "lambda0"])
@@ -172,16 +172,12 @@ ET_at_int = expected_of(n_int, steps_map)    # = the model's E[T] per n
 mu_star, _ = cleanup(wells_b[:N_DISPLAY].copy())
 H_single = entropy_of(mu_star)               # single-trial insets
 
-# Hybrid RT channel: RT = t0 + alpha * E[T] + beta_H * E[H]  (fitted, 160 ms)
-rt_theta = pd.read_csv(ROOT / "output" / "trial_level_model_comparison" /
-                       "pow_winner_rt.csv")
-rt_row = rt_theta[(rt_theta.model_key == "gaussian_pow_attractor") &
-                  (rt_theta.metric == "hybrid") &
-                  (rt_theta.duration_ms == SHOW_DURATION)].iloc[0]
+# Selected RT channel: RT = t0 + tau * E[T].
+rt_theta = pd.read_csv(T.OUT_DIR / "rt_joint.csv")
+rt_row = rt_theta[rt_theta.metric == "steps"].iloc[0]
 RT_T0 = 1.30
-RT_ALPHA = float(rt_row["alpha"])
-RT_BETA = float(rt_row["beta"])
-RT_at_int = RT_T0 + RT_ALPHA * ET_at_int + RT_BETA * H_at_int
+RT_TAU = float(rt_row["scale"])
+RT_at_int = RT_T0 + RT_TAU * ET_at_int
 
 # Magma is the paper's one continuous scale (fig. 2c durations, SM recovery);
 # here it encodes number frequency (higher for small n), which motivates the
@@ -339,7 +335,7 @@ for n_pos, lbl, bounds in zip(inset_ns, inset_labels, inset_bounds):
 LABEL_ANCHOR = ((10.0 - XLIM[0]) / (XLIM[1] - XLIM[0]), 0.06)   # above the "10" tick
 ARROW_COLOR = "0.35"
 label_text = ax_ent.text(
-    *LABEL_ANCHOR, "Posterior distribution\nover input $y_0$",
+    *LABEL_ANCHOR, "Readout distribution\nover integers",
     transform=ax_ent.transAxes, fontsize=9.5 * FONT_SCALE,
     ha="center", va="bottom", color=ARROW_COLOR, zorder=9,
 )
@@ -378,30 +374,28 @@ ax_ent.set_xticklabels([str(n) for n in integers_display])
 ax_ent.set_yticks([])
 
 # ──────────────────────────────────────────────────────────────────────
-#  Panel c — RT as the sum of the two mechanism signals (fitted, 160 ms)
+#  Panel c — RT from fitted convergence time (160 ms)
 # ──────────────────────────────────────────────────────────────────────
 band_t0 = np.full_like(n_int, RT_T0)
-band_steps = RT_ALPHA * ET_at_int
-band_H = RT_BETA * H_at_int
-ax_rt.stackplot(n_int, band_t0, band_steps, band_H,
-                colors=["0.92", C_STATIC, "#C9B8D8"], zorder=1)  # tint of PALETTE[4]
-RT_line = band_t0 + band_steps + band_H
+band_steps = RT_TAU * ET_at_int
+ax_rt.stackplot(n_int, band_t0, band_steps,
+                colors=["0.92", C_STATIC], zorder=1)
+RT_line = band_t0 + band_steps
 ax_rt.plot(n_int, RT_line, color="0.10", lw=2.6, zorder=4)
 for i in range(N_DISPLAY):
     ax_rt.plot(wells_a[i], RT_at_int[i], "o", color=well_color(i), ms=10,
                zorder=6, markeredgecolor="white", markeredgewidth=1.5)
 handles = [
     mpl.patches.Patch(color="0.92", label="Basal latency  $t_0$"),
-    mpl.patches.Patch(color=C_STATIC, label=r"Attractor time  $\alpha\,E[T]$"),
-    mpl.patches.Patch(color="#C9B8D8", label=r"Readout uncertainty  $\beta_H\,E[H]$"),
+    mpl.patches.Patch(color=C_STATIC, label=r"Attractor time  $\tau\,E[T]$"),
 ]
 ax_rt.legend(handles=handles, loc="upper left", framealpha=0.95, edgecolor="0.75")
-ax_rt.text(0.90, 0.20, r"$\mathrm{RT} = t_0 + \alpha\,E[T] + \beta_H\,E[H]$",
+ax_rt.text(0.90, 0.20, r"$\mathrm{RT} = t_0 + \tau\,E[T]$",
            transform=ax_rt.transAxes, ha="right", va="bottom",
            fontsize=10 * FONT_SCALE, color="0.15")
-ax_rt.text(1.7, RT_at_int[0] + 0.22, "Fast, exact", fontsize=9.5 * FONT_SCALE,
+ax_rt.text(1.35, RT_at_int[0] + 0.38, "Fast, accurate", fontsize=9.5 * FONT_SCALE,
            color=PALETTE[2], fontweight="bold", ha="left")
-ax_rt.text(14.9, RT_line.max() - 0.42, "Slow, approximate",
+ax_rt.text(14.55, RT_line.max() - 0.50, "Slow, approximate",
            fontsize=9.5 * FONT_SCALE, color=PALETTE[3], fontweight="bold", ha="right")
 
 ax_rt.set_xlim(*XLIM)

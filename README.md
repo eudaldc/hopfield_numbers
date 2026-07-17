@@ -46,34 +46,20 @@ tests/         pytest suite
 
 | Script | Purpose |
 |--------|---------|
-| `scripts/fit_piantadosi.py` | Single-condition fit to Piantadosi estimation data (wandb run) |
-| `scripts/fit_piantadosi_durations.py` | Sweep all exposure durations (40–640 ms); optional bootstrap CIs |
-| `scripts/fit_decarli.py` | Separate fits for DD vs controls (accuracy + RT, no trial-level guesses) |
-| `scripts/model_comparison.py` | Summary-curve model comparison across durations (profile-Gaussian AIC/BIC) |
-| `scripts/trial_level_model_comparison.py` | Trial-level model comparison: deterministic multinomial response likelihood (grid quadrature) + RT and joint channels; registers the winning super-linear-width Gaussian attractor; `--smoke` / `--replot` |
-| `scripts/trial_level_well_width_followup.py` | Frees the Gaussian well-width exponent (β / p): shows the data want super-linear (∼n^1.5–2) widths, not √n |
-| `scripts/trial_level_freewidth_attractor.py` | Free-width wells + clean-up (the winning combination) |
-| `scripts/trial_level_poisson_freevar.py` | Equal-footing control: Poisson wells with a free variance exponent |
-| `scripts/trial_level_rt_exploration.py` | RT channel: convergence-time (steps/flow-time) vs entropy across landscapes |
-| `scripts/trial_level_winner_joint.py` | Coupled joint (response + dynamics RT) for the winning model |
-| `scripts/trial_level_subitizing_diagnostic.py` | Head-to-head of well forms on the subitizing band (n≤4) |
-| `scripts/trial_level_consolidate.py` | Master ladder + headline figures consolidated around the winner |
-| `scripts/trial_level_ncrit_rederivation.py` | Re-derives the continuous width index n_width (σ_n=1) for the winning landscape; the filename is retained for compatibility |
-| `scripts/trial_level_regime_change.py` | Isolates where the clean-up / discrete code stops contributing (exact→approximate) |
-| `scripts/trial_level_ncap_fit.py` | Small-range (n≤10) refit + n_width re-derivation |
-| `scripts/trial_level_fit_figure.py` | Winner two-stage fit vs data (main Fig. 2): mean guess / % exact / geometric-mean RT per duration (`winner_fit_summaries.png`) |
-| `scripts/trial_level_rt_figure.py` | Winner predicted RT (geometric mean) — entropy vs dynamics, R² vs published Fig. 2 (`winner_rt_fit.png`) |
-| `scripts/trial_level_rt_domain.py` | RT sensitivity analysis fitted in the window n < n_width (`rt_domain.png`) |
-| `scripts/trial_level_pexact_decomposition.py` | Why P(exact) wiggles: smooth landscape vs discrete cleanup-basin read-out (`pexact_decomposition.png`) |
+| `scripts/trial_level_model_comparison.py` | Shared trial-level likelihood and model definitions |
+| `scripts/trial_level_shared_landscape_ladder.py` | Joint response-model comparison with one landscape shared across exposure durations |
+| `scripts/trial_level_clean_up_budget.py` | Profile likelihood for the shared give-up budget \(G\) |
+| `scripts/trial_level_rt_joint.py` | Shared RT link on the response-fitted joint landscape |
+| `scripts/trial_level_cofit_figure.py` | Main fitted-response and RT figure from the joint model |
+| `scripts/trial_level_bivariate_id.py` | Hierarchical individual-differences analysis for landscape resolution and Weber noise |
+| `scripts/trial_level_pexact_decomposition.py` | Clean-up contribution to exact-response probability |
+| `scripts/trial_level_weber_fraction.py` | Effective Weber fraction implied by the joint fit |
 | `scripts/decarli_gaussian_freebeta.py` | Winner model applied to De Carli (SM5): group accuracy+RT fit + derived n_width/σ(n) |
 | `scripts/decarli_gaussian_freebeta_subjects.py` | Per-subject De Carli n_width distributions, DD vs control |
 | `scripts/decarli_locus.py` / `decarli_locus_clean.py` | Is the DD deficit resolution or sensory noise? (mirror fit + clean global test) |
 | `scripts/decarli_dd_summary_figure.py` | Consolidated DD-vs-control 4-panel argument (`decarli_dd_summary.png`) |
-| `scripts/density_transition.py` | Post-fit metrics and “transition to density” figure from duration fits |
-| `scripts/run_parameter_recovery.py` | Orchestrates recovery / profile / bootstrap identifiability analyses |
-| `scripts/plot_parameter_recovery.py` | Plots from recovery outputs |
-| `scripts/plot_decarli_param_boxfacets.py` | De Carli parameter panel figure |
-| `scripts/plots.py` | Shared plotting utilities where used by other entry points |
+
+The retired pipeline that fitted an independent landscape at each exposure duration is archived under `legacy/trial_level_per_duration/`.
 
 Run from the repository root (e.g. `python scripts/fit_piantadosi.py …` or `python -m scripts.density_transition` as documented in each file).
 

@@ -1,0 +1,7 @@
+{
+ "model": "pure_driven_jointbreakdown",
+ "duration_ms": 80,
+ "logL": -24231.276637143583,
+ "k": 6,
+ "AIC": 48474.553274287166
+}

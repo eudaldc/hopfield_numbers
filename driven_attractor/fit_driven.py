@@ -2,6 +2,7 @@
 
 Run from the repo root, e.g.:
     .venv/bin/python driven_attractor/fit_driven.py --model M2_tether --gamma 0
+    .venv/bin/python driven_attractor/fit_driven.py --model M2_tether_const --gamma 0
     .venv/bin/python driven_attractor/fit_driven.py --model M1_offset --gamma 1
     .venv/bin/python driven_attractor/fit_driven.py --model M2_tether --gamma 0 --free-delta
 

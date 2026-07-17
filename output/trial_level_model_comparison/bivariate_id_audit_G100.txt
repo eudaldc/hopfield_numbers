@@ -1,0 +1,23 @@
+Participant identity and N=100 reconciliation
+============================================
+Clustering unit: uniqueid (n = 366)
+pid in subset: n = 367 (max uniqueid/pid = 1, max pid/uniqueid = 2)
+
+Cheyette & Piantadosi (2020) reported four between-experiment arms (N=110 each, drop 10 highest-error → N=100 per condition). The open DURATION file pools three control arms (NONE / AREA / DENSITY) without that exclusion; exposure duration is within participants.
+
+Open DURATION uniqueids (all exposures): 379
+Analysis sample (both 320 and 640 ms): 366 uniqueids, 21194 trials
+Control arms:
+  AREA: 120
+  DENSITY: 120
+  NONE: 126
+
+Hierarchical fit summary
+------------------------
+cutoff  n_lo  n_hi  n_participants  n_trials_small  n_trials_large       rho    tau_n    tau_w  alpha_n_320  alpha_n_640  alpha_w_320  alpha_w_640  gamma_320  gamma_640  lapse_320  lapse_640  n_width_320  n_width_640  weber_320  weber_640   marg_loglik  marg_loglik_rho0     lr_rho    p_rho_neg  elapsed_s  eb_spearman  eb_pearson
+   7/8     7     8             362            9883           11303 -0.514754 0.246202 0.459952     2.311293     2.375938    -1.486645    -1.648909       1.08       1.04   0.074868   0.067106    10.087460    10.761104   0.226130   0.192260 -36592.521626     -36666.480260 147.917268 2.472783e-34  35.511212    -0.760882   -0.744380
+   8/9     8     9             362           11292            9894 -0.707947 0.255871 0.444306     2.349375     2.404691    -1.406001    -1.567652       1.08       1.04   0.074868   0.067106    10.479017    11.075007   0.245121   0.208534 -36470.771206     -36555.421793 169.301175 5.257372e-39  37.097484    -0.838831   -0.831123
+  9/10     9    10             362           12701            8485 -0.506515 0.324057 0.469931     2.202635     2.307446    -1.395729    -1.556154       1.08       1.04   0.074868   0.067106     9.048827    10.048729   0.247652   0.210946 -36517.683991     -36571.427494 107.487007 1.740903e-25  33.198712    -0.693584   -0.721080
+
+Fixed: width exponent p, sensory (s0, λ0), duration lapses from the group joint winner; Weber gain γ_d from pooled large-n MLE. Free: duration FE on log n_width and log w, RE SDs, correlation ρ. Staged fit: univariate hierarchical MLEs → 1-D ρ search → Nelder–Mead polish.
+Robust negative association across cutoffs: True

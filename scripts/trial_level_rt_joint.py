@@ -1,12 +1,9 @@
 """Joint RT fit: one response-time mapping shared across the five durations.
 
-The per-duration RT comparison (rt_exploration.csv) fits the RT link separately
-for every exposure. The parallel to the shared-landscape response fit is a single
-RT mapping: the scale coefficients that turn convergence time and readout entropy
-into an expected response time are shared across all five durations, on the
-winning landscape's per-duration grids, leaving only the residual scatter sigma_rt
-free per duration (the nuisance). This is the rightmost "joint" column of the RT
-heatmap: even with one mapping for every exposure, the dynamics-based link wins.
+The scale coefficients that turn convergence time and readout entropy into an
+expected response time are shared across all five durations. The response
+landscape is fixed at the shared-landscape fit; only the sensory channel, lapse,
+and residual RT scatter vary by duration.
 
     .venv/bin/python -m scripts.trial_level_rt_joint
 """
@@ -19,6 +16,7 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 from scipy.optimize import differential_evolution
+from tqdm.auto import tqdm
 
 _ROOT = Path(__file__).resolve().parent.parent
 if str(_ROOT) not in sys.path:
@@ -38,10 +36,10 @@ def main() -> None:
     trial = T.load_trials()
     r_max = int(trial["n_guess"].max())
     data = T.build_duration_data(trial, r_max)
-    theta_df = pd.read_csv(T.OUT_DIR / "pow_theta.csv").set_index("duration_ms")
+    theta_df = T.load_shared_theta()
     durs = list(T.DURATIONS)
 
-    # Per-duration landscape quantities on the winner's fitted theta.
+    # Duration-specific sensory quantities on the shared fitted landscape.
     per = {}
     for d in durs:
         th = {p: float(theta_df.loc[d, p]) for p in WINNER.param_names}
@@ -55,7 +53,7 @@ def main() -> None:
     jac = sum(float(np.sum(per[d]["logrt"])) for d in durs)
 
     rows = []
-    for metric in METRICS:
+    for metric in tqdm(METRICS, desc="Shared RT links", unit="metric"):
         bounds = T._rt_scale_bounds(metric)
 
         def summed_negll(scale: np.ndarray) -> float:
@@ -77,13 +75,21 @@ def main() -> None:
                                     popsize=15, tol=1e-7, seed=T.SEED, polish=True,
                                     updating="deferred", workers=1)
         scale = de.x
+        sigma_rt = {}
+        for d in durs:
+            link = T._rt_link(metric, scale, per[d]["eh"], per[d]["et"], per[d]["et_flow"])
+            mu = np.log(T.T0 + link)
+            resid = per[d]["logrt"] - mu[per[d]["idx"]]
+            sigma_rt[d] = float(np.sqrt(np.mean(resid * resid)))
         logl = -float(de.fun) - jac        # density of rt (sum of per-dur log-normals)
         k = len(bounds) + len(durs)         # shared scale(s) + one sigma_rt per duration
-        rows.append({
+        row = {
             "metric": metric, "logL": float(logl), "k": int(k),
             "AIC": float(2 * k - 2 * logl), "BIC": float(k * np.log(n_tot) - 2 * logl),
             "scale": ",".join(f"{v:.5f}" for v in scale),
-        })
+        }
+        row.update({f"sigma_rt_{d}": sigma_rt[d] for d in durs})
+        rows.append(row)
         print(f"  [{metric}] shared scale={np.round(scale, 5)} k={k} "
               f"AIC={2 * k - 2 * logl:.1f}", flush=True)
 

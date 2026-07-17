@@ -74,6 +74,7 @@ if str(ROOT) not in sys.path:
 CONFIG_PATH = ROOT / "configs" / "config.yaml"
 DATA_PATH = ROOT / "data" / "data_piantadosi.csv"
 OUT_DIR = ROOT / "output" / "trial_level_model_comparison"
+LEGACY_OUT_DIR = ROOT / "legacy" / "trial_level_per_duration" / "output"
 
 DURATIONS: tuple[int, ...] = (40, 80, 160, 320, 640)
 
@@ -90,7 +91,7 @@ S00: float = 0.05         # baseline sensory spread (FIXED["s00"] in fit_helpers
 ETA: float = 1.0          # cleanup step size (fixed_eta)
 KAPPA_LSE: float = 1.0    # LSE coupling for the Gaussian pull (fixed_kappa)
 GAUSS_BETA: float = 0.5   # Benford well-width exponent (fixed_beta)
-MAX_STEPS: int = 100
+MAX_STEPS: int = 120
 TOL: float = 1e-4
 
 # Integer wells and Benford frequencies.
@@ -436,6 +437,16 @@ MODEL_BY_KEY: dict[str, ModelSpec] = {m.key: m for m in MODEL_SPECS}
 
 # The winning model of the trial-level comparison (response + dynamics RT).
 WINNER_KEY = "gaussian_pow_attractor"
+
+
+def load_shared_theta(model_key: str = WINNER_KEY) -> pd.DataFrame:
+    """Load duration-specific nuisance parameters from a shared-landscape fit."""
+    theta = pd.read_csv(OUT_DIR / "shared_landscape_ladder_theta.csv")
+    theta = theta[theta["model_key"] == model_key].set_index("duration_ms")
+    if theta.empty:
+        raise ValueError(f"model {model_key!r} is absent from shared-landscape fit")
+    return theta
+
 
 # The clean 2x2 (well family x clean-up) used for the cleanup/well-family split.
 GRID_2X2: tuple[str, ...] = (
@@ -1572,6 +1583,8 @@ def parse_args(argv=None) -> argparse.Namespace:
 
 
 def main(argv=None) -> None:
+    global OUT_DIR
+    OUT_DIR = LEGACY_OUT_DIR
     args = parse_args(argv)
     if args.replot:
         replot_from_saved(eval_nodes=args.eval_nodes)

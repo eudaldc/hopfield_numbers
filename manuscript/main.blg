@@ -3,44 +3,44 @@ Capacity: max_strings=200000, hash_size=200000, hash_prime=170003
 The top-level auxiliary file: main.aux
 The style file: SageH.bst
 Database file #1: references.bib
-You've used 43 entries,
+You've used 44 entries,
             2905 wiz_defined-function locations,
-            925 strings with 15196 characters,
-and the built_in function-call counts, 49505 in all, are:
-= -- 5260
-> -- 1318
-< -- 19
-+ -- 521
-- -- 463
-* -- 3785
-:= -- 6153
-add.period$ -- 132
-call.type$ -- 43
-change.case$ -- 372
-chr.to.int$ -- 44
-cite$ -- 43
-duplicate$ -- 4841
-empty$ -- 3639
-format.name$ -- 615
-if$ -- 10044
+            932 strings with 15656 characters,
+and the built_in function-call counts, 52475 in all, are:
+= -- 5594
+> -- 1408
+< -- 18
++ -- 555
+- -- 496
+* -- 4022
+:= -- 6473
+add.period$ -- 135
+call.type$ -- 44
+change.case$ -- 388
+chr.to.int$ -- 45
+cite$ -- 44
+duplicate$ -- 5154
+empty$ -- 3842
+format.name$ -- 649
+if$ -- 10648
 int.to.chr$ -- 1
 int.to.str$ -- 1
-missing$ -- 454
-newline$ -- 225
-num.names$ -- 172
-pop$ -- 2232
+missing$ -- 472
+newline$ -- 230
+num.names$ -- 176
+pop$ -- 2389
 preamble$ -- 1
-purify$ -- 326
+purify$ -- 341
 quote$ -- 0
-skip$ -- 683
+skip$ -- 706
 stack$ -- 0
-substring$ -- 5582
-swap$ -- 1187
+substring$ -- 6021
+swap$ -- 1233
 text.length$ -- 1
 text.prefix$ -- 0
 top$ -- 0
-type$ -- 381
+type$ -- 390
 warning$ -- 0
-while$ -- 356
+while$ -- 373
 width$ -- 0
-write$ -- 611
+write$ -- 625

@@ -261,7 +261,7 @@ def main() -> None:
     # local minimum.
     pub = OUT_DIR / "gaussian_freebeta_subjects.csv"
     if pub.exists():
-        old = pd.read_csv(pub).rename(columns={"n_width_sigma1": "n_width_pub",
+        old = pd.read_csv(pub).rename(columns={"n_width": "n_width_pub",
                                                "neg_ll": "neg_ll_pub"})
         m = sub.merge(old[["group", "subject", "n_width_pub", "neg_ll_pub"]],
                       on=["group", "subject"])

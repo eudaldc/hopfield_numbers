@@ -1,4 +1,4 @@
-\begin{thebibliography}{43}
+\begin{thebibliography}{44}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \providecommand{\urlprefix}{URL }
@@ -21,21 +21,15 @@ Ashkenazi S, Henik A, Ifergane G and Shelef I (2008) Basic numerical processing 
 \newblock \emph{Cortex} 44(4): 439--448.
 \newblock \doi{10.1016/j.cortex.2007.08.008}.
 
-\bibitem[{Briggs et~al.(2023)Briggs, Lovett, Bridewell and Bello}]{briggs_attentional_2023}
-Briggs G, Lovett A, Bridewell W and Bello PF (2023) Attentional {Strategies} and the {Transition} {From} {Subitizing} to {Estimation} in {Numerosity} {Perception}.
-\newblock \emph{Cognitive Science} 47(9): e13337.
-\newblock \doi{10.1111/cogs.13337}.
-\newblock \_eprint: https://onlinelibrary.wiley.com/doi/pdf/10.1111/cogs.13337.
-
-\bibitem[{Burr et~al.(2010)Burr, Turi and Anobile}]{burr_subitizing_2010}
-Burr DC, Turi M and Anobile G (2010) Subitizing but not estimation of numerosity requires attentional resources.
-\newblock \emph{Journal of Vision} 10(6): 20.
-\newblock \doi{10.1167/10.6.20}.
-
 \bibitem[{Butterworth and Laurillard(2017)}]{butterworth_investigating_2017}
 Butterworth B and Laurillard D (2017) Investigating dyscalculia: {A} science of learning perspective.
 \newblock In: \emph{From the laboratory to the classroom: {Translating} science of learning for teachers}. New York, NY, US: Routledge/Taylor \& Francis Group.
 \newblock ISBN 978-1-138-64964-4 978-1-138-64963-7 978-1-315-62573-7, pp. 172--190.
+
+\bibitem[{Butterworth et~al.(2008)Butterworth, Reeve, Reynolds and Lloyd}]{butterworth_numerical_2008}
+Butterworth B, Reeve R, Reynolds F and Lloyd D (2008) Numerical thought with and without words: {Evidence} from indigenous {Australian} children.
+\newblock \emph{Proceedings of the National Academy of Sciences of the United States of America} 105(35): 13179--13184.
+\newblock \doi{10.1073/pnas.0806045105}.
 
 \bibitem[{Cappelletti et~al.(2007)Cappelletti, Barth, Fregni, Spelke and Pascual-Leone}]{cappelletti_rtms_2007}
 Cappelletti M, Barth H, Fregni F, Spelke ES and Pascual-Leone A (2007) {rTMS} over the intraparietal sulcus disrupts numerosity processing.
@@ -66,6 +60,11 @@ Cordes S, Gelman R, Gallistel CR and Whalen J (2001) Variability signatures dist
 Decarli G, Paris E, Tencati C, Nardelli C, Vescovi M, Surian L and Piazza M (2020) Impaired large numerosity estimation and intact subitizing in developmental dyscalculia.
 \newblock \emph{PLOS ONE} 15(12): e0244578.
 \newblock \doi{10.1371/journal.pone.0244578}.
+
+\bibitem[{Decarli et~al.(2023)Decarli, Sella, Lanfranchi, Gerotto, Gerola, Cossu and Zorzi}]{decarli_severe_2023}
+Decarli G, Sella F, Lanfranchi S, Gerotto G, Gerola S, Cossu G and Zorzi M (2023) Severe {Developmental} {Dyscalculia} {Is} {Characterized} by {Core} {Deficits} in {Both} {Symbolic} and {Nonsymbolic} {Number} {Sense}.
+\newblock \emph{Psychological Science} 34(1): 8--21.
+\newblock \doi{10.1177/09567976221097947}.
 
 \bibitem[{Dehaene(2011)}]{dehaene_number_2011}
 Dehaene S (2011) \emph{The number sense: {How} the mind creates mathematics, {Rev}. and updated ed}.
@@ -99,7 +98,7 @@ Feigenson L, Dehaene S and Spelke E (2004) Core systems of number.
 \newblock \doi{10.1016/j.tics.2004.05.002}.
 
 \bibitem[{Frank et~al.(2008)Frank, Everett, Fedorenko and Gibson}]{frank_number_2008}
-Frank MC, Everett DL, Fedorenko E and Gibson E (2008) Number as a cognitive technology: evidence from {Pirahã} language and cognition.
+Frank MC, Everett DL, Fedorenko E and Gibson E (2008) Number as a cognitive technology: {Evidence} from {Pirahã} language and cognition.
 \newblock \emph{Cognition} 108(3): 819--824.
 \newblock \doi{10.1016/j.cognition.2008.04.007}.
 
@@ -112,10 +111,10 @@ Gallistel CR and Gelman R (2000) Non-verbal numerical cognition: from reals to i
 \newblock \emph{Trends in Cognitive Sciences} 4(2): 59--65.
 \newblock \doi{10.1016/s1364-6613(99)01424-2}.
 
-\bibitem[{Harvey et~al.(2013)Harvey, Klein, Petridou and Dumoulin}]{harvey_topographic_2013}
-Harvey BM, Klein BP, Petridou N and Dumoulin SO (2013) Topographic {Representation} of {Numerosity} in the {Human} {Parietal} {Cortex}.
-\newblock \emph{Science} 341(6150): 1123--1126.
-\newblock \doi{10.1126/science.1239052}.
+\bibitem[{Halberda et~al.(2008)Halberda, Mazzocco and Feigenson}]{halberda_individual_2008}
+Halberda J, Mazzocco MM and Feigenson L (2008) Individual differences in non-verbal number acuity correlate with maths achievement.
+\newblock \emph{Nature} 455(7213): 665--668.
+\newblock \doi{10.1038/nature07246}.
 
 \bibitem[{Hopfield(1982)}]{hopfield_neural_1982}
 Hopfield JJ (1982) Neural networks and physical systems with emergent collective computational abilities.
@@ -133,15 +132,21 @@ Macmillan NA and Creelman CD (2004) \emph{Detection {Theory}: {A} {User}'s {Guid
 \newblock ISBN 978-1-4106-1114-7.
 \newblock \doi{10.4324/9781410611147}.
 
+\bibitem[{Malo et~al.(2023)Malo, Cicchini, Morrone and Chiofalo}]{malo_quantum_2023}
+Malo JY, Cicchini GM, Morrone MC and Chiofalo ML (2023) Quantum spin models for numerosity perception.
+\newblock \emph{PLOS ONE} 18(4): e0284610.
+\newblock \doi{10.1371/journal.pone.0284610}.
+\newblock ArXiv:2212.03344 [q-bio.NC].
+
 \bibitem[{Mandler and Shebo(1982)}]{mandler_subitizing_1982}
 Mandler G and Shebo BJ (1982) Subitizing: {An} analysis of its component processes.
 \newblock \emph{Journal of Experimental Psychology: General} 111(1): 1--22.
 \newblock \doi{10.1037/0096-3445.111.1.1}.
 
-\bibitem[{Mou and vanMarle(2014)}]{mou_two_2014}
-Mou Y and vanMarle K (2014) Two core systems of numerical representation in infants.
-\newblock \emph{Developmental Review} 34(1): 1--25.
-\newblock \doi{10.1016/j.dr.2013.11.001}.
+\bibitem[{Mazzocco et~al.(2011)Mazzocco, Feigenson and Halberda}]{mazzocco_impaired_2011}
+Mazzocco MM, Feigenson L and Halberda J (2011) Impaired acuity of the approximate number system underlies mathematical learning disability (dyscalculia).
+\newblock \emph{Child Development} 82(4): 1224--1237.
+\newblock \doi{10.1111/j.1467-8624.2011.01608.x}.
 
 \bibitem[{Nieder(2016)}]{nieder_neuronal_2016}
 Nieder A (2016) The neuronal code for number.
@@ -153,15 +158,15 @@ Nys J, Ventura P, Fernandes T, Querido L, Leybaert J and Content A (2013) Does m
 \newblock \emph{Trends in Neuroscience and Education} 2(1): 13--22.
 \newblock \doi{10.1016/j.tine.2013.01.001}.
 
+\bibitem[{Piazza et~al.(2010)Piazza, Facoetti, Trussardi, Berteletti, Conte, Lucangeli, Dehaene and Zorzi}]{piazza_developmental_2010}
+Piazza M, Facoetti A, Trussardi AN, Berteletti I, Conte S, Lucangeli D, Dehaene S and Zorzi M (2010) Developmental trajectory of number acuity reveals a severe impairment in developmental dyscalculia.
+\newblock \emph{Cognition} 116(1): 33--41.
+\newblock \doi{10.1016/j.cognition.2010.03.012}.
+
 \bibitem[{Piazza et~al.(2011)Piazza, Fumarola, Chinello and Melcher}]{piazza_subitizing_2011}
 Piazza M, Fumarola A, Chinello A and Melcher D (2011) Subitizing reflects visuo-spatial object individuation capacity.
 \newblock \emph{Cognition} 121(1): 147--153.
 \newblock \doi{10.1016/j.cognition.2011.05.007}.
-
-\bibitem[{Piazza et~al.(2004)Piazza, Izard, Pinel, Le~Bihan and Dehaene}]{piazza_tuning_2004}
-Piazza M, Izard V, Pinel P, Le~Bihan D and Dehaene S (2004) Tuning curves for approximate numerosity in the human intraparietal sulcus.
-\newblock \emph{Neuron} 44: 547--555.
-\newblock \doi{10.1016/j.neuron.2004.10.014}.
 
 \bibitem[{Piazza et~al.(2013)Piazza, Pica, Izard, Spelke and Dehaene}]{piazza_education_2013}
 Piazza M, Pica P, Izard V, Spelke ES and Dehaene S (2013) Education enhances the acuity of the nonverbal approximate number system.

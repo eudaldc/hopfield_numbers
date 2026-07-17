@@ -1,44 +1,32 @@
 #!/usr/bin/env python
-"""Figure 3 (revision): model comparison, RT channel, and the predicted limit.
+"""Figure 2: model comparison (accuracy + RT) and individual width-acuity link.
 
-Poisson-free throughout. The model comparison is shown at two levels: a joint
-fit (one fit shared across all five durations, on the left) and the per-duration
-fit (each duration fitted independently, on the right). Heatmap cells are dAIC
-relative to the best row of each block, magma, darker is better; the joint and
-per-duration blocks are separate fits, each colour-scaled on its own range.
+Single shared-landscape (joint) fit throughout; the per-duration fits are dropped.
 
-  a — Accuracy channel, joint fit: one landscape shared across all durations
-      (only the sensory channel varies). The attractor wins and beats even the
-      fully free per-duration Weber/ANS.
-  b — Accuracy channel, separate fits per duration, over the ~53,000 individual
-      responses. The clean-up advantage is concentrated at brief exposures; the
-      static readouts catch up at 320-640 ms, once the clean-up has largely run
-      during the exposure itself.
-  c — RT channel, joint fit: one RT mapping shared across durations; the
-      dynamics-based hybrid link still beats the static entropy proxy.
-  d — RT channel, separate fits per duration on the winning landscape: the
-      hybrid convergence-time + entropy link wins at every exposure. Response to
-      the "RT is grafted on" point.
-  e — The fitted width law sigma_n: the joint fit's single shared landscape
-      (black dashed, the primary analysis; it lies on the 160 ms curve) over
-      the per-duration fits. Circles show n_width, the continuous sigma_n = 1
-      proxy; squares show n_topo, the last consecutive integer retaining a
-      separate basin.
+  a - Accuracy channel, joint fit: dAIC of every model relative to the winning
+      power-law attractor with clean-up. Bars are coloured by model role
+      (attractor + clean-up / static readout / external benchmark).
+  b - RT channel, joint fit: dAIC of the three RT links on the winning landscape
+      (one shared mapping across durations). Single neutral colour - the three
+      are variants of the same model, not a model-role category.
+  c - Individual differences: empirical-Bayes n_width vs Weber noise from the
+      bivariate hierarchical model (non-overlapping n splits; partial pooling).
+      Data from ``scripts/trial_level_bivariate_id.py`` (primary cutoff 8/9).
 
     .venv/bin/python figures/fig3_comparison_ncrit.py
 """
 
 from __future__ import annotations
 
+import argparse
+import json
 import sys
 from pathlib import Path
 
-import matplotlib as mpl
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from matplotlib.lines import Line2D
-from matplotlib.patches import Rectangle
+from matplotlib.patches import Patch
 
 ROOT = Path(__file__).resolve().parent.parent
 if str(ROOT) not in sys.path:
@@ -48,230 +36,170 @@ from figures.plot_style import apply_style, panel_label  # noqa: E402
 
 OUT_DIR = ROOT / "output" / "trial_level_model_comparison"
 CP_DIR = ROOT / "output" / "cp_exact"
-OUT_STEM = ROOT / "figures" / "fig3_comparison_ncrit"
-TOPO_PATH = OUT_DIR / "topological_resolution_summary.csv"
+DRV_DIR = ROOT / "driven_attractor" / "output" / "fits"
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--budget", type=int, choices=(100, 120), default=120)
+args = parser.parse_args()
+TAG = "_G100" if args.budget == 100 else ""
+OUT_STEM = ROOT / "figures" / f"fig3_comparison_ncrit{TAG}"
+
+
+def result_csv(stem: str) -> Path:
+    return OUT_DIR / f"{stem}{TAG}.csv"
+
 
 FONT_SCALE = 2.1
 apply_style(FONT_SCALE)
 
-CMAP = mpl.colormaps["magma"]
-DUR_KEYS = [40, 80, 160, 320, 640]
-DUR_LABELS = ["40 ms", "80", "160", "320", "640"]
+# three model-role colours (NPG): cleanup/static share a cool family, bench accents
+CLEANUP = "#3C5488"  # attractor with clean-up dynamics
+STATIC = "#4DBBD5"  # matched static readout (same wells, no dynamics)
+BENCH = "#E64B35"  # external benchmark
+NEUTRAL = CLEANUP  # panel b: same blue as attractor (RT links are variants of it)
 
-# ── Response channel: per-duration dAIC (each duration fitted on its own) and
-#    the joint fit (one landscape shared across all five durations). They are
-#    separate fits, each drawn in its own panel and colour-scaled on its own
-#    range, so the per-duration structure is not washed out. ────────────────
-resp = pd.read_csv(OUT_DIR / "response_per_duration_aic.csv")
-piv_a = resp.pivot_table(index="model_key", columns="duration_ms", values="resp_AIC")
-# Exact Cheyette & Piantadosi (2020) model. Its per-duration form (separate-fit
-# panel/table) is the free-budget ceiling: the information budget and lapse are
-# fitted at each duration (k = 2/duration). Its joint form shares (B, R) while
-# retaining a duration-specific lapse (k = 7), matching the other joint fits.
-cp_ceil = pd.read_csv(CP_DIR / "cp_exact_ceiling.csv").set_index("duration_ms")
-piv_a.loc["cp_exact"] = [4.0 - 2.0 * float(cp_ceil.loc[d, "ceiling_logL"])
-                         for d in piv_a.columns]
-ladder = pd.read_csv(OUT_DIR / "shared_landscape_ladder.csv").set_index("model_key")
+# ── Accuracy channel, joint fit: dAIC vs the winning power-law attractor ─────
+ladder = pd.read_csv(result_csv("shared_landscape_ladder")).set_index("model_key")
 cp_fit = pd.read_csv(CP_DIR / "cp_exact_fits.csv").set_index("variant")
+_pure = json.load(open(DRV_DIR / "M2_tether_g0.json"))
+PURE_JOINT_AIC = 2 * _pure["k"] - 2 * _pure["logL"]
+# The shared-ladder AIC counts G; the driven cache's k excludes it.
+G_AIC = 2.0
 
-# The winning model is now the power-law-width attractor; the Benford family is
-# dropped from the comparison. dAIC is relative to the best *displayed* model.
+# (display label, model key, role colour)
 ROWS_A = [
-    ("Power-law wells + clean-up", "gaussian_pow_attractor"),
-    ("Power-law wells, static", "gaussian_pow_readout"),
-    ("Constant-width wells + clean-up", "gaussian_const_attractor"),
-    ("Constant-width wells, static", "gaussian_const_readout"),
-    ("Weber/ANS", "weber_ans"),
-    ("Normative (C&P)", "cp_exact"),
+    ("Power-law wells + clean-up", "gaussian_pow_attractor", CLEANUP),
+    ("Power-law wells, static", "gaussian_pow_readout", STATIC),
+    ("Constant-width + clean-up", "gaussian_const_attractor", CLEANUP),
+    ("Constant-width, static", "gaussian_const_readout", STATIC),
+    ("Power-law wells + driven accumulator", "pure_driven", CLEANUP),
+    ("Weber/ANS", "weber_ans", BENCH),
+    ("Normative (C&P)", "cp_exact", BENCH),
 ]
-piv_a = piv_a.loc[[k for _, k in ROWS_A]]
-piv_a = piv_a - piv_a.min(axis=0)                       # dAIC vs best displayed in each column
-pow_joint_ref = float(ladder.loc["gaussian_pow_attractor", "joint_AIC"])
-cp_joint_dAIC = float(cp_fit.loc["uniform_duration_lapse", "AIC"]) - pow_joint_ref
-dur_a = [[float(piv_a.loc[k, d]) for d in DUR_KEYS] for _, k in ROWS_A]
-joint_a = [[cp_joint_dAIC if k == "cp_exact"
-            else float(ladder.loc[k, "joint_AIC"]) - pow_joint_ref]
-           for _, k in ROWS_A]
 
-# ── RT channel: per-duration dAIC on the winning landscape, and the joint fit
-#    (one RT mapping shared across all five durations). ─────────────────────
-rt = pd.read_csv(OUT_DIR / "pow_winner_rt.csv")
-rt = rt[rt.model_key == "gaussian_pow_attractor"]
-piv_b = rt.pivot_table(index="metric", columns="duration_ms", values="AIC")
-piv_b = piv_b.loc[["hybrid", "steps", "entropy"]]
-piv_b = piv_b - piv_b.min(axis=0)
-rtj = pd.read_csv(OUT_DIR / "rt_joint.csv").set_index("metric")
 
-ROWS_B = [
-    ("Convergence time + entropy", "hybrid"),
-    ("Convergence time", "steps"),
-    ("Entropy", "entropy"),
+def _raw_aic(key: str) -> float:
+    if key == "cp_exact":
+        return float(cp_fit.loc["uniform_duration_lapse", "AIC"])
+    if key == "pure_driven":
+        return PURE_JOINT_AIC
+    return float(ladder.loc[key, "joint_AIC"])
+
+
+def joint_daic(key: str) -> float:
+    aic = _raw_aic(key) + (G_AIC if key == "pure_driven" else 0.0)
+    ref = _raw_aic("gaussian_pow_attractor")
+    return aic - ref
+
+
+ACC = [(lab, joint_daic(key), col) for lab, key, col in ROWS_A]
+
+# ── RT channel, joint fit: dAIC of the three RT links (one shared mapping) ───
+rtj = pd.read_csv(result_csv("rt_joint")).set_index("metric")
+RT = [
+    ("Convergence time + entropy", float(rtj.loc["hybrid", "dAIC"]), NEUTRAL),
+    ("Convergence time", float(rtj.loc["steps", "dAIC"]), NEUTRAL),
+    ("Entropy", float(rtj.loc["entropy", "dAIC"]), NEUTRAL),
 ]
-dur_b = [[float(piv_b.loc[k, d]) for d in DUR_KEYS] for _, k in ROWS_B]
-joint_b = [[float(rtj.loc[k, "dAIC"])] for _, k in ROWS_B]
 
 
-# ── Heatmap drawing helper ─────────────────────────────────────────────
-def draw_heat(ax, rows_vals, col_labels, row_labels, framed=False):
-    """dAIC heatmap into `ax` (magma, sqrt scale, dark = best), one value per
-    cell. Colour range is local to the axes. Empty strings in `col_labels` draw
-    no top header; `row_labels=None` hides the y labels (shared with the panel
-    on the left); `framed` boxes the block to mark it as the joint fit. The
-    training label goes below the block (added by the caller)."""
-    nrow, ncol = len(rows_vals), len(col_labels)
-    vmax = max(v for row in rows_vals for v in row) or 1.0
-    for i, row in enumerate(rows_vals):
-        y0 = nrow - 1 - i
-        for j, v in enumerate(row):
-            frac = float(np.sqrt(v / vmax))
-            ax.add_patch(Rectangle((j, y0), 1.0, 1.0, fc=CMAP(frac),
-                                   ec="white", lw=3, zorder=2))
-            ax.text(j + 0.5, y0 + 0.5, f"{v:.0f}", ha="center", va="center",
-                    fontsize=9.5 * FONT_SCALE,
-                    color="white" if frac < 0.55 else "0.15", zorder=3)
-    for j, lab in enumerate(col_labels):
-        if lab:
-            ax.text(j + 0.5, nrow + 0.12, lab, ha="center", va="bottom",
-                    fontsize=8.5 * FONT_SCALE, color="0.15")
-    ax.set_xlim(0, ncol)
-    ax.set_ylim(0, nrow)
-    ax.set_xticks([])
-    if row_labels is None:
-        ax.set_yticks([])
-    else:
-        ax.set_yticks([nrow - 0.5 - i for i in range(nrow)])
-        ax.set_yticklabels(row_labels)
-    ax.tick_params(length=0)
+def sqrt_barh(ax, items, xlabel, *, decimal_labels=False):
+    """Horizontal dAIC bars on a sqrt scale (huge range), best model at the top."""
+    items = sorted(items, key=lambda t: t[1])
+    labs = [t[0] for t in items][::-1]
+    vals = np.array([t[1] for t in items])[::-1]
+    cols = [t[2] for t in items][::-1]
+    y = np.arange(len(labs))
+    ax.barh(y, np.sqrt(vals), color=cols, edgecolor="black", lw=1.0, height=0.72)
+    ax.set_yticks(y)
+    ax.set_yticklabels(labs)
+    for yi, v in zip(y, vals):
+        value_label = f"{v:.2f}" if v < 1 else f"{v:.1f}"
+        ax.text(
+            np.sqrt(v) + np.sqrt(vals.max()) * 0.015,
+            yi,
+            "best" if v == 0 else value_label if decimal_labels else f"{v:,.0f}",
+            va="center",
+            ha="left",
+            fontsize=8 * FONT_SCALE,
+        )
+    ticks = [0, 500, 2000, 5000, 11000]
+    ax.set_xticks(np.sqrt(ticks))
+    ax.set_xticklabels([f"{t:,}" for t in ticks])
+    ax.set_xlim(0, np.sqrt(vals.max()) * 1.18)
+    ax.set_xlabel(xlabel)
+    ax.spines[["top", "right"]].set_visible(False)
+
+
+# ── Figure ──────────────────────────────────────────────────────────────
+fig = plt.figure(figsize=(12, 15))
+gs = fig.add_gridspec(3, 1, height_ratios=[1.3, 0.72, 1.45], hspace=0.34)
+ax_a, ax_b, ax_c = (fig.add_subplot(gs[i]) for i in range(3))
+
+sqrt_barh(ax_a, ACC, r"$\Delta$AIC (accuracy)")
+sqrt_barh(ax_b, RT, r"$\Delta$AIC (response time)", decimal_labels=True)
+ax_a.legend(
+    handles=[
+        Patch(fc=CLEANUP, ec="black", lw=0.6, label="Attractor + clean-up"),
+        Patch(fc=STATIC, ec="black", lw=0.6, label="Static readout"),
+        Patch(fc=BENCH, ec="black", lw=0.6, label="Benchmark"),
+    ],
+    frameon=False,
+    loc="upper right",
+    bbox_to_anchor=(1.0, 1.02),
+    fontsize=8 * FONT_SCALE,
+    handlelength=1.1,
+)
+
+# panel c - hierarchical EB n_width vs Weber noise (primary cutoff 8/9)
+ind = pd.read_csv(result_csv("bivariate_id_participants"))
+ind = ind[ind["cutoff"] == "8/9"]
+summary = pd.read_csv(result_csv("bivariate_id_summary"))
+rho_hat = float(summary.loc[summary.cutoff == "8/9", "rho"].iloc[0])
+d = ind[["weber_mean", "n_width_mean"]].dropna()
+ax_c.scatter(
+    d.weber_mean, d.n_width_mean, s=34, alpha=0.45, color=CLEANUP, edgecolor="none"
+)
+ax_c.set_xlabel("Weber noise $w$")
+ax_c.set_ylabel(r"$n_{\mathrm{width}}$")
+ax_c.set_xlim(d.weber_mean.min() - 0.01, d.weber_mean.quantile(0.99) + 0.02)
+ax_c.text(
+    0.96,
+    0.95,
+    "Latent participant correlation\n"
+    rf"$\rho = {rho_hat:.2f}$, $N = {len(d)}$",
+    transform=ax_c.transAxes,
+    ha="right",
+    va="top",
+    fontsize=8 * FONT_SCALE,
+)
+ax_c.spines[["top", "right"]].set_visible(False)
+
+for ax in (ax_a, ax_b, ax_c):
     for s in ax.spines.values():
-        s.set_visible(False)
-    if framed:
-        ax.add_patch(Rectangle((0.03, 0.0), ncol - 0.06, nrow, fill=False,
-                               ec="0.4", lw=2.2, zorder=4))
+        s.set_color("black")
+    ax.tick_params(colors="black")
+    ax.xaxis.label.set_color("black")
+    ax.yaxis.label.set_color("black")
 
+panel_label(ax_a, "a")
+panel_label(ax_b, "b")
+panel_label(ax_c, "c")
 
-# ── Panel e data: width law per duration (power-law wells sigma_n = c n^p) ──
-theta = pd.read_csv(OUT_DIR / "pow_theta.csv").set_index("duration_ms")
-DURATIONS = list(theta.index)
-topology = pd.read_csv(TOPO_PATH)
-topology = topology[topology.grid_points == topology.grid_points.max()]
-topology_by_duration = topology[topology.fit_type == "separate"].set_index("duration_ms")
-topology_joint = topology[topology.fit_type == "joint"].iloc[0]
-
-
-def sigma_of_n(d: int, n: np.ndarray) -> np.ndarray:
-    return float(theta.loc[d, "sigma_c"]) * np.asarray(n, float) ** float(theta.loc[d, "pow"])
-
-
-def n_width(d: int) -> float:
-    # sigma_n = sigma_c * n^p = 1  ->  n_width = sigma_c^(-1/p)
-    return float(theta.loc[d, "sigma_c"]) ** (-1.0 / float(theta.loc[d, "pow"]))
-
-
-def ntopo(d: int) -> int:
-    return int(topology_by_duration.loc[d, "n_topo"])
-
-
-# ── Figure ────────────────────────────────────────────────────────────
-fig = plt.figure(figsize=(15, 17.5))
-
-CELL_W, CELL_H = 0.082, 0.046
-LAB_LEFT = 0.315                      # joint panel left edge (row labels to its left)
-JW = CELL_W                          # joint panel = 1 column
-GAP = 0.35 * CELL_W
-DUR_LEFT = LAB_LEFT + JW + GAP        # per-duration panel left edge
-DW = 5 * CELL_W                      # per-duration panel = 5 columns
-ROW1_TOP, ROW2_TOP = 0.955, 0.585    # top edges of the response and RT blocks
-N_RESPONSE_ROWS = len(ROWS_A)
-
-ax_aj = fig.add_axes((LAB_LEFT, ROW1_TOP - N_RESPONSE_ROWS * CELL_H, JW,
-                      N_RESPONSE_ROWS * CELL_H))
-ax_ad = fig.add_axes((DUR_LEFT, ROW1_TOP - N_RESPONSE_ROWS * CELL_H, DW,
-                      N_RESPONSE_ROWS * CELL_H))
-ax_cj = fig.add_axes((LAB_LEFT, ROW2_TOP - 3 * CELL_H, JW, 3 * CELL_H))
-ax_cd = fig.add_axes((DUR_LEFT, ROW2_TOP - 3 * CELL_H, DW, 3 * CELL_H))
-ax_e = fig.add_axes((0.10, 0.035, 0.87, 0.315))
-
-# training labels sit below each block; the channel dAIC label sits lower still,
-# centred between the joint and per-duration panels
-XC_JOINT = LAB_LEFT + JW / 2
-XC_DUR = DUR_LEFT + DW / 2
-XC_BOTH = (LAB_LEFT + DUR_LEFT + DW) / 2
-
-
-def channel_labels(y_block_bottom, joint_txt, dur_txt, daic_txt):
-    fig.text(XC_JOINT, y_block_bottom - 0.010, joint_txt, ha="center", va="top",
-             fontsize=9 * FONT_SCALE, color="0.15")
-    fig.text(XC_DUR, y_block_bottom - 0.010, dur_txt, ha="center", va="top",
-             fontsize=9 * FONT_SCALE, color="0.15")
-    fig.text(XC_BOTH, y_block_bottom - 0.030, daic_txt, ha="center", va="top",
-             fontsize=11 * FONT_SCALE, color="0.0")
-
-
-# response channel: a = joint (one shared landscape), b = per-duration
-draw_heat(ax_aj, joint_a, [""], [r for r, _ in ROWS_A], framed=True)
-draw_heat(ax_ad, dur_a, DUR_LABELS, None)
-channel_labels(ROW1_TOP - N_RESPONSE_ROWS * CELL_H, "Joint fit", "Separate fits",
-               r"$\Delta$AIC (accuracy)")
-panel_label(ax_aj, "a", x=-2.4, pad=24)
-panel_label(ax_ad, "b", x=-0.04, pad=24)
-
-# RT channel: c = joint (one shared mapping), d = per-duration
-draw_heat(ax_cj, joint_b, [""], [r for r, _ in ROWS_B], framed=True)
-draw_heat(ax_cd, dur_b, DUR_LABELS, None)
-channel_labels(ROW2_TOP - 3 * CELL_H, "Joint fit", "Separate fits",
-               r"$\Delta$AIC (response time)")
-panel_label(ax_cj, "c", x=-2.4, pad=24)
-panel_label(ax_cd, "d", x=-0.04, pad=24)
-
-# Panel e — width law, n_width, and n_topo
-n_cont = np.linspace(1.0, 15.55, 800)
-dur_colors = {d: CMAP(i / (len(DURATIONS) - 1)) for i, d in enumerate(DURATIONS)}
-ax_e.axhline(1.0, color="0.25", lw=1.6, ls="--", zorder=2)
-for d in DURATIONS:
-    ax_e.plot(n_cont, sigma_of_n(d, n_cont), lw=2.4, color=dur_colors[d], zorder=3,
-              label=f"{d} ms")
-    ax_e.plot(n_width(d), 1.0, "o", ms=12, color=dur_colors[d], zorder=5,
-              markeredgecolor="white", markeredgewidth=1.5)
-    ax_e.plot(ntopo(d), sigma_of_n(d, ntopo(d)), "s", ms=11,
-              color=dur_colors[d], zorder=5,
-              markeredgecolor="black", markeredgewidth=1.2)
-
-# joint fit: the single landscape shared across the five durations (primary
-# analysis). It coincides with the 160 ms landscape, so it is drawn dashed on
-# top: the 160 ms line shows through the gaps. Its n_width dot sits behind the
-# 160 ms dot as a larger black ring.
-sc_j = float(ladder.loc["gaussian_pow_attractor", "shared_sigma_c"])
-p_j = float(ladder.loc["gaussian_pow_attractor", "shared_pow"])
-ax_e.plot(n_cont, sc_j * n_cont ** p_j, lw=3.6, color="black",
-          ls=(0, (5, 2.4)), zorder=4, label="Joint fit")
-ax_e.plot(sc_j ** (-1.0 / p_j), 1.0, "o", ms=17, color="black", zorder=4.5,
-          markeredgecolor="white", markeredgewidth=1.5)
-n_topo_joint = int(topology_joint["n_topo"])
-ax_e.plot(n_topo_joint, sc_j * n_topo_joint ** p_j, "s", ms=15,
-          color="black", zorder=5, markeredgecolor="white", markeredgewidth=1.5)
-
-ax_e.text(15.35, 1.08, r"$\sigma_n = 1$",
-          fontsize=9 * FONT_SCALE, ha="right", va="bottom", color="0.25")
-ax_e.set_yscale("log")
-ax_e.set_xlim(0.45, 15.55)
-ax_e.set_ylim(0.008, 12)
-ax_e.set_xticks(np.arange(1, 16))
-ax_e.set_xlabel("Number line  $n$")
-ax_e.set_ylabel(r"Well width  $\sigma_n$")
-panel_label(ax_e, "e", x=-0.075)
-handles, labels = ax_e.get_legend_handles_labels()
-order = [len(handles) - 1] + list(range(len(handles) - 1))  # joint fit first
-marker_handles = [
-    Line2D([], [], color="black", marker="o", linestyle="none", markersize=9,
-           markeredgecolor="white", label=r"$n_{\mathrm{width}}$"),
-    Line2D([], [], color="black", marker="s", linestyle="none", markersize=8,
-           markeredgecolor="black", label=r"$n_{\mathrm{topo}}$"),
-]
-ax_e.legend([handles[i] for i in order] + marker_handles,
-            [labels[i] for i in order] + [h.get_label() for h in marker_handles],
-            loc="lower right", ncols=2, framealpha=0.9, edgecolor="0.75")
+# Panels a/b have long y-tick labels that push their axes right; panel c shares
+# that same axes left edge, leaving empty space. Expand c leftward so its full
+# content (ylabel + ticks + plot) aligns with the left edge of a/b's labels.
+fig.canvas.draw()
+renderer = fig.canvas.get_renderer()
+inv = fig.transFigure.inverted()
+left_a = ax_a.get_tightbbox(renderer).transformed(inv).x0
+left_c = ax_c.get_tightbbox(renderer).transformed(inv).x0
+delta = left_c - left_a
+if delta > 0:
+    pos = ax_c.get_position()
+    ax_c.set_position([pos.x0 - delta, pos.y0, pos.width + delta, pos.height])
 
 fig.savefig(f"{OUT_STEM}.png")
 fig.savefig(f"{OUT_STEM}.pdf")
-print(f"Saved {OUT_STEM}.{{png,pdf}}")
+print(f"Saved {OUT_STEM}.{{png,pdf}}  (panel c: rho={rho_hat:.3f}, n={len(d)})")
 plt.close(fig)

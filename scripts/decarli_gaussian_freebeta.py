@@ -134,8 +134,8 @@ def main() -> None:
         rows.append({
             "group": grp,
             **{k: f[k] for k in PNAMES},
-            "n_width_sigma1": n_width(theta, 1.0),
-            "n_width_sigma2": n_width(theta, 2.0),
+            "n_width": n_width(theta, 1.0),
+            "n_sigma2_crossing": n_width(theta, 2.0),
             "sigma_n1": evidence_sd(theta, 1), "sigma_n4": evidence_sd(theta, 4),
             "sigma_n7": evidence_sd(theta, 7),
             "well_sigma_n1": float(sigma_well(theta, np.array([1]))[0]),
@@ -154,7 +154,7 @@ def main() -> None:
     dd, ct = out[out.group == "DD"].iloc[0], out[out.group == "contr"].iloc[0]
     comp = pd.DataFrame([
         {"quantity": q, "DD": dd[q], "contr": ct[q], "diff_DD_minus_contr": dd[q] - ct[q]}
-        for q in ("n_width_sigma1", "n_width_sigma2", "pow", "sigma_c",
+        for q in ("n_width", "n_sigma2_crossing", "pow", "sigma_c",
                   "sigma_n1", "sigma_n4", "sigma_n7")
     ])
     comp.to_csv(OUT_DIR / "gaussian_freebeta_group_comparison.csv", index=False)

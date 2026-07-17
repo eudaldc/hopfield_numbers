@@ -45,7 +45,7 @@ def m0_rt_ingredients(which: str) -> tuple[np.ndarray, np.ndarray]:
     eT = np.zeros((5, 15))
     eH = np.zeros((5, 15))
     if which == "perdur":
-        th = pd.read_csv(ROOT / "output/trial_level_model_comparison/pow_theta.csv")
+        th = pd.read_csv(ROOT / "legacy/trial_level_per_duration/output/pow_theta.csv")
         rows = {int(r.duration_ms): {"sigma_c": r.sigma_c, "s0": r.s0,
                                      "lambda0": r.lambda0, "pow": r["pow"]}
                 for _, r in th.iterrows()}

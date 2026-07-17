@@ -94,7 +94,7 @@ def fit_m0_perdur(counts: dict[int, np.ndarray], r_max: int,
 
 def fit_m0_shared(counts: dict[int, np.ndarray], r_max: int,
                   warm_shared: np.ndarray, warm_nuis: dict[int, np.ndarray],
-                  rounds: int = 3, budget: int = 300) -> dict:
+                  rounds: int = 1, budget: int = 150) -> dict:
     """Shared-landscape M0 (sigma_c, p shared; s0, lambda0, lapse per dur)."""
     spec = T.MODEL_BY_KEY["gaussian_pow_attractor"]
     quad = T.make_quadrature(201, kind="grid")

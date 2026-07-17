@@ -1,0 +1,14 @@
+model_id,parameter_1,parameter_2,correlation
+M3,a_tau,b_tau,0.4894922661313024
+M4,a_tau,b_tau,0.9199103824133096
+M4,a_tau,a_kappa,-0.8451407315354474
+M4,a_tau,b_kappa,0.7502668762370563
+M4,b_tau,a_kappa,-0.856725772322802
+M4,b_tau,b_kappa,0.6691062444586875
+M4,a_kappa,b_kappa,-0.8516646091602704
+M4_resid,a_tau,b_tau,0.48734436533431674
+M4_resid,a_tau,a_kappa,0.05222636225021365
+M4_resid,a_tau,b_kappa,-0.16430012123862772
+M4_resid,b_tau,a_kappa,0.17443601532003244
+M4_resid,b_tau,b_kappa,-0.14496800629812595
+M4_resid,a_kappa,b_kappa,-0.5788094198013751

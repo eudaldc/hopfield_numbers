@@ -9,6 +9,8 @@ Model variants (response channel):
                free: sigma_c, p, rho, tau_x            (tau_x sets the cap)
   M2_tether  : primary continuously driven attractor (soft tether).
                free: sigma_c, p, rho, tau_x, beta
+  M2_tether_const: equal, linearly spaced wells (p = 0 fixed).
+               free: sigma_c, rho, tau_x, beta
   M2_pulse   : robustness variant, unit pulses dx = dK, a = 1 fixed.
                free: sigma_c, p, rho, tau_x
   M3_static  : driven no-attractor control (tether only; the response
@@ -65,6 +67,7 @@ def param_defs(model: str, free_gamma: bool = False,
     base = {
         "M1_offset": [P_SIGMA_C, P_P, P_RHO, P_TAU],
         "M2_tether": [P_SIGMA_C, P_P, P_RHO, P_TAU, P_BETA],
+        "M2_tether_const": [P_SIGMA_C, P_RHO, P_TAU, P_BETA],
         "M2_pulse": [P_SIGMA_C, P_P, P_RHO, P_TAU],
         "M3_static": [P_SIGMA_C, P_P, P_RHO, P_RT],
     }[model]
@@ -81,6 +84,8 @@ def vec_to_theta(model: str, vec: np.ndarray, defs: list[ParamDef],
     theta = {"gamma": gamma}
     for d, v in zip(defs, vec):
         theta[d.name] = d.to_native(v)
+    if model == "M2_tether_const":
+        theta["p"] = 0.0
     if model == "M3_static":
         # r_tether = beta / tau_x; the integrator wants (tau_x, beta).
         theta["tau_x"] = 1.0

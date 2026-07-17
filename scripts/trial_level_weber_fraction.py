@@ -69,7 +69,7 @@ def empirical_cov(trial: pd.DataFrame, d: int) -> np.ndarray:
 def main() -> None:
     apply_style(1.4)
     quad = T.make_quadrature(1601, kind="grid")
-    wt = pd.read_csv(T.OUT_DIR / "pow_theta.csv").set_index("duration_ms")
+    wt = T.load_shared_theta()
     trial = T.load_trials()
     r_max = int(trial["n_guess"].max())          # 99, as in the headline fit
     wells = T.WELLS                              # integer support 1..N_SUPPORT_MAX
@@ -116,7 +116,7 @@ def main() -> None:
 
     # characterise the Weber plateau: power law w_eff ~ a n^gamma over the
     # Preserve the width-based analysis window (n >= n_width) used for the
-    # fitted model CoV and the data; this is not a topological boundary.
+    # fitted model CoV and the data; this is not an exact-range boundary.
     print("=== Effective Weber fraction: CoV of the fitted model response ===")
     print(df.pivot(index="n", columns="duration_ms", values="model_cov").round(3).to_string())
     print("\n=== power-law slope gamma of log(CoV) vs log n, window n >= n_width ===")

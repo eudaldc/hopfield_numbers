@@ -1,11 +1,11 @@
-"""Consolidated De Carli DD-vs-control figure — the three-tier argument in one place.
+"""Consolidated De Carli DD-vs-control figure.
 
   (A) raw accuracy (mean ± SEM per group, n = 1..7) with per-n significance and the
       winner-model group fit overlaid  — model-agnostic deficit (Tier 1).
   (B) raw median RT (mean ± SEM per group) with the model group fit               (Tier 1).
   (C) per-subject model comparison: resolution-only vs noise-only SSE — every
       subject below the diagonal → the accuracy decline is resolution-shaped (Tier 2).
-  (D) per-subject n_width (σ_n = 1) distributions, DD vs control                  (Tier 3).
+  (D) per-subject n_width (the continuous width-based index), DD vs control.
 
 Reuses the saved fits/CSVs; non-destructive. Writes decarli_dd_summary.png.
 
@@ -102,31 +102,24 @@ def main() -> None:
     c.set_xlabel("SSE, noise-only"); c.set_ylabel("SSE, resolution-only")
     c.legend(frameon=False, loc="upper left"); panel_label(c, "c")
 
-    # (D) n_width boxplot
+    # (D) n_width from per-subject free-scale fits with a shared exponent.
     d = ax[1][1]
-    dd = locus[locus.group == "DD"].n_width_A.to_numpy()
-    ct = locus[locus.group == "contr"].n_width_A.to_numpy()
-    p_nc = mannwhitneyu(dd, ct, alternative="two-sided")[1]
-    bp = d.boxplot([ct, dd], positions=[0, 1], widths=0.5, patch_artist=True,
-                   showfliers=False, medianprops={"color": "black"})
-    for patch, grp in zip(bp["boxes"], ["contr", "DD"]):
-        patch.set_facecolor(COL[grp]); patch.set_alpha(0.4)
-    rng = np.random.default_rng(0)
-    for i, (arr, grp) in enumerate(zip([ct, dd], ["contr", "DD"])):
-        d.scatter(i + rng.normal(0, 0.05, arr.size), arr, s=14, color=COL[grp], alpha=0.7, zorder=3)
-    d.set_xticks([0, 1]); d.set_xticklabels(["Control", "DD"])
-    d.set_ylabel(r"Per-subject $n_{\rm width}$")
-    # significance bar: Mann-Whitney p + rank-biserial correlation (DD - Control;
-    # negative = lower fitted width index in DD, matching the manuscript sign)
-    u_dd = mannwhitneyu(dd, ct, alternative="two-sided")[0]
+    width = pd.read_csv(OUT_DIR / "gaussian_freebeta_locus_beta.csv")
+    dd = width[width.group == "DD"].n_width_A.to_numpy()
+    ct = width[width.group == "contr"].n_width_A.to_numpy()
+    u_dd, _ = mannwhitneyu(dd, ct, alternative="two-sided")
     r_rb = 2 * u_dd / (dd.size * ct.size) - 1
-    lo = min(ct.min(), dd.min()); hi = max(ct.max(), dd.max()); span = hi - lo
-    y0, tick = hi + 0.08*span, 0.03*span
-    d.plot([0, 0, 1, 1], [y0, y0 + tick, y0 + tick, y0], color="black", lw=1.2)
-    p_txt = f"p = {p_nc:.3f}" if p_nc >= 1e-3 else "p < 0.001"
-    d.text(0.5, y0 + tick + 0.02*span, f"{p_txt}, $r_{{\\rm rb}}$ = {r_rb:.2f}",
-           ha="center", va="bottom")
-    d.set_ylim(lo - 0.06*span, y0 + 0.28*span)
+
+    rng = np.random.default_rng(17)
+    for position, values, group in ((0, ct, "contr"), (1, dd, "DD")):
+        d.scatter(position + rng.normal(0, 0.045, values.size), values, s=20,
+                  color=COL[group], alpha=0.75, label=LAB[group])
+        d.hlines(np.median(values), position - 0.18, position + 0.18,
+                 color="black", linewidth=1.4)
+    d.set_xticks([0, 1]); d.set_xticklabels([LAB["contr"], LAB["DD"]])
+    d.set_ylabel(r"Per-subject $n_{\rm width}$")
+    d.text(0.02, 0.97, rf"$r_{{\rm rb}}$ = {r_rb:.2f}", transform=d.transAxes,
+           ha="left", va="top", fontsize=plt.rcParams["axes.labelsize"])
     panel_label(d, "d")
 
     fig.tight_layout()

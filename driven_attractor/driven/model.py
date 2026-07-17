@@ -1,9 +1,10 @@
 """Continuously driven attractor models for the Piantadosi duration data.
 
-All models share the registered winner landscape (power-law-width Gaussian
-wells, sigma_m = sigma_c * m^p on integer wells 1..19), the flat softmax
-readout p(r | x) = softmax_m(g_m(x)), the per-duration uniform lapse over
-r = 1..99, and the count-table categorical likelihood -- imported from
+Models use the registered winner landscape (power-law-width Gaussian wells,
+sigma_m = sigma_c * m^p on integer wells 1..19), with an equal-well ablation
+that fixes p = 0. They share the flat softmax readout
+p(r | x) = softmax_m(g_m(x)), the per-duration uniform lapse over r = 1..99,
+and the count-table categorical likelihood -- imported from
 ``scripts.trial_level_model_comparison`` so the conventions cannot drift.
 
 Evidence process (Stage 1). A latent count K(t) of registered items rises
@@ -73,7 +74,8 @@ STEP_CAP = 0.5           # max |dx| per integration step (evidence units)
 X_GRID = np.linspace(-1.0, 22.0, 4601)   # relaxation-table support
 SOBOL_SEED = 20260710
 
-MODEL_KEYS = ("M1_offset", "M2_tether", "M2_pulse", "M3_static")
+MODEL_KEYS = ("M1_offset", "M2_tether", "M2_tether_const",
+              "M2_pulse", "M3_static")
 
 
 # ── landscape ─────────────────────────────────────────────────────────────
@@ -332,7 +334,8 @@ def evaluate_model(model: str, theta: dict, m_paths: int = 1024,
                    dt: float = DT_EXPO, seed: int = SOBOL_SEED,
                    keep_paths: bool = False) -> ModelEval:
     """theta keys: sigma_c, p, rho, gamma, tau_x, beta (as applicable)."""
-    sig = sigma_wells(theta["sigma_c"], theta["p"])
+    p = 0.0 if model == "M2_tether_const" else theta["p"]
+    sig = sigma_wells(theta["sigma_c"], p)
     rho, gamma = float(theta["rho"]), float(theta.get("gamma", 0.0))
     tau_x = float(theta.get("tau_x", 0.25))
     beta = float(theta.get("beta", 1.0))
@@ -346,7 +349,8 @@ def evaluate_model(model: str, theta: dict, m_paths: int = 1024,
         K_d = (arr[None, :, :, :] <= DUR_S[:, None, None, None]).sum(axis=-1)
         x_off = K_d.astype(float)
     else:
-        kind = {"M2_tether": "tether", "M2_pulse": "pulse",
+        kind = {"M2_tether": "tether", "M2_tether_const": "tether",
+                "M2_pulse": "pulse",
                 "M3_static": "static"}[model]
         off = integrate_exposure(kind, rho, gamma, tau_x, beta, sig,
                                  m_paths, dt=dt, seed=seed, delta=delta)

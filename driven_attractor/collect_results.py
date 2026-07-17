@@ -22,6 +22,7 @@ TL = ROOT / "output" / "trial_level_model_comparison"
 LABELS = {
     "M1_offset": "M1/M4 accumulate-at-offset",
     "M2_tether": "M2 driven attractor (soft tether)",
+    "M2_tether_const": "M2 driven attractor (equal wells)",
     "M2_pulse": "M2 driven attractor (pulses)",
     "M3_static": "M3 driven static (no attractor)",
 }

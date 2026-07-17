@@ -3,8 +3,7 @@
 Single source of truth for font scaling, rcParams and the paper's palette, so
 that the main-text figures (``fig1_conceptual_wells_ens``,
 ``fig3_comparison_ncrit``, ``trial_level_cofit_figure``) and the SM figures
-(``trial_level_recovery_winner``, ``trial_level_ncap_fit``,
-``trial_level_rt_domain``, ``trial_level_pexact_decomposition``,
+(``trial_level_pexact_decomposition``, ``trial_level_weber_fraction``,
 ``decarli_dd_summary_figure``) stay visually consistent. Import from here
 instead of redefining these constants locally.
 
@@ -45,6 +44,8 @@ def get_style(font_scale: float) -> dict:
         "legend.fontsize": 8.5 * font_scale,
         "font.size": 10 * font_scale,   # default for ax.text/annotate without explicit size
         "font.family": "sans-serif",
+        "pdf.fonttype": 42,
+        "svg.fonttype": "none",
         "axes.spines.top": False,
         "axes.spines.right": False,
         "axes.grid": False,

@@ -34,6 +34,7 @@ import scripts.trial_level_model_comparison as T  # noqa: E402
 OUT = ROOT / "driven_attractor" / "output"
 OUT.mkdir(parents=True, exist_ok=True)
 TL = ROOT / "output" / "trial_level_model_comparison"
+LEGACY_TL = ROOT / "legacy" / "trial_level_per_duration" / "output"
 
 
 def main() -> None:
@@ -49,8 +50,8 @@ def main() -> None:
 
     # ── 1. winner per-duration logL at cached thetas ─────────────────────
     spec = T.MODEL_BY_KEY["gaussian_pow_attractor"]
-    pow_theta = pd.read_csv(TL / "pow_theta.csv")
-    fw = pd.read_csv(TL / "freewidth_attractor.csv")
+    pow_theta = pd.read_csv(LEGACY_TL / "pow_theta.csv")
+    fw = pd.read_csv(LEGACY_TL / "freewidth_attractor.csv")
     fw = fw[fw.model_key == "gaussian_pow_attractor"].set_index("duration_ms")
     print("── winner per-duration response logL (cached theta, eval grid 1601) ──")
     resp_fits = {}
@@ -87,7 +88,7 @@ def main() -> None:
 
     # ── 3. RT channel at cached response thetas ──────────────────────────
     print("── RT channel (two-stage refit at cached thetas) ──")
-    rt_target = pd.read_csv(TL / "pow_winner_rt.csv").set_index(["duration_ms", "metric"])
+    rt_target = pd.read_csv(LEGACY_TL / "pow_winner_rt.csv").set_index(["duration_ms", "metric"])
     for d in T.DURATIONS:
         for metric in ("entropy", "steps", "hybrid"):
             rt = T.fit_rt(spec, data[d], resp_fits[d], quad_eval,

@@ -105,8 +105,8 @@ def main() -> None:
           f"r_rb={rank_biserial(dd_r, ct_r):+.2f}")
     # n_width effect size for comparison (from the width-free fit)
     subj = pd.read_csv(_ROOT / "output" / "decarli_fit" / "gaussian_freebeta_subjects.csv")
-    ncd = subj[subj.group == "DD"].n_width_sigma1.to_numpy()
-    ncc = subj[subj.group == "contr"].n_width_sigma1.to_numpy()
+    ncd = subj[subj.group == "DD"].n_width.to_numpy()
+    ncc = subj[subj.group == "contr"].n_width.to_numpy()
     print(f"  n_width (width-free fit): DD {np.median(ncd):.2f} vs contr {np.median(ncc):.2f}  "
           f"r_rb={rank_biserial(ncd, ncc):+.2f}")
     print("\nSaved gaussian_freebeta_locus.csv")

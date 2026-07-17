@@ -157,8 +157,8 @@ def main() -> None:
     ax.set_title("clean-up after offset"); ax.legend(fontsize=7)
     # example trajectories at 640 ms for n = 2, 4, 8, 12
     sig = M.sigma_wells(theta["sigma_c"], theta["p"])
-    if model in ("M2_tether", "M2_pulse"):
-        kind = "tether" if model == "M2_tether" else "pulse"
+    if model in ("M2_tether", "M2_tether_const", "M2_pulse"):
+        kind = "pulse" if model == "M2_pulse" else "tether"
         E = M.exp_draws(8)
         for ax_i, n in zip((axes[0, 2], axes[1, 0]), (4, 10)):
             arr = M.arrival_times(n, theta["rho"], theta.get("gamma", 0.0), E)[None]

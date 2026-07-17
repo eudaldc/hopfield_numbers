@@ -46,7 +46,7 @@ if DURATION_MS not in _VALID_DURATIONS:
         f"duration_ms={DURATION_MS} not valid, must be one of {_VALID_DURATIONS}"
     )
 
-FIXED = dict(max_steps=100, tol=1e-4, s00=0.05)
+FIXED = dict(max_steps=120, tol=1e-4, s00=0.05)
 DEVICE = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
 _BASE_PARAMS = [

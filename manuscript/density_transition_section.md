@@ -5,7 +5,7 @@ the $d'$ between two adjacent attractors is
 $d'(n)=1/\sqrt{c\,n}$.
 The continuous width-based index defined by $\sigma_n=1$ is
 $n_{\text{width}}=1/c$.
-It summarizes the fitted width law and is not a topological merger point.
+It summarizes the fitted width law and is not a discrete merger point.
 With the $640$~ms fit ($c=0.0363$) this yields
 $n_{\text{width}}\approx 27.5$, and across the five duration conditions the
 analytical prediction falls in the narrow band $21\le 1/c\le 28$.

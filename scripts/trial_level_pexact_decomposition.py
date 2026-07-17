@@ -6,7 +6,7 @@ smooth by construction (the width law and the sensory-noise profile are smooth,
 monotone functions of n). Toggling clean-up off at identical parameters removes
 the shoulder, showing that it comes from the dynamics on the integer lattice
 rather than extra fitted degrees of freedom. The alignment with n_width does not
-identify a topological merger.
+identify a discrete merger.
 
 Outputs `pexact_decomposition.png`/`.pdf` (one panel per duration: 80 and 640 ms).
 
@@ -19,7 +19,6 @@ import sys
 from pathlib import Path
 
 import numpy as np
-import pandas as pd
 import matplotlib
 
 matplotlib.use("Agg")
@@ -39,7 +38,7 @@ OUT_FIG = T.OUT_DIR / "pexact_decomposition.png"
 
 def main() -> None:
     apply_style(2.0)   # rendered at \columnwidth, 12 in canvas
-    th = pd.read_csv(T.OUT_DIR / "pow_theta.csv").set_index("duration_ms")
+    th = T.load_shared_theta()
     quad = T.make_quadrature(1601, kind="grid")
     n = T.N_SHOWN.astype(float)
 

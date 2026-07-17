@@ -34,7 +34,7 @@ with A = sum_m w_m m / sigma_m^2, B = sum_m w_m / sigma_m^2, w = softmax(g(x)); 
 
 Pulse variant (M2_pulse): dx = -dV/dx dth + 1.0 * dK (unit pulses, amplitude fixed).
 
-Decision rule (response channel): the relaxation runs until |dx/dth| < 1e-3 (dimensionless force threshold; tau-independent) or until the physical cap T_CAP = 2.0 s. This cap plays the role that the step clamp + 100-step cap play in M0's published clean-up (bounded drift in the merged region); sensitivity is reported. Paths with K(d) = 0 respond as a pure uniform guess on 1..99 (stated zero-evidence rule).
+Decision rule (response channel): the relaxation runs until |dx/dth| < 1e-3 (dimensionless force threshold; tau-independent) or until the physical cap T_CAP = 2.0 s. This cap plays the role that the step clamp + 120-step cap play in M0's published clean-up (bounded drift in the merged region); sensitivity is reported. Paths with K(d) = 0 respond as a pure uniform guess on 1..99 (stated zero-evidence rule).
 
 ### Controls (Stage 3)
 
