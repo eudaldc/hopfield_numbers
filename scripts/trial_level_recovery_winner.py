@@ -37,9 +37,9 @@ if str(_ROOT) not in sys.path:
 
 import scripts.trial_level_model_comparison as T
 
-OUT_CSV = T.LEGACY_OUT_DIR / "recovery_winner.csv"
-OUT_SUMMARY = T.LEGACY_OUT_DIR / "recovery_winner_summary.csv"
-OUT_PNG = T.LEGACY_OUT_DIR / "recovery_winner.png"
+OUT_CSV = T.OUT_DIR / "recovery_winner.csv"
+OUT_SUMMARY = T.OUT_DIR / "recovery_winner_summary.csv"
+OUT_PNG = T.OUT_DIR / "recovery_winner.png"
 
 N_REPS = 12
 N_WORKERS = 22
@@ -58,7 +58,7 @@ def _sigma_n(sigma_c: float, p: float, n: np.ndarray) -> np.ndarray:
     return sigma_c * np.power(np.asarray(n, float), p)
 
 
-def n_width(sigma_c: float, p: float) -> float:
+def n_width_sigma1(sigma_c: float, p: float) -> float:
     """Continuous width index where sigma_n = sigma_c n^p = 1."""
     return float(sigma_c ** (-1.0 / p)) if p > 0 else float("nan")
 
@@ -70,7 +70,7 @@ def _init_worker(fit_nodes: int, maxiter: int, popsize: int) -> None:
     _W["data"] = T.build_duration_data(trial, r_max)
     _W["quad_fit"] = T.make_quadrature(fit_nodes, kind="grid")
     _W["quad_gen"] = T.make_quadrature(1601, kind="grid")
-    _W["theta"] = pd.read_csv(T.LEGACY_OUT_DIR / "pow_theta.csv").set_index("duration_ms")
+    _W["theta"] = pd.read_csv(T.OUT_DIR / "pow_theta.csv").set_index("duration_ms")
     spec = T.MODEL_BY_KEY[T.WINNER_KEY]
     _W["bounds"] = dict(zip(spec.param_names, spec.bounds)) | {"lapse": T.LAPSE_BOUNDS}
     _W["maxiter"] = maxiter
@@ -106,8 +106,8 @@ def _one(task: tuple[int, int]) -> dict:
     row: dict = {"duration_ms": d, "rep": rep}
     row |= {f"gen_{p}": gen[p] for p in PARAMS}
     row |= {f"rec_{p}": rec[p] for p in PARAMS}
-    row["gen_n_width"] = n_width(gen["sigma_c"], gen["pow"])
-    row["rec_n_width"] = n_width(rec["sigma_c"], rec["pow"])
+    row["gen_n_width"] = n_width_sigma1(gen["sigma_c"], gen["pow"])
+    row["rec_n_width"] = n_width_sigma1(rec["sigma_c"], rec["pow"])
     row["gen_sigma3"] = float(_sigma_n(gen["sigma_c"], gen["pow"], np.array([3.0]))[0])
     row["rec_sigma3"] = float(_sigma_n(rec["sigma_c"], rec["pow"], np.array([3.0]))[0])
     row["gen_sensory_sd5"] = float(T.evidence_sd(np.array([5.0]), gen["s0"], gen["lambda0"])[0])

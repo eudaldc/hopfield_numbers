@@ -248,7 +248,7 @@ ax_fq.plot(
     color=FREQ_COLOR, ms=5, lw=1.8, alpha=0.85,
     markeredgecolor="white", markeredgewidth=0.8, zorder=7,
 )
-ax_fq.set_ylabel("Number frequency", color=FREQ_COLOR, labelpad=10)
+ax_fq.set_ylabel("Number-word frequency", color=FREQ_COLOR, labelpad=10)
 ax_fq.tick_params(axis="y", colors=FREQ_COLOR)
 ax_fq.set_ylim(-num_freq[0] * 0.08, num_freq[0] * 1.15)   # bottom pad matched to ax_land's
 ax_fq.spines["right"].set_visible(True)

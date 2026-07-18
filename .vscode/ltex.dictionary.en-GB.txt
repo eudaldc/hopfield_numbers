@@ -20,4 +20,5 @@ Denoising
 dyscalculic
 judgements
 unlabelled
-behavior
+regularized
+hypothesized

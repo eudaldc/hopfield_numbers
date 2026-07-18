@@ -1,4 +1,4 @@
-\begin{thebibliography}{5}
+\begin{thebibliography}{4}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \providecommand{\urlprefix}{URL }
@@ -20,12 +20,6 @@ Decarli G, Paris E, Tencati C, Nardelli C, Vescovi M, Surian L and Piazza M (202
 Dolfi S, Decarli G, Lunardon M, De~Filippo De~Grazia M, Gerola S, Lanfranchi S, Cossu G, Sella F, Testolin A and Zorzi M (2024) Weaker number sense accounts for impaired numerosity perception in dyscalculia: {Behavioral} and computational evidence.
 \newblock \emph{Developmental Science} 27(6): e13538.
 \newblock \doi{10.1111/desc.13538}.
-
-\bibitem[{Macmillan and Creelman(2004)}]{macmillan_detection_2004}
-Macmillan NA and Creelman CD (2004) \emph{Detection {Theory}: {A} {User}'s {Guide}}.
-\newblock 2 edition. New York: Psychology Press.
-\newblock ISBN 978-1-4106-1114-7.
-\newblock \doi{10.4324/9781410611147}.
 
 \bibitem[{Storn and Price(1997)}]{storn_differential_1997}
 Storn R and Price K (1997) Differential {Evolution} - {A} {Simple} and {Efficient} {Heuristic} for {Global} {Optimization} over {Continuous} {Spaces}.

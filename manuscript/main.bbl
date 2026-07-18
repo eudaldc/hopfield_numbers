@@ -1,4 +1,4 @@
-\begin{thebibliography}{44}
+\begin{thebibliography}{45}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \providecommand{\urlprefix}{URL }
@@ -183,6 +183,11 @@ Ramsauer H, Schäfl B, Lehner J, Seidl P, Widrich M, Adler T, Gruber L, Holzleit
 \newblock International Conference on Learning Representations.
 \newblock \doi{10.48550/arXiv.2008.02217}.
 
+\bibitem[{Sengupta et~al.(2017)Sengupta, Bapiraju and Melcher}]{sengupta_big_2017}
+Sengupta R, Bapiraju S and Melcher D (2017) Big and small numbers: {Empirical} support for a single, flexible mechanism for numerosity perception.
+\newblock \emph{Attention, Perception \& Psychophysics} 79(1): 253--266.
+\newblock \doi{10.3758/s13414-016-1221-5}.
+
 \bibitem[{Sengupta et~al.(2014)Sengupta, Surampudi and Melcher}]{sengupta_visual_2014}
 Sengupta R, Surampudi BR and Melcher D (2014) A visual sense of number emerges from the dynamics of a recurrent on-center off-surround neural network.
 \newblock \emph{Brain Research} 1582: 114--124.
@@ -203,15 +208,15 @@ Testolin A, Dolfi S, Rochus M and Zorzi M (2020) Visual sense of number vs. sens
 \newblock \emph{Scientific Reports} 10(1): 10045.
 \newblock \doi{10.1038/s41598-020-66838-5}.
 
-\bibitem[{Testolin and McClelland(2021)}]{testolin_estimates_2021}
-Testolin A and McClelland JL (2021) Do estimates of numerosity really adhere to {Weber}’s law? {A} reexamination of two case studies.
-\newblock \emph{Psychonomic Bulletin \& Review} 28(1): 158--168.
-\newblock \doi{10.3758/s13423-020-01801-z}.
-
 \bibitem[{Verguts and Fias(2004)}]{verguts_representation_2004}
 Verguts T and Fias W (2004) Representation of {Number} in {Animals} and {Humans}: {A} {Neural} {Model}.
 \newblock \emph{Journal of Cognitive Neuroscience} 16(9): 1493--1504.
 \newblock \doi{10.1162/0898929042568490}.
+
+\bibitem[{Verma and Sengupta(2023)}]{verma_emergence_2023}
+Verma BK and Sengupta R (2023) Emergence of behavioral phenomena and adaptation effects in human numerosity decoder using recurrent neural networks.
+\newblock \emph{Scientific Reports} 13(1): 19571.
+\newblock \doi{10.1038/s41598-023-44535-3}.
 
 \bibitem[{Whalen et~al.(1999)Whalen, Gallistel and Gelman}]{whalen_nonverbal_1999}
 Whalen J, Gallistel C and Gelman R (1999) Nonverbal {Counting} in {Humans}: {The} {Psychophysics} of {Number} {Representation}.

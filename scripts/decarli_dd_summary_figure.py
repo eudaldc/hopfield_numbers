@@ -110,16 +110,48 @@ def main() -> None:
     u_dd, _ = mannwhitneyu(dd, ct, alternative="two-sided")
     r_rb = 2 * u_dd / (dd.size * ct.size) - 1
 
+    bp = d.boxplot(
+        [ct, dd],
+        positions=[0, 1],
+        widths=0.45,
+        patch_artist=True,
+        showfliers=False,
+        medianprops={"color": "black", "linewidth": 1.4},
+        whiskerprops={"color": "black", "linewidth": 1.0},
+        capprops={"color": "black", "linewidth": 1.0},
+        boxprops={"linewidth": 1.0, "color": "black"},
+        zorder=2,
+    )
+    for patch, group in zip(bp["boxes"], ("contr", "DD")):
+        patch.set_facecolor(COL[group])
+        patch.set_alpha(0.35)
     rng = np.random.default_rng(17)
     for position, values, group in ((0, ct, "contr"), (1, dd, "DD")):
-        d.scatter(position + rng.normal(0, 0.045, values.size), values, s=20,
-                  color=COL[group], alpha=0.75, label=LAB[group])
-        d.hlines(np.median(values), position - 0.18, position + 0.18,
-                 color="black", linewidth=1.4)
-    d.set_xticks([0, 1]); d.set_xticklabels([LAB["contr"], LAB["DD"]])
+        d.scatter(
+            position + rng.normal(0, 0.045, values.size),
+            values,
+            s=20,
+            color=COL[group],
+            alpha=0.75,
+            zorder=3,
+            label=LAB[group],
+        )
+    d.set_xticks([0, 1])
+    d.set_xticklabels([LAB["contr"], LAB["DD"]])
     d.set_ylabel(r"Per-subject $n_{\rm width}$")
-    d.text(0.02, 0.97, rf"$r_{{\rm rb}}$ = {r_rb:.2f}", transform=d.transAxes,
-           ha="left", va="top", fontsize=plt.rcParams["axes.labelsize"])
+    y_hi = max(ct.max(), dd.max())
+    y_lo = min(ct.min(), dd.min())
+    span = y_hi - y_lo
+    d.set_ylim(y_lo - 0.05 * span, y_hi + 0.38 * span)
+    d.text(
+        0.5,
+        y_hi + 0.18 * span,
+        rf"$r_{{\rm rb}}$ = {r_rb:.2f}",
+        ha="center",
+        va="bottom",
+        fontsize=plt.rcParams["axes.labelsize"],
+        zorder=4,
+    )
     panel_label(d, "d")
 
     fig.tight_layout()
