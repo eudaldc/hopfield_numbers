@@ -121,35 +121,35 @@ The comparison shares one landscape across durations. The attractor beats the We
 \section{Supplementary Material 3: Parameter recovery}
 \label{sm:recovery}
 
-To confirm that the fitted quantities are identifiable at the trial level, we ran a parametric recovery: for each duration we generated $20$ synthetic datasets from parameters jittered around the fitted solution, sampled with the empirical per-numerosity trial counts and the lapse channel, and refitted them with the exact headline pipeline ($100$ refits in total). Table~\ref{tab:recovery} reports the recovery of each parameter and of the derived quantities the paper interprets; Figure~\ref{fig:recovery} shows the scatter and the error-correlation structure.
+To test identifiability under the shared-landscape model, we generated $20$ complete synthetic datasets, each containing all five exposure durations. For each dataset, $\sigma_c$ and $p$ were jittered once and shared across durations, whereas $s_0$, $\lambda_0$, and lapse were jittered separately for each duration. Responses were sampled with the empirical trial count in every duration-by-numerosity cell, including the lapse channel, on a 1601-node quadrature grid. Each complete dataset was then refitted with the same categorical likelihood, 201-node fitting grid, and shared-landscape parameterization as the headline analysis. Thus, the landscape statistics contain $20$ independent fits and the duration-specific statistics contain $100$ fitted blocks. Table~\ref{tab:recovery} reports fitted and derived quantities; Figure~\ref{fig:recovery} shows their scatter and error correlations.
 
 \begin{table}[t]
   \centering
-  \caption{\textbf{Trial-level parameter recovery of the winning model.} Identity $R^2$ and Spearman $\rho$ between generating and recovered values across the $100$ synthetic datasets. Scale parameters are compared on the log scale. The interpreted quantities are the derived ones (lower block): $n_{\mathrm{width}}$ is a heavy-tailed transform of the strongly traded-off $(\sigma_c, p)$, so its identity $R^2$ is uninformative and it is summarised by rank.}
+  \caption{\textbf{Parameter recovery of the shared-landscape model.} Identity $R^2$ and Spearman $\rho$ between generating and recovered values. Shared quantities are evaluated across the 20 complete synthetic datasets. For duration-specific quantities, $R^2$ removes duration means and $\rho$ ranks values within duration before pooling the 100 duration blocks. Scale parameters are compared on the log scale.}
   \label{tab:recovery}
   \setlength{\tabcolsep}{6pt}
-  \begin{tabular}{lcc}
+  \begin{tabular}{lccc}
   \hline
-  Quantity & $R^2$ & Spearman $\rho$ \\
+  Quantity & $N$ & $R^2$ & Spearman $\rho$ \\
   \hline
-  $\sigma_c$ (well scale) & 0.66 & 0.76 \\
-  $p$ (width exponent) & 0.15 & 0.81 \\
-  $s_0$ (sensory scale) & 0.82 & 0.94 \\
-  $\lambda_0$ (sensory exponent) & 0.41 & 0.83 \\
-  $\ell$ (lapse) & 0.96 & 0.98 \\[2pt]
-  $n_{\mathrm{width}}$ (derived) & --- & 0.98 \\
-  $\sigma_3$ (well width at $n=3$) & 0.89 & 0.89 \\
-  $\sigma(n=5)$ (sensory sd) & 0.99 & 1.00 \\
+  $\sigma_c$ (well scale) & 20 & 0.980 & 0.988 \\
+  $p$ (width exponent) & 20 & 0.997 & 0.998 \\
+  $s_0$ (sensory scale) & 100 & 0.538 & 0.788 \\
+  $\lambda_0$ (sensory exponent) & 100 & 0.926 & 0.929 \\
+  $\ell$ (lapse) & 100 & 0.964 & 0.976 \\[2pt]
+  $n_{\mathrm{width}}$ (derived) & 20 & 0.998 & 0.995 \\
+  $\sigma_3$ (well width at $n=3$) & 20 & 0.994 & 0.997 \\
+  $\sigma(n=5)$ (sensory sd) & 100 & 0.991 & 0.982 \\
   \hline
   \end{tabular}
 \end{table}
 
-The landscape scale $\sigma_c$ and exponent $p$ trade off strongly (error correlation $\rho=-0.97$) and are not identifiable on their own, as do the two sensory parameters $s_0$ and $\lambda_0$ ($\rho=-0.98$). The data constrain the combined width profile rather than its scale and slope independently. We therefore interpret the combined sensory-noise profile $\sigma(n)=\sqrt{s_{00}^2+s_0 n^{\lambda_0}}$ ($\sigma(n=5)$, $R^2=0.99$), the fitted width $\sigma_3$ ($R^2=0.89$), the lapse ($R^2=0.96$), and the width index $n_{\mathrm{width}}$, which recovers in rank (Spearman $\rho=0.98$, median error $0.04$ numerosities). Since $n_{\mathrm{width}}=\sigma_c^{-1/p}$ is a heavy-tailed transform of the traded-off pair, a handful of ridge fits admit a low-exponent solution of near-equal likelihood that inflates the pointwise estimate. The index is robust for ordinal comparisons of the fitted width profile, but it is not an estimate of where attractors disappear.
+Sharing the landscape across all five durations makes its two fitted parameters identifiable at this sample size: identity $R^2$ is 0.980 for $\sigma_c$ and 0.997 for $p$. Their errors nevertheless trade off ($\rho=-0.87$), so the two coefficients should not be assigned separate psychological meanings. The derived width profile is recovered more directly: $R^2=0.994$ for $\sigma_3$ and $R^2=0.998$ for $n_{\mathrm{width}}$, whose median absolute error is $0.024$ numerosities. The two sensory parameters show the analogous trade-off ($\rho=-0.94$): within duration, $s_0$ alone is only moderately recovered ($R^2=0.538$), whereas the combined sensory-noise profile $\sigma(n)=\sqrt{s_{00}^2+s_0 n^{\lambda_0}}$ is recovered accurately ($R^2=0.991$ at $n=5$). Lapse recovery is also strong ($R^2=0.964$). These results support interpreting the width and sensory profiles rather than assigning causal meaning to their component coefficients; $n_{\mathrm{width}}$ remains a width-based summary, not an estimate of where attractors disappear.
 
 \begin{figure*}[t]
   \centering
   \includegraphics[width=\textwidth]{../figures/supfigure2_parameter_recovery.pdf}
-  \caption{\textbf{Parameter recovery of the winning model.} Recovered versus generating values for the five fitted parameters and the derived $n_{\mathrm{width}}$ and $\sigma_3$, coloured by exposure duration; dashed lines are identity. The $n_{\mathrm{width}}$ panel is clipped to its meaningful range: the on-diagonal bulk recovers well, while a few ridge fits (low exponent, near-equal likelihood) fall off-scale. The bottom-right panel is the Spearman correlation matrix of recovery errors, showing the two strong trade-offs, $\sigma_c$--$p$ and $s_0$--$\lambda_0$.}
+  \caption{\textbf{Parameter recovery of the shared-landscape model.} Recovered versus generating values for the five fitted parameters and the derived $n_{\mathrm{width}}$ and $\sigma_3$; dashed lines are identity. Shared landscape quantities are shown once per complete dataset in black, whereas duration-specific quantities are coloured by exposure duration. The bottom-right panel is the Spearman correlation matrix of recovery errors, showing the two main trade-offs, $\sigma_c$--$p$ and $s_0$--$\lambda_0$.}
   \label{fig:recovery}
 \end{figure*}
 
