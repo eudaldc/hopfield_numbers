@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex main"] 1784389212.61333 "main.aux" "main.bbl" "main" 1784389212.9923 0
+["bibtex main"] 1784443132.33254 "main.aux" "main.bbl" "main" 1784443988.90209 0
   "./SageH.bst" 1775669046.47233 30763 e9cf3bda853a6eedae2781a529a11a19 ""
   "./references.bib" 1784361003.0504 137004 b81ad461c620d6c86b212a8235e45e11 ""
-  "main.aux" 1784389212.92418 15891 d1229eb1eca2e684757c926ade46b0e7 "pdflatex"
+  "main.aux" 1784443988.84918 14870 5df5240926704d725f8845d4a3934979 "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1784389212.62922 "main.tex" "main.pdf" "main" 1784389212.99252 0
+["pdflatex"] 1784443988.61553 "main.tex" "main.pdf" "main" 1784443988.90225 0
   "../figures/conceptual_attractor_wells_ens.pdf" 1784310578.9746 1513361 42a570e0e18e161ecc7ec641e01698b9 ""
   "../figures/fig3_comparison_ncrit.pdf" 1784371491.81533 36948 c540170d56a4f5257b8357835a5d009a ""
   "../output/trial_level_model_comparison/winner_cofit_summaries.pdf" 1784293828.34794 29006 e98e3a37f3cc4a4c8dd6a745b9da13b2 ""
@@ -156,13 +156,13 @@
   "/home/eudald/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1783413055 350349 1b8175931eaf295295318c82f7243e5b ""
   "/home/eudald/.TinyTeX/texmf-var/web2c/pdftex/pdflatex.fmt" 1783413194 2250895 39947f911b05e4587ca272e3002a957d ""
   "/home/eudald/.TinyTeX/texmf.cnf" 1764231884.31392 673 00b2d43d146d9f37d3c51b45f06b782c ""
-  "main.aux" 1784389212.92418 15891 d1229eb1eca2e684757c926ade46b0e7 "pdflatex"
-  "main.bbl" 1784389212.62607 14677 e2f03f8f91a93f64e954273d56d04cfe "bibtex main"
-  "main.out" 1784389212.92518 352 8a4e6fa695fbf34b1ba4058ae1f64d4a "pdflatex"
-  "main.tex" 1784389130.2491 43101 729e9f3dde20ced13938fe8a8e67f50f ""
+  "main.aux" 1784443988.84918 14870 5df5240926704d725f8845d4a3934979 "pdflatex"
+  "main.bbl" 1784443132.34493 12762 40a970cb34405ca6bf30fe0c1e5a20d3 "bibtex main"
+  "main.out" 1784443988.85018 352 8a4e6fa695fbf34b1ba4058ae1f64d4a "pdflatex"
+  "main.tex" 1784443975.282 39608 00bb13f63dcc11fefb8cbd67f7a72fa3 ""
   "sagej.cls" 1775628020.28977 15958 5fa98adc3dbacfa813e0251e7c0042fe ""
   "supplementary_material.aux" 1784371957.14345 14076 9b2e2cd496a1442a7f71b448c5b02d9a ""
-  "supplementary_material.tex" 1784371935.28416 26375 636926de698339ee26571afc384e15c2 ""
+  "supplementary_material.tex" 1784394237.64282 26375 636926de698339ee26571afc384e15c2 ""
   (generated)
   "main.aux"
   "main.log"
