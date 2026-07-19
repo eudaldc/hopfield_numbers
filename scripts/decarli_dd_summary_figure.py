@@ -7,7 +7,8 @@
       subject below the diagonal → the accuracy decline is resolution-shaped (Tier 2).
   (D) per-subject n_width (the continuous width-based index), DD vs control.
 
-Reuses the saved fits/CSVs; non-destructive. Writes decarli_dd_summary.png.
+Reuses the saved fits/CSVs; non-destructive. Writes the fourth supplementary
+figure to ``figures/``.
 
     .venv/bin/python -m scripts.decarli_dd_summary_figure
 """
@@ -33,11 +34,11 @@ if str(_ROOT) not in sys.path:
 
 import scripts.trial_level_model_comparison as T
 from scripts.decarli_gaussian_freebeta import DATA, NVALS, GROUPS, OUT_DIR, predict, PNAMES
-from figures.plot_style import C_ATTR, C_WARN, apply_style, panel_label
+from scripts.plot_style import C_ATTR, C_WARN, apply_style, panel_label
 
 COL = {"DD": C_WARN, "contr": C_ATTR}
 LAB = {"DD": "DD", "contr": "Control"}
-OUT_FIG = OUT_DIR / "decarli_dd_summary.png"
+OUT_FIG = _ROOT / "figures" / "supfigure4_developmental_dyscalculia.png"
 
 
 def main() -> None:

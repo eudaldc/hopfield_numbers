@@ -39,7 +39,7 @@ import scripts.trial_level_model_comparison as T
 
 OUT_CSV = T.OUT_DIR / "recovery_winner.csv"
 OUT_SUMMARY = T.OUT_DIR / "recovery_winner_summary.csv"
-OUT_PNG = T.OUT_DIR / "recovery_winner.png"
+OUT_PNG = _ROOT / "figures" / "supfigure2_parameter_recovery.png"
 
 N_REPS = 12
 N_WORKERS = 22
@@ -159,7 +159,7 @@ def make_figure(df: pd.DataFrame, corr: pd.DataFrame) -> None:
     import matplotlib
     matplotlib.use("Agg")
     import matplotlib.pyplot as plt
-    from figures.plot_style import apply_style, panel_label
+    from scripts.plot_style import apply_style, panel_label
 
     apply_style(1.5)   # rendered at \textwidth (figure*), 16 in canvas
     quantities = list(PARAMS) + ["n_width", "sigma3"]

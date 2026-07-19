@@ -13,7 +13,7 @@ y₀  →  cleanup (gradient descent on E(x | y₀))  →  x*  →  posterior p(
 Energy (Poisson or Gaussian wells; see `fit_helpers` and `docs/`, and the manuscript). Encoding noise and RT linkage are controlled via YAML and the fit scripts.
 
 <p align="center">
-  <img src="figures/conceptual_attractor_wells_poisson.png" alt="Conceptual attractor wells illustration" width="600"/><br>
+  <img src="figures/figure1_conceptual_attractor_wells.png" alt="Conceptual attractor wells illustration" width="600"/><br>
   <em>Illustration of integer attractor wells along the evidence axis.</em>
 </p>
 
@@ -35,8 +35,8 @@ Place inputs under `data/` (e.g. Piantadosi estimation trials, De Carli group su
 scripts/       Fitting, evaluation, density-transition analysis, figure helpers
 configs/       YAML defaults for fits (durations, well type, RT mode, priors, …)
 data/          Raw / cleaned CSVs and derived tables
-output/        Fit summaries, plots, CSVs from analyses
-figures/       Publication figures and generators (e.g. `make_fig*.py`)
+output/        Fit summaries, exploratory plots, CSVs from analyses
+figures/       Publication figures used by the manuscript
 manuscript/    LaTeX for the paper and supplementary material
 docs/          Model notes and session logs
 tests/         pytest suite
@@ -46,6 +46,8 @@ tests/         pytest suite
 
 | Script | Purpose |
 |--------|---------|
+| `scripts/figure1_conceptual_attractor_wells.py` | Main conceptual attractor figure |
+| `scripts/figure2_model_comparison.py` | Main model-comparison and individual-differences figure |
 | `scripts/trial_level_model_comparison.py` | Shared trial-level likelihood and model definitions |
 | `scripts/trial_level_shared_landscape_ladder.py` | Joint response-model comparison with one landscape shared across exposure durations |
 | `scripts/trial_level_clean_up_budget.py` | Profile likelihood for the shared give-up budget \(G\) |
@@ -57,7 +59,7 @@ tests/         pytest suite
 | `scripts/decarli_gaussian_freebeta.py` | Winner model applied to De Carli (SM5): group accuracy+RT fit + derived n_width/σ(n) |
 | `scripts/decarli_gaussian_freebeta_subjects.py` | Per-subject De Carli n_width distributions, DD vs control |
 | `scripts/decarli_locus.py` / `decarli_locus_clean.py` | Is the DD deficit resolution or sensory noise? (mirror fit + clean global test) |
-| `scripts/decarli_dd_summary_figure.py` | Consolidated DD-vs-control 4-panel argument (`decarli_dd_summary.png`) |
+| `scripts/decarli_dd_summary_figure.py` | Consolidated DD-vs-control 4-panel argument (`figures/supfigure4_developmental_dyscalculia.png`) |
 
 The retired pipeline that fitted an independent landscape at each exposure duration is archived under `legacy/trial_level_per_duration/`.
 

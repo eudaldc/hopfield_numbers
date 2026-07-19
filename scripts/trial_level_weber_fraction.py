@@ -35,7 +35,7 @@ if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
 import scripts.trial_level_model_comparison as T
-from figures.plot_style import apply_style
+from scripts.plot_style import apply_style
 
 WIN = T.MODEL_BY_KEY[T.WINNER_KEY]
 OUT_CSV = T.OUT_DIR / "weber_fraction.csv"

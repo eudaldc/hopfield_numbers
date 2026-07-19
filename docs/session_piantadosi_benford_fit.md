@@ -84,7 +84,7 @@ Loss = 0.011 (3 corbes: mean_guess, pct_exact, median_rt)
 
 ## Fitxers rellevants
 - `scripts/fit_piantadosi_640.py` — script principal de fit (standalone, no usa DynamicAttractorCore)
-- `figures/fig_conceptual_wells.py` — figura conceptual del model (referència visual)
+- `scripts/figure1_conceptual_attractor_wells.py` — figura conceptual del model (referència visual)
 - `output/piantadosi_fit/fit_160ms_benford.png` — últim fit (3 panells: estimació, accuracy, RT)
 - `output/piantadosi_fit/fit_160ms_energy.png` — paisatge energètic + perfil sigma
 - `output/piantadosi_fit/diagnostic_steps_entropy.png` — n_steps i entropia vs n

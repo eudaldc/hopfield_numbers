@@ -27,7 +27,7 @@ if str(_ROOT) not in sys.path:
     sys.path.insert(0, str(_ROOT))
 
 import scripts.trial_level_model_comparison as T
-from figures.plot_style import C_ATTR, apply_style, panel_label
+from scripts.plot_style import C_ATTR, apply_style, panel_label
 
 FONT_SCALE = 1.5
 apply_style(FONT_SCALE)
@@ -49,8 +49,13 @@ def main(argv=None) -> None:
     tag = "_G100" if args.budget == 100 else ""
     theta_csv = T.OUT_DIR / f"shared_landscape_ladder_theta{tag}.csv"
     rt_csv = T.OUT_DIR / f"rt_joint{tag}.csv"
-    out_fig = T.OUT_DIR / f"winner_cofit_summaries{tag}.png"
-    out_fig_pdf = T.OUT_DIR / f"winner_cofit_summaries{tag}.pdf"
+    out_stem = (
+        _ROOT / "figures" / "figure3_joint_model_fit"
+        if args.budget == 120
+        else T.OUT_DIR / "winner_cofit_summaries_G100"
+    )
+    out_fig = out_stem.with_suffix(".png")
+    out_fig_pdf = out_stem.with_suffix(".pdf")
     T.MAX_STEPS = args.budget
 
     spec = T.MODEL_BY_KEY[WINNER]

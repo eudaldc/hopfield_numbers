@@ -1,16 +1,16 @@
 # Fdb version 4
-["bibtex main"] 1784443132.33254 "main.aux" "main.bbl" "main" 1784443988.90209 0
+["bibtex main"] 1784446626.19477 "main.aux" "main.bbl" "main" 1784447153.64531 0
   "./SageH.bst" 1775669046.47233 30763 e9cf3bda853a6eedae2781a529a11a19 ""
   "./references.bib" 1784361003.0504 137004 b81ad461c620d6c86b212a8235e45e11 ""
-  "main.aux" 1784443988.84918 14870 5df5240926704d725f8845d4a3934979 "pdflatex"
+  "main.aux" 1784447153.59779 14764 ddee3ce3c2bac45136edaac94278db9e "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1784443988.61553 "main.tex" "main.pdf" "main" 1784443988.90225 0
-  "../figures/conceptual_attractor_wells_ens.pdf" 1784310578.9746 1513361 42a570e0e18e161ecc7ec641e01698b9 ""
-  "../figures/fig3_comparison_ncrit.pdf" 1784371491.81533 36948 c540170d56a4f5257b8357835a5d009a ""
-  "../output/trial_level_model_comparison/winner_cofit_summaries.pdf" 1784293828.34794 29006 e98e3a37f3cc4a4c8dd6a745b9da13b2 ""
+["pdflatex"] 1784447153.39171 "main.tex" "main.pdf" "main" 1784447153.64547 0
+  "../figures/figure1_conceptual_attractor_wells.pdf" 1784447153.20179 1525510 37d30da8651e0fed1e27367879dba96b ""
+  "../figures/figure2_model_comparison.pdf" 1784371491.81533 36948 c540170d56a4f5257b8357835a5d009a ""
+  "../figures/figure3_joint_model_fit.pdf" 1784293828.34794 29006 e98e3a37f3cc4a4c8dd6a745b9da13b2 ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/courier/pcrr7t.tfm" 1136768653 960 379cc0019370a9e0208a0a3f949f847a ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/courier/pcrr8r.tfm" 1136768653 1292 bd42be2f344128bff6d35d98474adfe3 ""
@@ -64,6 +64,7 @@
   "/home/eudald/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb" 1248133631 32762 224316ccc9ad3ca0423a14971cfa7fc1 ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb" 1248133631 33993 9b89b85fd2d9df0482bd47194d1d3bf3 ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb" 1248133631 32569 5e5ddc8df908dea60932f3c484a54c0d ""
+  "/home/eudald/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb" 1248133631 32587 1788b0c1c5b39540c96f5e42ccd6dae8 ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb" 1248133631 32716 08e384dc442464e7285e891af9f45947 ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb" 1248133631 32442 c975af247b6702f7ca0c299af3616b80 ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb" 1248133631 34694 ad62b13721ee8eda1dcc8993c8bd7041 ""
@@ -156,13 +157,13 @@
   "/home/eudald/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1783413055 350349 1b8175931eaf295295318c82f7243e5b ""
   "/home/eudald/.TinyTeX/texmf-var/web2c/pdftex/pdflatex.fmt" 1783413194 2250895 39947f911b05e4587ca272e3002a957d ""
   "/home/eudald/.TinyTeX/texmf.cnf" 1764231884.31392 673 00b2d43d146d9f37d3c51b45f06b782c ""
-  "main.aux" 1784443988.84918 14870 5df5240926704d725f8845d4a3934979 "pdflatex"
-  "main.bbl" 1784443132.34493 12762 40a970cb34405ca6bf30fe0c1e5a20d3 "bibtex main"
-  "main.out" 1784443988.85018 352 8a4e6fa695fbf34b1ba4058ae1f64d4a "pdflatex"
-  "main.tex" 1784443975.282 39608 00bb13f63dcc11fefb8cbd67f7a72fa3 ""
+  "main.aux" 1784447153.59779 14764 ddee3ce3c2bac45136edaac94278db9e "pdflatex"
+  "main.bbl" 1784446626.20419 12762 40a970cb34405ca6bf30fe0c1e5a20d3 "bibtex main"
+  "main.out" 1784447153.59879 352 8a4e6fa695fbf34b1ba4058ae1f64d4a "pdflatex"
+  "main.tex" 1784446953.46434 39599 57331e852b4574e3454caf96a699b9bc ""
   "sagej.cls" 1775628020.28977 15958 5fa98adc3dbacfa813e0251e7c0042fe ""
-  "supplementary_material.aux" 1784371957.14345 14076 9b2e2cd496a1442a7f71b448c5b02d9a ""
-  "supplementary_material.tex" 1784394237.64282 26375 636926de698339ee26571afc384e15c2 ""
+  "supplementary_material.aux" 1784445933.47632 14076 9b2e2cd496a1442a7f71b448c5b02d9a ""
+  "supplementary_material.tex" 1784445707.86294 26342 b14f8ddb9c1e80cb169f6a5bd290b4da ""
   (generated)
   "main.aux"
   "main.log"

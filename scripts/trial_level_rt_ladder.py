@@ -29,7 +29,7 @@ matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 
 import scripts.trial_level_model_comparison as T
-from figures.plot_style import C_ATTR, C_BENCH, C_STATIC, apply_style, panel_label
+from scripts.plot_style import C_ATTR, C_BENCH, C_STATIC, apply_style, panel_label
 
 
 DURS = np.asarray(T.DURATIONS, dtype=int)

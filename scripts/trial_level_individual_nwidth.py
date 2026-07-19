@@ -15,7 +15,7 @@ noise free) provides the within-subject locus check.
 We restrict to the long exposures (320 + 640 ms), where the fitted sensory noise
 sigma(n=5) < 1 so resolution is landscape-limited rather than noise-limited (at
 40 ms sigma(n=5) ~ 1.5, noise-dominated). The correlation is robust to this cut
-(see the header of ``fig3_comparison_ncrit`` / SM): r stays ~-0.5 for every
+(see the header of ``figure2_model_comparison`` / SM): r stays ~-0.5 for every
 subset from all-five to 320+640.
 
     .venv/bin/python -m scripts.trial_level_individual_nwidth

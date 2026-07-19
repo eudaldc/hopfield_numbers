@@ -8,9 +8,9 @@ anchoring follows ``no_anchor`` in ``configs/config.yaml`` (when true,
 ``fit_helpers``).
 
 Panel (b) shows the Reynvoet model at 640 ms only (solid red line, same
-visual language as :mod:`figures.fig2_piantadosi_fit`).
+visual language as :mod:`scripts.fig2_piantadosi_fit`).
 
-Saves PDF and PNG to ``figures/fig3_compression_reynvoet``."""
+Saves PDF and PNG to ``output/model_comparison/fig3_compression_reynvoet``."""
 
 import sys
 from pathlib import Path
@@ -44,7 +44,7 @@ from scripts.plots import (
     EMP_COLOR,
 )
 
-OUTPUT_DIR = Path("figures")
+OUTPUT_DIR = _ROOT.parent / "output" / "model_comparison"
 FONT_SCALE = 1.4
 REYNVOET_MODEL_DUR_MS = 640
 MOD_COLOR = "#cb181d"

@@ -3,7 +3,7 @@
 Each exposure duration (40, 80, 160, 320, 640 ms) becomes a separate
 wandb run inside a grid sweep.  Per-duration plots are logged to each
 run; the cross-duration summary panel is saved locally, then
-``figures.fig2_piantadosi_fit`` is run to refresh the multi-panel figure.
+``scripts.fig2_piantadosi_fit`` is run to refresh the multi-panel figure.
 
 Usage:
     python scripts/fit_piantadosi_durations.py
@@ -220,7 +220,7 @@ if __name__ == "__main__":
     if _sweep_results:
         plot_summary(_sweep_results, OUTPUT_DIR)
         subprocess.run(
-            [sys.executable, "-m", "figures.fig2_piantadosi_fit"],
+            [sys.executable, "-m", "scripts.fig2_piantadosi_fit"],
             cwd=_ROOT,
             check=True,
         )

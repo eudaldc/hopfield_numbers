@@ -8,7 +8,8 @@ the shoulder, showing that it comes from the dynamics on the integer lattice
 rather than extra fitted degrees of freedom. The alignment with n_width does not
 identify a discrete merger.
 
-Outputs `pexact_decomposition.png`/`.pdf` (one panel per duration: 80 and 640 ms).
+Outputs `figures/supfigure3_exact_accuracy_decomposition.png`/`.pdf`
+(one panel per duration: 80 and 640 ms).
 
     .venv/bin/python -m scripts.trial_level_pexact_decomposition
 """
@@ -30,10 +31,10 @@ if str(_ROOT) not in sys.path:
 
 import scripts.trial_level_model_comparison as T
 from scripts.trial_level_weber_fraction import n_width
-from figures.plot_style import C_ATTR, C_STATIC, apply_style, panel_label
+from scripts.plot_style import C_ATTR, C_STATIC, apply_style, panel_label
 
 WIN = T.MODEL_BY_KEY[T.WINNER_KEY]
-OUT_FIG = T.OUT_DIR / "pexact_decomposition.png"
+OUT_FIG = _ROOT / "figures" / "supfigure3_exact_accuracy_decomposition.png"
 
 
 def main() -> None:

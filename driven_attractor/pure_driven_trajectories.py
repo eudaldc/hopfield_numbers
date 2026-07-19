@@ -36,11 +36,10 @@ sys.path.insert(0, str(ROOT))
 from driven_attractor.driven import data as D, model as M  # noqa: E402
 import driven_attractor.driven_sibling as S  # noqa: E402
 import scripts.trial_level_model_comparison as T  # noqa: E402
-from figures.plot_style import apply_style, panel_label  # noqa: E402
+from scripts.plot_style import apply_style, panel_label  # noqa: E402
 
-FIG = ROOT / "driven_attractor" / "figures"
 OUT = ROOT / "driven_attractor" / "output"
-SM_OUT = ROOT / "output" / "trial_level_model_comparison"
+FIGURE_STEM = ROOT / "figures" / "supfigure1_pure_driven_trajectories"
 
 # Shared winner landscape with the 320 ms sensory channel for the illustration.
 WIN = S.m0_params("shared")[320]
@@ -121,11 +120,10 @@ def trajectories():
     axes[0, 0].legend(loc="upper left", frameon=False,
                       fontsize=plt.rcParams["legend.fontsize"])
     fig.tight_layout()
-    for stem in (FIG / "pure_driven_trajectories", SM_OUT / "pure_driven_trajectories"):
-        fig.savefig(f"{stem}.png", dpi=300)
-        fig.savefig(f"{stem}.pdf")
+    fig.savefig(FIGURE_STEM.with_suffix(".png"), dpi=300)
+    fig.savefig(FIGURE_STEM.with_suffix(".pdf"))
     plt.close(fig)
-    print(f"\nsaved {SM_OUT / 'pure_driven_trajectories.pdf'}")
+    print(f"\nsaved {FIGURE_STEM.with_suffix('.pdf')}")
 
 
 if __name__ == "__main__":

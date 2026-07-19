@@ -1,17 +1,17 @@
 # Fdb version 4
-["bibtex supplementary_material"] 1784371956.89388 "supplementary_material.aux" "supplementary_material.bbl" "supplementary_material" 1784371957.20811 0
+["bibtex supplementary_material"] 1784445933.27507 "supplementary_material.aux" "supplementary_material.bbl" "supplementary_material" 1784445933.5219 0
   "./SageH.bst" 1775669046.47233 30763 e9cf3bda853a6eedae2781a529a11a19 ""
   "./references.bib" 1784361003.0504 137004 b81ad461c620d6c86b212a8235e45e11 ""
-  "supplementary_material.aux" 1784371957.14345 14076 9b2e2cd496a1442a7f71b448c5b02d9a "pdflatex"
+  "supplementary_material.aux" 1784445933.47632 14076 9b2e2cd496a1442a7f71b448c5b02d9a "pdflatex"
   (generated)
   "supplementary_material.bbl"
   "supplementary_material.blg"
   (rewritten before read)
-["pdflatex"] 1784371956.90641 "supplementary_material.tex" "supplementary_material.pdf" "supplementary_material" 1784371957.2083 0
-  "../output/decarli_fit/decarli_dd_summary.pdf" 1784371940.15636 31554 630b773ca6398711e753ad3c0e75fbc9 ""
-  "../output/trial_level_model_comparison/pexact_decomposition.pdf" 1784367436.23865 21523 6ae553e6f5380e562292996f722317ac ""
-  "../output/trial_level_model_comparison/pure_driven_trajectories.pdf" 1784287864.5669 32869 bbcbe5b478d796bf5eed755c8a76d81a ""
-  "../output/trial_level_model_comparison/recovery_winner.pdf" 1784362605.33018 46784 b636a4073caab3ba5191677b7eec5dd5 ""
+["pdflatex"] 1784445933.28336 "supplementary_material.tex" "supplementary_material.pdf" "supplementary_material" 1784445933.52205 0
+  "../figures/supfigure1_pure_driven_trajectories.pdf" 1784287864.5669 32869 bbcbe5b478d796bf5eed755c8a76d81a ""
+  "../figures/supfigure2_parameter_recovery.pdf" 1784362605.33018 46784 b636a4073caab3ba5191677b7eec5dd5 ""
+  "../figures/supfigure3_exact_accuracy_decomposition.pdf" 1784367436.23865 21523 6ae553e6f5380e562292996f722317ac ""
+  "../figures/supfigure4_developmental_dyscalculia.pdf" 1784372091.99144 31534 73798787c1a30f75277b26bf29e998ad ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/courier/pcrr7t.tfm" 1136768653 960 379cc0019370a9e0208a0a3f949f847a ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/courier/pcrr8r.tfm" 1136768653 1292 bd42be2f344128bff6d35d98474adfe3 ""
@@ -166,13 +166,13 @@
   "/home/eudald/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1783413055 350349 1b8175931eaf295295318c82f7243e5b ""
   "/home/eudald/.TinyTeX/texmf-var/web2c/pdftex/pdflatex.fmt" 1783413194 2250895 39947f911b05e4587ca272e3002a957d ""
   "/home/eudald/.TinyTeX/texmf.cnf" 1764231884.31392 673 00b2d43d146d9f37d3c51b45f06b782c ""
-  "main.aux" 1784371509.91632 15879 ba31f66c9c1c41de50e76f2ccdaffef5 ""
-  "main.tex" 1784371821.09216 43511 2a5d319418aacb50a48f19f8c7145f11 ""
+  "main.aux" 1784445902.42737 14870 5df5240926704d725f8845d4a3934979 ""
+  "main.tex" 1784445704.06487 39463 c22789522bc60b4059259b0cd270dff3 ""
   "sagej.cls" 1775628020.28977 15958 5fa98adc3dbacfa813e0251e7c0042fe ""
-  "supplementary_material.aux" 1784371957.14345 14076 9b2e2cd496a1442a7f71b448c5b02d9a "pdflatex"
-  "supplementary_material.bbl" 1784371956.90216 1781 a869cd1f7f0817fe748a790b9f80eb29 "bibtex supplementary_material"
-  "supplementary_material.out" 1784371957.14345 1801 3a76a2de2544f452c0047a72303a9152 "pdflatex"
-  "supplementary_material.tex" 1784371935.28416 26375 636926de698339ee26571afc384e15c2 ""
+  "supplementary_material.aux" 1784445933.47632 14076 9b2e2cd496a1442a7f71b448c5b02d9a "pdflatex"
+  "supplementary_material.bbl" 1784445933.28139 1781 a869cd1f7f0817fe748a790b9f80eb29 "bibtex supplementary_material"
+  "supplementary_material.out" 1784445933.47639 1801 3a76a2de2544f452c0047a72303a9152 "pdflatex"
+  "supplementary_material.tex" 1784445707.86294 26342 b14f8ddb9c1e80cb169f6a5bd290b4da ""
   (generated)
   "supplementary_material.aux"
   "supplementary_material.log"

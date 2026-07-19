@@ -1,6 +1,0 @@
-model,model_key,lono_loss,lodo_loss,cv_note
-Hopfield-Poisson,hopfield_poisson,0.007010243001541976,0.010444392759362136,published per-duration fit for LONO; shared c/kappa trend for LODO
-No-cleanup Poisson,no_cleanup_poisson,0.007346551168388509,0.013290853872189687,refit summaries for LONO; log-duration extrapolation for LODO
-Gaussian/Benford readout,gaussian_benford,0.007432260423232244,0.009505788164966885,refit summaries for LONO; log-duration extrapolation for LODO
-Weber/ANS baseline,weber_ans,0.007816010929729708,0.014538609450849848,refit summaries for LONO; log-duration extrapolation for LODO
-C&P log-prior proxy,cp_log_prior_proxy,0.01064720950178035,0.012530661954440258,refit summaries for LONO; log-duration extrapolation for LODO
