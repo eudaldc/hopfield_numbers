@@ -150,7 +150,8 @@ def main(argv=None) -> None:
         if ci == 0:
             ax0.set_ylabel("Mean guess")
             ax1.set_ylabel("% exact")
-            ax2.set_ylabel("Mean RT (s)")
+            # OLD: ax2.set_ylabel("Mean RT (s)")
+            ax2.set_ylabel("Geometric mean RT (s)")
             panel_label(ax0, "a")
             panel_label(ax1, "b")
             panel_label(ax2, "c")

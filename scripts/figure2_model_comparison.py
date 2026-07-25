@@ -10,8 +10,9 @@ Single shared-landscape (joint) fit throughout; the per-duration fits are droppe
       (one shared mapping across durations). Single neutral colour - the three
       are variants of the same model, not a model-role category.
   c - Individual differences: empirical-Bayes n_width vs Weber noise from the
-      bivariate hierarchical model (non-overlapping n splits; partial pooling).
-      Data from ``scripts/trial_level_bivariate_id.py`` (primary cutoff 8/9).
+      all-duration hierarchical model (non-overlapping n splits; partial
+      pooling). The inset reports the latent correlation conditional on the
+      participant lapse effect.
 
     .venv/bin/python -m scripts.figure2_model_comparison
 """
@@ -166,8 +167,8 @@ ax_a.legend(
 # panel c - hierarchical EB n_width vs Weber noise (primary cutoff 8/9)
 ind = pd.read_csv(result_csv("bivariate_id_participants"))
 ind = ind[ind["cutoff"] == "8/9"]
-summary = pd.read_csv(result_csv("bivariate_id_summary"))
-rho_hat = float(summary.loc[summary.cutoff == "8/9", "rho"].iloc[0])
+hierarchical = pd.read_csv(result_csv("bivariate_id_summary")).iloc[0]
+rho_hat = float(hierarchical["rho"])
 d = ind[["weber_mean", "n_width_mean"]].dropna()
 ax_c.scatter(
     d.weber_mean, d.n_width_mean, s=34, alpha=0.45, color=CLEANUP, edgecolor="none"
@@ -178,7 +179,7 @@ ax_c.set_xlim(d.weber_mean.min() - 0.01, d.weber_mean.quantile(0.99) + 0.02)
 ax_c.text(
     0.96,
     0.95,
-    "Latent participant correlation\n"
+    "Landscape resolution\nWeber noise association\n"
     rf"$\rho = {rho_hat:.2f}$, $N = {len(d)}$",
     transform=ax_c.transAxes,
     ha="right",

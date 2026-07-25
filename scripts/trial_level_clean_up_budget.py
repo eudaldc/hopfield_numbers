@@ -1,8 +1,9 @@
 """Profile the clean-up budget K (= MAX_STEPS) under the primary joint fit.
 
 The clean-up is run for a fixed budget of K steps (the give-up point). On the
-flat large-numerosity landscape the descent never converges, so K bounds the
-settling time; without it the predicted response time would diverge. This script
+flat large-numerosity landscape, some trajectories do not settle within a
+behaviourally plausible iteration budget, so K implements a finite stopping
+policy and prevents implausibly long predicted response times. This script
 identifies K from the RESPONSE channel of the joint (shared-landscape) fit: for a
 grid of K it re-fits the winner's shared landscape (sigma_c, p shared across the
 five durations; sensory channel and lapse per duration) and records the total

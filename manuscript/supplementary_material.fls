@@ -219,11 +219,6 @@ INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/helvetic/phvr7t.tfm
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/helvetic/phvr7t.tfm
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/helvetic/phvr7t.tfm
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/times/ptmri7t.tfm
-INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/helvetic/phvro7t.tfm
-INPUT /home/eudald/.TinyTeX/texmf-dist/tex/latex/psnfss/ot1pcr.fd
-INPUT /home/eudald/.TinyTeX/texmf-dist/tex/latex/psnfss/ot1pcr.fd
-INPUT /home/eudald/.TinyTeX/texmf-dist/tex/latex/psnfss/ot1pcr.fd
-INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/courier/pcrr7t.tfm
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex7.tfm
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/public/latex-fonts/lasy10.tfm
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/public/latex-fonts/lasy7.tfm
@@ -231,6 +226,10 @@ INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam7.tfm
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm7.tfm
+INPUT /home/eudald/.TinyTeX/texmf-dist/tex/latex/psnfss/ot1pcr.fd
+INPUT /home/eudald/.TinyTeX/texmf-dist/tex/latex/psnfss/ot1pcr.fd
+INPUT /home/eudald/.TinyTeX/texmf-dist/tex/latex/psnfss/ot1pcr.fd
+INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/courier/pcrr7t.tfm
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/times/ptmr7t.tfm
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/times/ptmri7t.tfm
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/helvetic/phvro7t.tfm
@@ -253,8 +252,6 @@ INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/times/ptmr7t.vf
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/times/ptmr8r.tfm
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/times/ptmri7t.vf
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/times/ptmri8r.tfm
-INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/helvetic/phvro7t.vf
-INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/helvetic/phvro8r.tfm
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/courier/pcrr7t.vf
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/courier/pcrr8r.tfm
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/helvetic/phvr7t.vf
@@ -281,6 +278,9 @@ INPUT ../figures/supfigure1_pure_driven_trajectories.pdf
 INPUT ../figures/supfigure1_pure_driven_trajectories.pdf
 INPUT ../figures/supfigure1_pure_driven_trajectories.pdf
 INPUT ../figures/supfigure1_pure_driven_trajectories.pdf
+INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/helvetic/phvro7t.tfm
+INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/helvetic/phvro7t.vf
+INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/helvetic/phvro8r.tfm
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/helvetic/phvb7t.vf
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/helvetic/phvb8r.tfm
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/helvetic/phvr7t.vf
@@ -290,6 +290,7 @@ INPUT ../figures/supfigure2_parameter_recovery.pdf
 INPUT ../figures/supfigure2_parameter_recovery.pdf
 INPUT ../figures/supfigure2_parameter_recovery.pdf
 INPUT ../figures/supfigure2_parameter_recovery.pdf
+INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/helvetic/phvro7t.tfm
 INPUT ../figures/supfigure3_exact_accuracy_decomposition.pdf
 INPUT ../figures/supfigure3_exact_accuracy_decomposition.pdf
 INPUT ../figures/supfigure3_exact_accuracy_decomposition.pdf
@@ -297,11 +298,8 @@ INPUT ../figures/supfigure3_exact_accuracy_decomposition.pdf
 INPUT ../figures/supfigure3_exact_accuracy_decomposition.pdf
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/times/ptmb7t.vf
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/times/ptmb8r.tfm
-INPUT ../figures/supfigure4_developmental_dyscalculia.pdf
-INPUT ../figures/supfigure4_developmental_dyscalculia.pdf
-INPUT ../figures/supfigure4_developmental_dyscalculia.pdf
-INPUT ../figures/supfigure4_developmental_dyscalculia.pdf
-INPUT ../figures/supfigure4_developmental_dyscalculia.pdf
+INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/helvetic/phvro7t.vf
+INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/helvetic/phvro8r.tfm
 INPUT ./supplementary_material.bbl
 INPUT ./supplementary_material.bbl
 INPUT supplementary_material.bbl
@@ -329,7 +327,6 @@ INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmr9.pfb
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb
-INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb

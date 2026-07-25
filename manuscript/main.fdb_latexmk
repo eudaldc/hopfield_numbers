@@ -1,16 +1,16 @@
 # Fdb version 4
-["bibtex main"] 1784446626.19477 "main.aux" "main.bbl" "main" 1784447153.64531 0
+["bibtex main"] 1784976436.99306 "main.aux" "main.bbl" "main" 1784979320.60399 0
   "./SageH.bst" 1775669046.47233 30763 e9cf3bda853a6eedae2781a529a11a19 ""
-  "./references.bib" 1784361003.0504 137004 b81ad461c620d6c86b212a8235e45e11 ""
-  "main.aux" 1784447153.59779 14764 ddee3ce3c2bac45136edaac94278db9e "pdflatex"
+  "./references.bib" 1784975403.32882 125931 df5f7c31aab1cc19f6a466155eed89ec ""
+  "main.aux" 1784979320.5624 15382 ca1c2363e90d5f34869af2d0ddf85d0b "pdflatex"
   (generated)
   "main.bbl"
   "main.blg"
   (rewritten before read)
-["pdflatex"] 1784447153.39171 "main.tex" "main.pdf" "main" 1784447153.64547 0
-  "../figures/figure1_conceptual_attractor_wells.pdf" 1784447153.20179 1525510 37d30da8651e0fed1e27367879dba96b ""
-  "../figures/figure2_model_comparison.pdf" 1784371491.81533 36948 c540170d56a4f5257b8357835a5d009a ""
-  "../figures/figure3_joint_model_fit.pdf" 1784293828.34794 29006 e98e3a37f3cc4a4c8dd6a745b9da13b2 ""
+["pdflatex"] 1784979320.33872 "main.tex" "main.pdf" "main" 1784979320.6041 0
+  "../figures/figure1_conceptual_attractor_wells.pdf" 1784976403.25801 1525553 4914db532b0d66aa82379e14e36ab348 ""
+  "../figures/figure2_model_comparison.pdf" 1784532139.95939 36815 9cb0b73c2d9118dc0d21c45ce1358078 ""
+  "../figures/figure3_joint_model_fit.pdf" 1784976418.35445 29139 5d09e6c8f656740667fc8bb12a0d218a ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/courier/pcrr7t.tfm" 1136768653 960 379cc0019370a9e0208a0a3f949f847a ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/courier/pcrr8r.tfm" 1136768653 1292 bd42be2f344128bff6d35d98474adfe3 ""
@@ -154,16 +154,16 @@
   "/home/eudald/.TinyTeX/texmf-dist/tex/latex/tools/verbatim.sty" 1780258940 7532 f4ccdd43fe3dcc1fb2fb9431b10aa336 ""
   "/home/eudald/.TinyTeX/texmf-dist/tex/latex/url/url.sty" 1388531844 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "/home/eudald/.TinyTeX/texmf-dist/web2c/texmf.cnf" 1782667392 43815 bcd8835056a2dfac260166a1c9541261 ""
-  "/home/eudald/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1783413055 350349 1b8175931eaf295295318c82f7243e5b ""
-  "/home/eudald/.TinyTeX/texmf-var/web2c/pdftex/pdflatex.fmt" 1783413194 2250895 39947f911b05e4587ca272e3002a957d ""
+  "/home/eudald/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1784975255 350432 16d3a772df2d3823eddab16f1d285ce2 ""
+  "/home/eudald/.TinyTeX/texmf-var/web2c/pdftex/pdflatex.fmt" 1784975152 2300676 7369821dc3f6330bfbb949ca5b931747 ""
   "/home/eudald/.TinyTeX/texmf.cnf" 1764231884.31392 673 00b2d43d146d9f37d3c51b45f06b782c ""
-  "main.aux" 1784447153.59779 14764 ddee3ce3c2bac45136edaac94278db9e "pdflatex"
-  "main.bbl" 1784446626.20419 12762 40a970cb34405ca6bf30fe0c1e5a20d3 "bibtex main"
-  "main.out" 1784447153.59879 352 8a4e6fa695fbf34b1ba4058ae1f64d4a "pdflatex"
-  "main.tex" 1784446953.46434 39599 57331e852b4574e3454caf96a699b9bc ""
+  "main.aux" 1784979320.5624 15382 ca1c2363e90d5f34869af2d0ddf85d0b "pdflatex"
+  "main.bbl" 1784976437.00277 12992 a0920411aaba2e88317c7fbd0fbbb03f "bibtex main"
+  "main.out" 1784979320.5634 352 8a4e6fa695fbf34b1ba4058ae1f64d4a "pdflatex"
+  "main.tex" 1784979317.17236 42721 b87f3c8bc8683e325cd8302bbb00caf4 ""
   "sagej.cls" 1775628020.28977 15958 5fa98adc3dbacfa813e0251e7c0042fe ""
-  "supplementary_material.aux" 1784445933.47632 14076 9b2e2cd496a1442a7f71b448c5b02d9a ""
-  "supplementary_material.tex" 1784445707.86294 26342 b14f8ddb9c1e80cb169f6a5bd290b4da ""
+  "supplementary_material.aux" 1784977349.87202 10516 5cfada35b53b307f4b04e80e4ca8f1f5 ""
+  "supplementary_material.tex" 1784976586.29007 23416 19afe7036758ac281d3947fffa37a332 ""
   (generated)
   "main.aux"
   "main.log"

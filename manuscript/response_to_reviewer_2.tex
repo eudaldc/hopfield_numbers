@@ -1,0 +1,126 @@
+\documentclass[11pt]{article}
+
+\usepackage[a4paper,margin=2.5cm]{geometry}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage{xcolor}
+\usepackage{amsmath,amssymb}
+\usepackage[hidelinks]{hyperref}
+
+\setlength{\parindent}{0pt}
+\setlength{\parskip}{0.7em}
+\setlength{\emergencystretch}{2em}
+
+\definecolor{reviewgray}{RGB}{70,70,70}
+\definecolor{responseblue}{RGB}{0,72,125}
+
+\newenvironment{reviewercomment}{\begin{quote}\color{reviewgray}\itshape}{\end{quote}}
+\newenvironment{authorresponse}{\par\noindent\textbf{\color{responseblue}Response.}\ }{\par}
+\newcommand{\change}[1]{\par\noindent\textit{Changes in the revised manuscript.} #1\par}
+
+\begin{document}
+
+\begin{center}
+{\Large\bfseries Response to Reviewer 2}\\[0.5em]
+{\itshape Manuscript: ``An attractor account of numerosity perception''}\\[0.25em]
+{\itshape Manuscript ID: IPE-26-0055}
+\end{center}
+
+Dear Reviewer,
+
+Thank you for the careful and constructive assessment. Your comments helped us separate the contribution of the attractor dynamics from the original response family, test whether the numerical landscape can be shared across exposure durations, and sharpen the interpretation of fitted parameters and the model's perceptual scope. Please note that, as a consequence of the other reviewer comments, we have made major changes to the model and the manuscript. We replaced the Poisson-inspired wells with power-law Gaussian memory components and added as a control a separate purely driven accumulator that omits the completed estimate. We also refitted all models to trial-level data rather than averages, rebuilt the principal likelihood and model comparison, and derived the response-time prediction from the dynamics.
+
+We address each point below.
+
+\subsection*{Comment 1: Malo et al. (2023)}
+
+\begin{reviewercomment}
+The reviewer asked us to acknowledge the quantum-spin model of Malo et al. as a recent Hopfield-like or dynamical account of numerosity.
+\end{reviewercomment}
+
+\begin{authorresponse}
+Thank you for pointing us to this work. We now cite Malo et al. (2023) in the Introduction and describe it as a distinct dynamical route to a unified numerical representation. We also clarify the difference between the approaches: Malo et al. encode numerosity in the collective spectrum of a quantum-spin model, whereas the present account represents integers as explicit memory components in an attractor landscape and tests their consequences for trial-level categorical reports and response time. Note that we have also added references to Sengupta's group work as a request from the other reviewer.
+\end{authorresponse}
+
+\change{Malo et al. (2023) is now included in the Introduction's comparison of single-system and dynamical accounts.}
+
+\subsection*{Comment 2: Modest AIC differences and the source of the improvement}
+
+\begin{reviewercomment}
+The reviewer questioned whether the original small advantage reflected the attractor dynamics or simply the Poisson response family.
+\end{reviewercomment}
+
+\begin{authorresponse}
+We agree that the original summary-level differences could not distinguish the contribution of the Poisson family from that of the dynamics.
+
+Both aspects of the analysis have changed. The Poisson family is no longer used, and all comparisons now use a categorical trial-level likelihood over the 52,995 integer reports. The contribution of the dynamics is isolated through a matched static readout that retains the same Gaussian landscape, sensory channel, and response rule but removes gradient-descent clean-up. The static model has one fewer parameter, because it does not require the shared stopping budget, yet it is worse by $\Delta\mathrm{AIC}=722$.
+
+The constant-width controls separately test magnitude-dependent broadening: fixing $p=0$ worsens AIC by 3488. The revised comparison therefore distinguishes the two central ingredients of the model: a width profile that broadens with magnitude and attractor clean-up acting on that profile. The response-time analysis provides a further test because convergence time, rather than posterior entropy alone, predicts the observed chronometry.
+\end{authorresponse}
+
+\change{The revised trial-level comparison is reported in Figure~2a and Supplementary Table~S2; the convergence-time comparison is reported in Figure~2b and Supplementary Material~1.}
+
+\subsection*{Comment 3: Parameter identifiability}
+
+\begin{reviewercomment}
+The reviewer asked us to highlight the parameter trade-offs more clearly and to avoid strong causal interpretation of individual fitted parameters, especially in the dyscalculia extension.
+\end{reviewercomment}
+
+\begin{authorresponse}
+We agree. The revised parameterization removes the original Poisson scale $c$, and the selected response-time model retains convergence time alone ($\kappa=0$), so the original $c$--$\kappa$ trade-off no longer applies.
+
+We performed a new recovery analysis that matches the primary shared-landscape fit: 20 complete synthetic datasets were generated and refitted, with one landscape per dataset and duration-specific sensory and lapse parameters. The landscape coefficients are recovered accurately ($R^2=.980$ for $\sigma_c$ and $R^2=.997$ for $p$), but their errors remain correlated ($\rho=-.87$). We therefore do not interpret either coefficient separately. Instead, we summarize their joint width profile through
+\[
+n_{\mathrm{width}}=\sigma_c^{-1/p},
+\]
+which is recovered more directly ($R^2=.998$).
+
+The sensory coefficients show the analogous issue: $s_0$ alone is only moderately recovered ($R^2=.538$), and the $s_0$--$\lambda_0$ recovery errors correlate at $\rho=-.94$, whereas the resulting sensory-noise profile is recovered accurately ($R^2=.991$ at $n=5$). We consequently interpret the combined width and sensory profiles rather than assigning causal meanings to their component coefficients.
+
+The developmental-dyscalculia extension has been removed because the available aggregated data could not support either the requested trial-level reanalysis or the causal interpretation of individual parameters.
+\end{authorresponse}
+
+\change{The revised Results and Supplementary Material~3 report the recovery trade-offs and derived profiles (Supplementary Table~S3 and Figure~S2); Supplementary Material~5 has been removed.}
+
+\subsection*{Comment 4: Why fit parameters separately across exposure durations?}
+
+\begin{reviewercomment}
+The reviewer asked whether separate fits implied that the numerical mechanism itself changed with exposure duration.
+\end{reviewercomment}
+
+\begin{authorresponse}
+We agree that the original strategy was severely suboptimal. The revised primary model no longer fits a separate landscape at each duration.
+
+A single landscape, defined by shared $\sigma_c$ and $p$, is fitted jointly across all five durations. The global stopping budget $G$ is also shared. Only the sensory channel and lapse vary with duration. This directly tests the hypothesis that the numerical representation is stable while the quality of the available sensory evidence changes with exposure.
+
+The shared-landscape attractor remains the best model in the trial-level comparison, including against a fully duration-specific Weber/ANS code ($\Delta\mathrm{AIC}=838$). We therefore no longer interpret exposure duration as changing the representational mechanism itself.
+\end{authorresponse}
+
+\change{The joint sharing structure is now the primary specification throughout the Methods and Results and is stated explicitly in Supplementary Materials~1 and~2 and Supplementary Table~S2.}
+
+\subsection*{Comment 5: Absence of a perceptual module}
+
+\begin{reviewercomment}
+The reviewer asked us to discuss more fully that the model lacks a perceptual front end and therefore cannot simulate effects of continuous image magnitudes, and to engage with image-computable models such as Testolin et al. (2020) and Dolfi et al. (2024).
+\end{reviewercomment}
+
+\begin{authorresponse}
+We agree and have expanded this limitation substantially.
+
+The revised manuscript defines the attractor as a candidate central numerical-readout stage. The input $y_0$ summarises evidence that has already been extracted by modality-specific processing. Consequently, the model does not simulate dot area, density, convex hull, object segmentation, spatial configuration, or attentional manipulations.
+
+We now discuss image-computable models explicitly, including Stoianov and Zorzi, Testolin et al., and Dolfi et al. A complete perceptual account could use such a model to generate the scalar evidence entering the attractor. This coupled architecture would provide a stronger test of whether attractor clean-up explains response structure beyond that already generated by sensory encoding.
+
+We also formulate cross-modal tests: visual, auditory, and tactile channels could have different sensory parameters while sharing the same numerical landscape. We present this as a prediction rather than a result established by the current visual dataset.
+\end{authorresponse}
+
+\change{The revised Introduction and Discussion distinguish modality-specific sensory extraction from the proposed shared numerical readout, engage with image-computable alternatives, and state explicitly that continuous-magnitude and attentional effects are outside the present model.}
+
+We thank the reviewer again. These comments directly motivated several of the revision's most consequential changes and helped us present a more identifiable and appropriately delimited account.
+
+Sincerely,
+
+Eudald Correig-Fraga
+
+\end{document}

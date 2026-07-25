@@ -1,4 +1,4 @@
-\begin{thebibliography}{40}
+\begin{thebibliography}{41}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \providecommand{\urlprefix}{URL }
@@ -51,11 +51,6 @@ Cordes S, Gelman R, Gallistel CR and Whalen J (2001) Variability signatures dist
 \newblock \emph{Psychonomic Bulletin \& Review} 8(4): 698--707.
 \newblock \doi{10.3758/BF03196206}.
 
-\bibitem[{Decarli et~al.(2020)Decarli, Paris, Tencati, Nardelli, Vescovi, Surian and Piazza}]{decarli_impaired_2020}
-Decarli G, Paris E, Tencati C, Nardelli C, Vescovi M, Surian L and Piazza M (2020) Impaired large numerosity estimation and intact subitizing in developmental dyscalculia.
-\newblock \emph{PLOS ONE} 15(12): e0244578.
-\newblock \doi{10.1371/journal.pone.0244578}.
-
 \bibitem[{Dehaene(2011)}]{dehaene_number_2011}
 Dehaene S (2011) \emph{The number sense: {How} the mind creates mathematics, {Rev}. and updated ed}.
 \newblock New York, NY, US: Oxford University Press.
@@ -100,6 +95,11 @@ Gallistel C and Gelman R (1992) Preverbal and verbal counting and computation.
 Gallistel CR and Gelman R (2000) Non-verbal numerical cognition: from reals to integers.
 \newblock \emph{Trends in Cognitive Sciences} 4(2): 59--65.
 \newblock \doi{10.1016/s1364-6613(99)01424-2}.
+
+\bibitem[{Halberda et~al.(2008)Halberda, Mazzocco and Feigenson}]{halberda_individual_2008}
+Halberda J, Mazzocco MM and Feigenson L (2008) Individual differences in non-verbal number acuity correlate with maths achievement.
+\newblock \emph{Nature} 455(7213): 665--668.
+\newblock \doi{10.1038/nature07246}.
 
 \bibitem[{Hopfield(1982)}]{hopfield_neural_1982}
 Hopfield JJ (1982) Neural networks and physical systems with emergent collective computational abilities.
@@ -192,6 +192,11 @@ Testolin A and McClelland JL (2021) Do estimates of numerosity really adhere to 
 Verguts T and Fias W (2004) Representation of {Number} in {Animals} and {Humans}: {A} {Neural} {Model}.
 \newblock \emph{Journal of Cognitive Neuroscience} 16(9): 1493--1504.
 \newblock \doi{10.1162/0898929042568490}.
+
+\bibitem[{Verma and Sengupta(2023)}]{verma_emergence_2023}
+Verma BK and Sengupta R (2023) Emergence of behavioral phenomena and adaptation effects in human numerosity decoder using recurrent neural networks.
+\newblock \emph{Scientific Reports} 13(1): 19571.
+\newblock \doi{10.1038/s41598-023-44535-3}.
 
 \bibitem[{Whalen et~al.(1999)Whalen, Gallistel and Gelman}]{whalen_nonverbal_1999}
 Whalen J, Gallistel C and Gelman R (1999) Nonverbal {Counting} in {Humans}: {The} {Psychophysics} of {Number} {Representation}.

@@ -1,23 +1,17 @@
-Participant identity and N=100 reconciliation
-============================================
-Clustering unit: uniqueid (n = 366)
-pid in subset: n = 367 (max uniqueid/pid = 1, max pid/uniqueid = 2)
+All-duration hierarchical individual differences
+================================================
+Complete participants: 360
+Exposure durations: 40, 80, 160, 320, 640 ms
+Outcome trials: 52933 total; n <= 8 for n_width and n >= 9 for Weber w.
+Population means and lapse intercepts are duration-specific.
+Participant effects on log n_width, log w, and logit lapse are shared
+across durations and jointly Gaussian. The target rho is the partial
+n_width--w correlation conditional on participant lapse.
+The rho=0 null reoptimizes every nuisance parameter.
+Quadrature: 9 nodes per dimension (729 joint nodes).
+Optimization device: cuda
 
-Cheyette & Piantadosi (2020) reported four between-experiment arms (N=110 each, drop 10 highest-error → N=100 per condition). The open DURATION file pools three control arms (NONE / AREA / DENSITY) without that exclusion; exposure duration is within participants.
-
-Open DURATION uniqueids (all exposures): 379
-Analysis sample (both 320 and 640 ms): 366 uniqueids, 21194 trials
-Control arms:
-  AREA: 120
-  DENSITY: 120
-  NONE: 126
-
-Hierarchical fit summary
-------------------------
-cutoff  n_lo  n_hi  n_participants  n_trials_small  n_trials_large       rho    tau_n    tau_w  alpha_n_320  alpha_n_640  alpha_w_320  alpha_w_640  gamma_320  gamma_640  lapse_320  lapse_640  n_width_320  n_width_640  weber_320  weber_640   marg_loglik  marg_loglik_rho0     lr_rho    p_rho_neg  elapsed_s  eb_spearman  eb_pearson
-   7/8     7     8             362            9883           11303 -0.767486 0.268507 0.433209     2.418137     2.421752    -1.406162    -1.587851       1.08       1.04   0.076295   0.065582    11.224933    11.265576   0.245082   0.204364 -36641.023571     -36723.237202 164.427263 6.100908e-38  37.986014    -0.899585   -0.885365
-   8/9     8     9             362           11292            9894 -0.568680 0.325537 0.463225     2.365180     2.420406    -1.313296    -1.472659       1.08       1.04   0.076295   0.065582    10.645955    11.250430   0.268932   0.229315 -36540.057642     -36618.485797 156.856310 2.751175e-36  35.701096    -0.768089   -0.760180
-  9/10     9    10             362           12701            8485 -0.709094 0.315854 0.471195     2.188972     2.300241    -1.228592    -1.360437       1.08       1.04   0.076295   0.065582     8.926032     9.976590   0.292704   0.256549 -36544.431208     -36639.154501 189.446587 2.099424e-43  31.225611    -0.792629   -0.812532
-
-Fixed: width exponent p, sensory (s0, λ0), duration lapses from the group joint winner; Weber gain γ_d from pooled large-n MLE. Free: duration FE on log n_width and log w, RE SDs, correlation ρ. Staged fit: univariate hierarchical MLEs → 1-D ρ search → Nelder–Mead polish.
-Robust negative association across cutoffs: True
+Result
+------
+                  analysis cutoff  n_lo  n_hi  n_durations  n_participants  n_trials_small  n_trials_large       rho  rho_partial_n_w_given_lapse  rho_marginal_n_w  rho_n_lapse  rho_w_lapse    tau_n    tau_w  tau_lapse    marg_loglik  marg_loglik_rho0    lr_rho         p_lr  p_rho_negative  quadrature_nodes_per_dimension  n_quadrature_nodes  n_starts_null  n_starts_alternative  fit_success  null_gradient_inf  alternative_gradient_inf  elapsed_s                                                                                                                   fit_message  alpha_n_40  alpha_w_40  lapse_40_median  gamma_40  alpha_n_80  alpha_w_80  lapse_80_median  gamma_80  alpha_n_160  alpha_w_160  lapse_160_median  gamma_160  alpha_n_320  alpha_w_320  lapse_320_median  gamma_320  alpha_n_640  alpha_w_640  lapse_640_median  gamma_640
+all_durations_shared_lapse    8/9     8     9            5             360           28226           24707 -0.627496                    -0.627496         -0.717817    -0.449957     0.587277 0.343814 0.445161   1.493573 -104897.342594    -104949.851869 105.01855 1.209978e-24    6.049890e-25                               9                 729              2                     3         True           0.980776                  4.113553  93.986629 null: CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH; alternative: CONVERGENCE: RELATIVE REDUCTION OF F <= FACTR*EPSMCH    1.694415   -0.817781         0.027425      0.84    2.020322   -1.143291         0.017696      0.92     2.177071    -1.206832          0.009706        1.0     2.209958     -1.20941          0.009058       1.08     2.329037    -1.357577          0.009165       1.04

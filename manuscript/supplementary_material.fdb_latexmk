@@ -1,17 +1,16 @@
 # Fdb version 4
-["bibtex supplementary_material"] 1784445933.27507 "supplementary_material.aux" "supplementary_material.bbl" "supplementary_material" 1784445933.5219 0
+["bibtex supplementary_material"] 1784976437.34335 "supplementary_material.aux" "supplementary_material.bbl" "supplementary_material" 1784977349.92485 0
   "./SageH.bst" 1775669046.47233 30763 e9cf3bda853a6eedae2781a529a11a19 ""
-  "./references.bib" 1784361003.0504 137004 b81ad461c620d6c86b212a8235e45e11 ""
-  "supplementary_material.aux" 1784445933.47632 14076 9b2e2cd496a1442a7f71b448c5b02d9a "pdflatex"
+  "./references.bib" 1784975403.32882 125931 df5f7c31aab1cc19f6a466155eed89ec ""
+  "supplementary_material.aux" 1784977349.87202 10516 5cfada35b53b307f4b04e80e4ca8f1f5 "pdflatex"
   (generated)
   "supplementary_material.bbl"
   "supplementary_material.blg"
   (rewritten before read)
-["pdflatex"] 1784445933.28336 "supplementary_material.tex" "supplementary_material.pdf" "supplementary_material" 1784445933.52205 0
+["pdflatex"] 1784977349.63463 "supplementary_material.tex" "supplementary_material.pdf" "supplementary_material" 1784977349.92503 0
   "../figures/supfigure1_pure_driven_trajectories.pdf" 1784287864.5669 32869 bbcbe5b478d796bf5eed755c8a76d81a ""
-  "../figures/supfigure2_parameter_recovery.pdf" 1784362605.33018 46784 b636a4073caab3ba5191677b7eec5dd5 ""
+  "../figures/supfigure2_parameter_recovery.pdf" 1784464001.23942 41380 0934f8be41d0b41fe893b9867795a228 ""
   "../figures/supfigure3_exact_accuracy_decomposition.pdf" 1784367436.23865 21523 6ae553e6f5380e562292996f722317ac ""
-  "../figures/supfigure4_developmental_dyscalculia.pdf" 1784372091.99144 31534 73798787c1a30f75277b26bf29e998ad ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/courier/pcrr7t.tfm" 1136768653 960 379cc0019370a9e0208a0a3f949f847a ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/courier/pcrr8r.tfm" 1136768653 1292 bd42be2f344128bff6d35d98474adfe3 ""
@@ -71,7 +70,6 @@
   "/home/eudald/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb" 1248133631 32569 5e5ddc8df908dea60932f3c484a54c0d ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy6.pfb" 1248133631 32587 1788b0c1c5b39540c96f5e42ccd6dae8 ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb" 1248133631 32716 08e384dc442464e7285e891af9f45947 ""
-  "/home/eudald/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy9.pfb" 1248133631 32442 c975af247b6702f7ca0c299af3616b80 ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/type1/public/amsfonts/symbols/msbm10.pfb" 1248133631 34694 ad62b13721ee8eda1dcc8993c8bd7041 ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/type1/urw/courier/ucrr8a.pfb" 1136849748 45758 19968a0990191524e34e1994d4a31cb6 ""
   "/home/eudald/.TinyTeX/texmf-dist/fonts/type1/urw/helvetic/uhvb8a.pfb" 1136849748 35941 f27169cc74234d5bd5e4cca5abafaabb ""
@@ -163,16 +161,16 @@
   "/home/eudald/.TinyTeX/texmf-dist/tex/latex/tools/verbatim.sty" 1780258940 7532 f4ccdd43fe3dcc1fb2fb9431b10aa336 ""
   "/home/eudald/.TinyTeX/texmf-dist/tex/latex/url/url.sty" 1388531844 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
   "/home/eudald/.TinyTeX/texmf-dist/web2c/texmf.cnf" 1782667392 43815 bcd8835056a2dfac260166a1c9541261 ""
-  "/home/eudald/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1783413055 350349 1b8175931eaf295295318c82f7243e5b ""
-  "/home/eudald/.TinyTeX/texmf-var/web2c/pdftex/pdflatex.fmt" 1783413194 2250895 39947f911b05e4587ca272e3002a957d ""
+  "/home/eudald/.TinyTeX/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1784975255 350432 16d3a772df2d3823eddab16f1d285ce2 ""
+  "/home/eudald/.TinyTeX/texmf-var/web2c/pdftex/pdflatex.fmt" 1784975152 2300676 7369821dc3f6330bfbb949ca5b931747 ""
   "/home/eudald/.TinyTeX/texmf.cnf" 1764231884.31392 673 00b2d43d146d9f37d3c51b45f06b782c ""
-  "main.aux" 1784445902.42737 14870 5df5240926704d725f8845d4a3934979 ""
-  "main.tex" 1784445704.06487 39463 c22789522bc60b4059259b0cd270dff3 ""
+  "main.aux" 1784977255.86026 15382 ca1c2363e90d5f34869af2d0ddf85d0b ""
+  "main.tex" 1784977246.32366 42783 e02c85aad0acb0fe616bd725639ee35f ""
   "sagej.cls" 1775628020.28977 15958 5fa98adc3dbacfa813e0251e7c0042fe ""
-  "supplementary_material.aux" 1784445933.47632 14076 9b2e2cd496a1442a7f71b448c5b02d9a "pdflatex"
-  "supplementary_material.bbl" 1784445933.28139 1781 a869cd1f7f0817fe748a790b9f80eb29 "bibtex supplementary_material"
-  "supplementary_material.out" 1784445933.47639 1801 3a76a2de2544f452c0047a72303a9152 "pdflatex"
-  "supplementary_material.tex" 1784445707.86294 26342 b14f8ddb9c1e80cb169f6a5bd290b4da ""
+  "supplementary_material.aux" 1784977349.87202 10516 5cfada35b53b307f4b04e80e4ca8f1f5 "pdflatex"
+  "supplementary_material.bbl" 1784976437.35102 911 b9a1d10b2b6a55e57ff91c5d75e855aa "bibtex supplementary_material"
+  "supplementary_material.out" 1784977349.87226 1348 e9a8aa34a1e4fca296d0f58f3c5b173a "pdflatex"
+  "supplementary_material.tex" 1784976586.29007 23416 19afe7036758ac281d3947fffa37a332 ""
   (generated)
   "supplementary_material.aux"
   "supplementary_material.log"

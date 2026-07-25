@@ -1,4 +1,4 @@
-\begin{thebibliography}{4}
+\begin{thebibliography}{2}
 \providecommand{\natexlab}[1]{#1}
 \providecommand{\url}[1]{\texttt{#1}}
 \providecommand{\urlprefix}{URL }
@@ -10,16 +10,6 @@
 Cheyette SJ and Piantadosi ST (2020) A unified account of numerosity perception.
 \newblock \emph{Nature Human Behaviour} 4(12): 1265--1272.
 \newblock \doi{10.1038/s41562-020-00946-0}.
-
-\bibitem[{Decarli et~al.(2020)Decarli, Paris, Tencati, Nardelli, Vescovi, Surian and Piazza}]{decarli_impaired_2020}
-Decarli G, Paris E, Tencati C, Nardelli C, Vescovi M, Surian L and Piazza M (2020) Impaired large numerosity estimation and intact subitizing in developmental dyscalculia.
-\newblock \emph{PLOS ONE} 15(12): e0244578.
-\newblock \doi{10.1371/journal.pone.0244578}.
-
-\bibitem[{Dolfi et~al.(2024)Dolfi, Decarli, Lunardon, De~Filippo De~Grazia, Gerola, Lanfranchi, Cossu, Sella, Testolin and Zorzi}]{dolfi_weaker_2024}
-Dolfi S, Decarli G, Lunardon M, De~Filippo De~Grazia M, Gerola S, Lanfranchi S, Cossu G, Sella F, Testolin A and Zorzi M (2024) Weaker number sense accounts for impaired numerosity perception in dyscalculia: {Behavioral} and computational evidence.
-\newblock \emph{Developmental Science} 27(6): e13538.
-\newblock \doi{10.1111/desc.13538}.
 
 \bibitem[{Storn and Price(1997)}]{storn_differential_1997}
 Storn R and Price K (1997) Differential {Evolution} - {A} {Simple} and {Efficient} {Heuristic} for {Global} {Optimization} over {Continuous} {Spaces}.

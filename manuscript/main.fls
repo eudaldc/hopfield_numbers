@@ -253,6 +253,9 @@ INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/times/ptmri7t.vf
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/times/ptmri8r.tfm
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/helvetic/phvro7t.vf
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/helvetic/phvro8r.tfm
+INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/helvetic/phvro7t.tfm
+INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/helvetic/phvro7t.vf
+INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/helvetic/phvro8r.tfm
 INPUT ../figures/figure1_conceptual_attractor_wells.pdf
 INPUT ../figures/figure1_conceptual_attractor_wells.pdf
 INPUT ../figures/figure1_conceptual_attractor_wells.pdf
@@ -268,9 +271,6 @@ INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/public/amsfonts/cmextra/cmex9.t
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/public/latex-fonts/lasy9.tfm
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/public/amsfonts/symbols/msam10.tfm
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/public/amsfonts/symbols/msbm10.tfm
-INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/helvetic/phvro7t.tfm
-INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/helvetic/phvro7t.vf
-INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/helvetic/phvro8r.tfm
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/helvetic/phvb7t.vf
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/helvetic/phvb8r.tfm
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/helvetic/phvr7t.vf
@@ -287,8 +287,6 @@ INPUT ../figures/figure3_joint_model_fit.pdf
 INPUT ../figures/figure3_joint_model_fit.pdf
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/times/ptmri7t.tfm
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/helvetic/phvro7t.tfm
-INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/times/ptmri7t.vf
-INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/times/ptmri8r.tfm
 INPUT /home/eudald/.TinyTeX/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 INPUT /home/eudald/.TinyTeX/texmf-dist/tex/latex/psnfss/ot1pcr.fd
 INPUT /home/eudald/.TinyTeX/texmf-dist/tex/latex/psnfss/ot1pcr.fd
@@ -297,6 +295,8 @@ INPUT ./main.bbl
 INPUT ./main.bbl
 INPUT main.bbl
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/times/ptmri7t.tfm
+INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/times/ptmri7t.vf
+INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/times/ptmri8r.tfm
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/times/ptmr7t.vf
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/times/ptmr8r.tfm
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/courier/pcrr7t.vf

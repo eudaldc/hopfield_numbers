@@ -202,7 +202,7 @@ for i in range(N_DISPLAY):
     )
 
 ax_land.text(
-    0.2, 0.05, "Deep, isolated wells:\nexact readout",
+    0.2, 0.05, "Deep, isolated wells:\nnear-exact readout",
     transform=ax_land.transAxes,
     fontsize=10 * FONT_SCALE, color="0.15", ha="center", va="bottom",
     zorder=6,
@@ -219,7 +219,8 @@ ax_land.text(
 ax_land.set_xlim(*XLIM)
 ax_land.set_ylim(-4.95, 0.55)   # extra room below so the annotation box clears the frequency line
 ax_land.set_xlabel("Evidence axis  $x$")
-ax_land.set_ylabel("Energy")
+# OLD: ax_land.set_ylabel("Energy")
+ax_land.set_ylabel("Schematic energy")
 panel_label(ax_land, "a")
 ax_land.set_xticks(integers_display)
 ax_land.set_xticklabels([str(n) for n in integers_display])
@@ -234,7 +235,8 @@ ax_fq.plot(
     color=FREQ_COLOR, ms=5, lw=1.8, alpha=0.85,
     markeredgecolor="white", markeredgewidth=0.8, zorder=7,
 )
-ax_fq.set_ylabel("Number-word frequency", color=FREQ_COLOR, labelpad=10)
+# OLD: ax_fq.set_ylabel("Number-word frequency", color=FREQ_COLOR, labelpad=10)
+ax_fq.set_ylabel("Illustrative frequency  ($1/n$)", color=FREQ_COLOR, labelpad=10)
 ax_fq.tick_params(axis="y", colors=FREQ_COLOR)
 ax_fq.set_ylim(-num_freq[0] * 0.08, num_freq[0] * 1.15)   # bottom pad matched to ax_land's
 ax_fq.spines["right"].set_visible(True)
