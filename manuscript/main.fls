@@ -89,6 +89,10 @@ INPUT /home/eudald/.TinyTeX/texmf-dist/tex/latex/tools/verbatim.sty
 INPUT /home/eudald/.TinyTeX/texmf-dist/tex/latex/tools/verbatim.sty
 INPUT /home/eudald/.TinyTeX/texmf-dist/tex/latex/url/url.sty
 INPUT /home/eudald/.TinyTeX/texmf-dist/tex/latex/url/url.sty
+INPUT /home/eudald/.TinyTeX/texmf-dist/tex/latex/xcolor/xcolor.sty
+INPUT /home/eudald/.TinyTeX/texmf-dist/tex/latex/xcolor/xcolor.sty
+INPUT /home/eudald/.TinyTeX/texmf-dist/tex/latex/graphics-cfg/color.cfg
+INPUT /home/eudald/.TinyTeX/texmf-dist/tex/latex/graphics/mathcolor.ltx
 INPUT /home/eudald/.TinyTeX/texmf-dist/tex/latex/hyperref/xr-hyper.sty
 INPUT /home/eudald/.TinyTeX/texmf-dist/tex/latex/hyperref/xr-hyper.sty
 INPUT /home/eudald/.TinyTeX/texmf-dist/tex/latex/hyperref/hyperref.sty
@@ -294,13 +298,13 @@ INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/courier/pcrr7t.tfm
 INPUT ./main.bbl
 INPUT ./main.bbl
 INPUT main.bbl
-INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/times/ptmri7t.tfm
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/times/ptmri7t.vf
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/times/ptmri8r.tfm
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/times/ptmr7t.vf
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/times/ptmr8r.tfm
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/courier/pcrr7t.vf
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/courier/pcrr8r.tfm
+INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/times/ptmri7t.tfm
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/vf/adobe/times/ptmri7t.vf
 INPUT /home/eudald/.TinyTeX/texmf-dist/fonts/tfm/adobe/times/ptmri8r.tfm
 INPUT main.aux
