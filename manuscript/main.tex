@@ -83,7 +83,7 @@ We consider the problem of how our model maps a noisy perceptual input onto a di
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\columnwidth]{../figures/figure1_conceptual_attractor_wells.pdf}
+  \includegraphics[width=\columnwidth]{figures/figure1_conceptual_attractor_wells.pdf}
   \caption{\textbf{Schematic and fitted components of the attractor model.} \textbf{a}, Schematic illustration of the shared fitted landscape. Gaussian-component widths follow the fitted power law, while widths and depths are floored for visibility; the orange $1/n$ curve illustrates the power-law decline in number-word frequency that motivates widening and is not an empirical frequency series. Small numbers therefore appear as deep, isolated components and larger numbers as broad, overlapping components. Figure~\ref{fig:comparison}c reports the width index $n_{\mathrm{width}}$. \textbf{b}, Fitted attractor clean-up map from the initial estimate $y_0$ to the bounded final state $x^*(y_0)$. The light-grey diagonal is the matched static readout ($x^*=y_0$); the black curve is the transformation produced by clean-up under the fitted dynamics. Insets show the resulting distributions over integer responses, $p(r\mid x^*)$, for $y_0=2,6,13$. \textbf{c}, The selected response-time link, $\mathrm{RT} = t_0 + \tau\,E[T]$, evaluated with the 160-ms sensory parameters and decomposed into basal latency and convergence time. An extended integer support ($1$--$30$) is used in this panel to avoid edge truncation near the upper displayed numerosities.}
   \label{fig:conceptual}
 \end{figure}
@@ -158,7 +158,7 @@ To test whether the same representational geometry constrains lower- and higher-
 
 \begin{figure}[t]
   \centering
-  \includegraphics[width=\columnwidth]{../figures/figure2_model_comparison.pdf}
+  \includegraphics[width=\columnwidth]{figures/figure2_model_comparison.pdf}
   \caption{\textbf{Model comparison and the link between landscape width and estimation acuity.} \textbf{a}, Categorical-response channel: $\Delta$AIC of each model relative to the winning power-law attractor with clean-up, over the ${\sim}53{,}000$ individual responses. Bars are coloured by model role: attractor with clean-up, matched static readout of the same wells, or external benchmark. Turning clean-up off, while retaining the same landscape and sensory parameterization but requiring no stopping-budget worsens the fit, and constant-width wells ($p=0$, $\sigma_n=\sigma_c$) worsen it further. The purely driven attractor (``Power-law wells + driven accumulator'', see Methods), whose input is the still-accumulating count rather than a completed estimate, fits far worse, because a partial count captures the wrong integer (\hyperref[sup-sm:comparison]{Supplementary Material~2}). Weber/ANS and the bounded-optimal model of~\citet{cheyette_unified_2020} (``Normative (C\&P)'') are shown for reference. \textbf{b}, Response-time channel: $\Delta$AIC of the three RT links on the winning landscape, with one mapping shared across durations. Convergence time alone and the hybrid link perform almost identically, whereas entropy alone performs substantially worse. \textbf{c}, Individual differences in the 360 sessions completing all five durations. Non-overlapping numerosity ranges informed landscape resolution ($n\leq8$) and Weber noise ($n\geq9$). Points show duration-averaged empirical-Bayes estimates; the inset reports their latent correlation conditional on the participant lapse effect. \textbf{d}, Effective Weber fraction: the coefficient of variation of the fitted response distribution per numerosity and exposure duration. Solid lines are the model, dots the data, and the dotted vertical marks the shared $n_{\mathrm{width}}$; the coefficient of variation approaches a roughly constant plateau at larger numerosities.
   }
   \label{fig:comparison}
@@ -175,7 +175,7 @@ A second residual is a shoulder predicted around $n=6$--$9$ in exact accuracy an
 
 \begin{figure*}[t]
   \centering
-  \includegraphics[width=\textwidth]{../figures/figure3_joint_model_fit.pdf}
+  \includegraphics[width=\textwidth]{figures/figure3_joint_model_fit.pdf}
   \caption{\textbf{Fit of the joint model to the~\citet{cheyette_unified_2020} data across the three channels.} Columns show presentation times from 40 to 640~ms; rows show the mean estimate, exact accuracy $P(r=n)$, and geometric-mean response time. Dots are empirical data; lines are the model, with the landscape fitted to the individual responses. Response time is evaluated in a constrained cross-channel fit: the landscape is held fixed at its response-fit values, and only the RT-link parameters are fitted to the individual trial times. The small shoulder in predicted exact accuracy occurs near the width-based proxy $n_{\mathrm{width}}$ and disappears when clean-up is switched off (Supplementary Fig.~\ref{sup-fig:pexact}). Dotted vertical lines in the response-time row mark the smallest numerosity at which the fitted expected settling time exceeds the shared budget $G$, indicating where the give-up cap begins to bind. $R^2$ values are given per panel.}
   \label{fig:fit}
 \end{figure*}
