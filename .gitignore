@@ -443,3 +443,6 @@ checkpoints/
 .Rproj.user
 
 reviews/
+blog/
+blog_*.py
+web_thumbnail_wells.*
