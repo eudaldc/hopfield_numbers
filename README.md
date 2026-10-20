@@ -1,5 +1,11 @@
 # An attractor account of numerosity perception
 
+
+
+https://github.com/user-attachments/assets/5d1fc69e-cd52-463f-81fe-06e1edfd7e26
+
+
+
 Research code for the paper **An attractor account of numerosity perception**. The current analysis fits a power-law-width Gaussian attractor directly to 52,995 trial-level enumeration responses collected at five exposure durations (40, 80, 160, 320, and 640 ms).
 
 A single representational landscape is shared across durations, while sensory noise and lapse are duration-specific. Recurrent clean-up maps a noisy scalar estimate onto the integer-centred landscape; where neighbouring wells overlap at larger numerosities, the same representation produces progressively coarser, approximately Weber-like responses. The settling dynamics also provide the response-time predictor.
