@@ -13,7 +13,11 @@ Why do we see three dots at a glance, but have to guess when there are eight? Th
 
 The whole story in four minutes:
 
-https://github.com/user-attachments/assets/5d1fc69e-cd52-463f-81fe-06e1edfd7e26
+
+
+https://github.com/user-attachments/assets/78428688-36b2-4930-b0d1-711285698002
+
+
 
 ## The idea
 
